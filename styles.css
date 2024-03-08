@@ -1,0 +1,28 @@
+
+canvas {
+    border: 1px solid black;
+}
+.box {
+    display: flex;
+    flex-direction: column; 
+    align-items: center; 
+  }
+
+
+.rotating:hover {
+    transition: transform 1s ease-in-out;
+    animation: rotate 5s infinite linear;
+    z-index: 1;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+.center-circle {
+    z-index: 0; /* Stelle sicher, dass das innere Bild über dem äußeren Bild liegt */
+}
