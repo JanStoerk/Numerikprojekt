@@ -1,0 +1,23 @@
+td {
+    width: 500px;
+    align-items: center;
+    margin:auto;
+}
+
+.kachel{
+background-color: #D4D4D4;
+ opacity: 0.7;
+ width: 300px;
+ height: 150px;
+ margin:auto;
+ border-color: black;
+ border-width: 3px;
+ border-style: solid;
+ color: black;
+ font-size: 16px;
+
+}
+
+.logo{
+    height: 100px;
+}
