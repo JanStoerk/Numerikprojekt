@@ -17,6 +17,8 @@ background-color: #D4D4D4;
  justify-content: center;
  align-items: center;
  flex-direction: column;
+ margin-inline: 60px;
+ margin-block: 30px;
 }
 
 .logo{
@@ -25,4 +27,38 @@ background-color: #D4D4D4;
 
 .link{
     text-decoration: none;
+}
+
+
+.kachel:hover .rotating {
+    animation: rotate 5s infinite linear;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.container {
+    position: relative;
+    width: 200px; 
+    height: 200px; 
+}
+
+.pfeil {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.zahnrad {
+    position: absolute;
+    top: 18%;
+    left: 38%;
+    transition: transform 5s linear;
 }
