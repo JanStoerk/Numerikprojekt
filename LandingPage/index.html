@@ -9,18 +9,13 @@
 
 </head>
 <body>
-  <header class="header">
-    <div class="brand"> 
-      <a href="#" style="color:white;" class="link">
-        <img src="../pictures/infinite.png" style="width:50px; height:30px; align-self: center;"  alt="Numerik">
-        <h1>Numerik</h1>
-      </a>
-    </div>
-    <div class="guide">
-      <img src="../pictures/guide.png" style="width:30px" alt="Guide">
-      <h4>Guide</h4>
-    </div>
-  </header>
+  <div id="header-placeholder"></div>
+  <script>
+      $(function(){
+          $("#header-placeholder").load("header.html");
+      });
+  </script>
+  
   <table style="margin: auto; margin-top:50px">
     <tbody>
     <tr>
@@ -34,8 +29,8 @@
       </td>
       <td>
         <a href="#" class="link">
-        <div class="kachel">
-          <img src="../pictures/LoesungLinearerGleichungssystemeLogo.png" class="logo">
+        <div id="LGS" class="kachel">
+          <img id="lgsImage" src="../pictures/LoesungLinearerGleichungssystemeLogo.png" class="logo">
           <p>Lösung linearer Gleichungssysteme</p>
         </div>
       </a>
@@ -55,8 +50,8 @@
       </td>
       <td>
         <a href="#" class="link">
-        <div class="kachel">
-          <img src="../pictures/NichtLineareAusgleichsproblemeLogo.png" class="logo">
+        <div id="NLA" class="kachel">
+          <img id="nlaImage" src="../pictures/NichtLineareAusgleichsproblemeLogo.png" class="logo">
           <p>Nicht lineare Ausgleichsprobleme</p>
         </div>
       </a>
@@ -65,7 +60,6 @@
     <a href="http://www.kirchbergnet.de/impressum.php" class="impressum-link" style="color:slategray">Impressum</a>
   </tbody>
   </table>
-  <footer>
-  </footer>
+  <script src="animations.js"></script>
 </body>
 </html>

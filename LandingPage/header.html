@@ -1,0 +1,37 @@
+<header class="header">
+    <div class="brand"> 
+        <a href="../LandingPage/index.html" style="color:white;" class="link">
+            <img src="../pictures/infinite.png" style="width:50px; height:30px; align-self: center;"  alt="Numerik">
+            <h1>Numerik</h1>
+        </a>
+    </div>
+    <button class="guide" onclick="showGuide()">
+        <img src="../pictures/guide.png" style="width:30px" alt="Guide">
+        <h4>Guide</h4>
+    </button>
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closePopup()">&times;</span>
+            <p>Hier folgt der detaillierte Guide...</p>
+        </div>
+    </div>
+</header>
+<script>
+    function showGuide() {
+        var modal = document.getElementById("myModal");
+        modal.style.display = "block"; 
+        document.addEventListener("keydown", closeOnEscape);
+    }
+    
+    function closePopup() {
+        var modal = document.getElementById("myModal");
+        modal.style.display = "none"; 
+        document.removeEventListener("keydown", closeOnEscape);
+    }
+
+    function closeOnEscape(event) {
+    if (event.key === "Escape") {
+        closePopup();
+    }
+}
+    </script>

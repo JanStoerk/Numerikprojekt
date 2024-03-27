@@ -43,6 +43,8 @@ background-color: #D4D4D4;
     display: flex; 
     align-items: center;
     cursor:pointer;
+    background-color: transparent;
+    border: none;
   }
 
   .guide img, .brand img {
@@ -51,6 +53,7 @@ background-color: #D4D4D4;
 
   .guide:hover, .brand:hover{
     filter: brightness(75%) saturate(100%) hue-rotate(200deg);
+    
   }
 
   h4 {
@@ -108,7 +111,42 @@ background-color: #D4D4D4;
 
 .impressum-link {
     position: fixed;
-    bottom: 30px; 
+    bottom: 15px; 
     left: 50%;
     transform: translateX(-50%); 
 }
+
+.modal {
+    display: none;   
+    z-index: 1;
+    width: 80%;
+    height: 80%;
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.4); 
+  }
+  
+  .modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; 
+    padding: 20px;
+    border: 1px solid #888;
+    max-width: 1000px; 
+  }
+  
+  .close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    width:42px;
+    justify-content: center;
+    display: flex;
+    align-self: end;
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: red;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  
