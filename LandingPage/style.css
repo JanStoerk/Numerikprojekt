@@ -105,3 +105,10 @@ background-color: #D4D4D4;
     left: 38%;
     transition: transform 5s linear;
 }
+
+.impressum-link {
+    position: fixed;
+    bottom: 30px; 
+    left: 50%;
+    transform: translateX(-50%); 
+}
