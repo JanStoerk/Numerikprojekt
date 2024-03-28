@@ -1,17 +1,25 @@
-let hoverTimer;
-    document.getElementById("LGS").addEventListener("mouseover", function() {
-        hoverTimer = setInterval(changeImage, 1000);
+function addHoverAnimation(elementId, images, imageElementId) {
+    let hoverTimer;
+    let currentIndex = 2;
+
+    document.getElementById(elementId).addEventListener("mouseover", function() {
+        hoverTimer = setInterval(changeImage, 500);
+        document.getElementById(imageElementId).src = images[1];
     });
-    document.getElementById("LGS").addEventListener("mouseout", function() {
+
+    document.getElementById(elementId).addEventListener("mouseout", function() {
         clearInterval(hoverTimer);
-        document.getElementById('lgsImage').src = "../pictures/LoesungLinearerGleichungssystemeLogo.png";
-        currentIndex = 0;
+        document.getElementById(imageElementId).src = images[0];
+        currentIndex = 2;
     });
-    let images = ["../pictures/LoesungLinearerGleichungssystemeLogo2.png", "../pictures/LoesungLinearerGleichungssystemeLogo3.png", "../pictures/LoesungLinearerGleichungssystemeLogo.png"]; // Array mit den Bilddateipfaden
-    let currentIndex = 0;
 
     function changeImage() {
-        let img = document.getElementById('lgsImage');
+        let img = document.getElementById(imageElementId);
         img.src = images[currentIndex];
-        currentIndex = (currentIndex + 1) % images.length; 
+        currentIndex = (currentIndex + 1) % images.length;
     }
+}
+//Animation für Lineare Gleichungssysteme
+addHoverAnimation("LGS", ["../pictures/LoesungLinearerGleichungssystemeLogo.png", "../pictures/LoesungLinearerGleichungssystemeLogo2.png", "../pictures/LoesungLinearerGleichungssystemeLogo3.png", "../pictures/LoesungLinearerGleichungssystemeLogo4.png", "../pictures/LoesungLinearerGleichungssystemeLogo5.png", "../pictures/LoesungLinearerGleichungssystemeLogo6.png"], "lgsImage");
+//Animation für Nicht lineare Ausgliechsprobleme
+addHoverAnimation("NLA", ["../pictures/NichtLineareAusgleichsproblemeLogo.png", "../pictures/NichtLineareAusgleichsproblemeLogo2.png", "../pictures/NichtLineareAusgleichsproblemeLogo3.png", "../pictures/NichtLineareAusgleichsproblemeLogo4.png", "../pictures/NichtLineareAusgleichsproblemeLogo5.png", "../pictures/NichtLineareAusgleichsproblemeLogo6.png"], "nlaImage");
