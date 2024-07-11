@@ -5,38 +5,28 @@ document.addEventListener('DOMContentLoaded', function () {
     const clearButton = document.getElementById('clearButton');
     const addButton = document.getElementById('addButton');
     const removeButton = document.getElementById('removeButton');
+    const example = document.getElementById('standardExample');
 
-    example.addEventListener('change', function () {
-        if (this.checked) {
-            for (var i = table.rows.length - 1; i >= 0; i--) {
-                table.deleteRow(i);
-                vector.deleteRow(i);
-            }
-            for (let i = 0; i < 4; i++) {
-                createInputFields();
-            }
-            addSigns();
-            const values = [
-                10, -1, 2, 0, 6,
-                -1, 11, -1, 3, 25,
-                2, -1, 10, -1, -11,
-                0, 3, -1, 8, 15
-            ];
+    example.addEventListener('click', function () {
+        for (var i = table.rows.length - 1; i >= 0; i--) {
+            table.deleteRow(i);
+            vector.deleteRow(i);
+        }
+        for (let i = 0; i < 4; i++) {
+            createInputFields();
+        }
+        addSigns();
+        const values = [
+            10, -1, 2, 0, 6,
+            -1, 11, -1, 3, 25,
+            2, -1, 10, -1, -11,
+            0, 3, -1, 8, 15
+        ];
 
-            const inputs = table.getElementsByTagName('input');
+        const inputs = table.getElementsByTagName('input');
 
-            for (let i = 0; i < values.length; i++) {
-                inputs[i].value = values[i];
-            }
-        } else {
-            for (var i = table.rows.length - 1; i >= 0; i--) {
-                table.deleteRow(i);
-                vector.deleteRow(i);
-            }
-            for (let i = 0; i < 4; i++) {
-                createInputFields();
-            }
-            addSigns();
+        for (let i = 0; i < values.length; i++) {
+            inputs[i].value = values[i];
         }
 
     });
@@ -66,21 +56,22 @@ document.addEventListener('DOMContentLoaded', function () {
         const inputs = document.querySelectorAll('#Gleichungssystem input');
         const vectorInputs = document.querySelectorAll('#Vektoreingabe input');
         const values = []; const vectorValues = [];
-        let konvergenz = false;
         let iterationen = 3;
-        if (document.getElementById("myCheckbox").checked) {
-            konvergenz = true;
-        } else {
-            if (document.getElementById("AnzahlIterationen").value) {
-                iterationen = document.getElementById("AnzahlIterationen").value;
-            }
+        if (document.getElementById("AnzahlIterationen").value) {
+            iterationen = document.getElementById("AnzahlIterationen").value;
         }
+
         let calculation = document.getElementById('Iterationen');
         let jacobiDiv = document.getElementById('ergebnisJacobi');
         let gaussDiv = document.getElementById('ergebnisGauss');
         jacobiDiv.innerHTML = '<h6>Ergebnis mit Jacobi Verfahren:</h6>'
         gaussDiv.innerHTML = ' <h6>Ergebnis mit Gaußschem Eliminationsverfahren:</h6>'
         calculation.innerHTML = ''
+
+        var selectElement = document.getElementById('nachkomastellen');
+
+        var selectedOption = selectElement.options[selectElement.selectedIndex];
+        var decimalPlaces = parseInt(selectedOption.value);
 
         inputs.forEach(function (input) {
             if (input.value.trim() === '') {
@@ -186,14 +177,14 @@ document.addEventListener('DOMContentLoaded', function () {
         function invertDiagonalMatrix(D) {
             let n = D.length;
             let D_inv = [];
-
+        
             for (let i = 0; i < n; i++) {
                 D_inv.push([]);
                 for (let j = 0; j < n; j++) {
                     if (i === j) {
                         if (D[i][j] !== 0) {
                             // Inverse berechnen und auf zwei Nachkommastellen runden
-                            D_inv[i][j] = parseFloat((1 / D[i][j]).toFixed(2));
+                            D_inv[i][j] = parseFloat((1 / D[i][j]).toFixed(decimalPlaces));
                         } else {
                             // Nachricht anzeigen und null zurückgeben
                             calculation.innerHTML = "<p>Das Gleichungssystem kann nicht mithilfe des Jacobi Verfahrens gelöst werden, da die Diagonalmatrix <b>D</b> nicht invertierbar ist, weil mindestens ein Diagonalelement 0 ist.</p>";
@@ -204,84 +195,48 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 }
             }
-
+        
             return D_inv;
         }
-
-
+        
         let D_inv = invertDiagonalMatrix(D);
-
+        
         // Erstelle LaTeX-Matrizen für D, L und U
-        let matrixD = "\\begin{pmatrix}";
-        for (let i = 0; i < n; i++) {
-            for (let j = 0; j < n; j++) {
-                matrixD += D[i][j];
-                if (j < n - 1) {
-                    matrixD += " & ";
+        function createLatexMatrix(matrix) {
+            let latex = "\\begin{pmatrix}";
+            for (let i = 0; i < matrix.length; i++) {
+                for (let j = 0; j < matrix[i].length; j++) {
+                    latex += matrix[i][j];
+                    if (j < matrix[i].length - 1) {
+                        latex += " & ";
+                    }
+                }
+                if (i < matrix.length - 1) {
+                    latex += " \\\\ ";
                 }
             }
-            if (i < n - 1) {
-                matrixD += " \\\\ ";
-            }
+            latex += "\\end{pmatrix}";
+            return latex;
         }
-        matrixD += "\\end{pmatrix}";
-
-        let matrixL = "\\begin{pmatrix}";
-        for (let i = 0; i < n; i++) {
-            for (let j = 0; j < n; j++) {
-                matrixL += L[i][j];
-                if (j < n - 1) {
-                    matrixL += " & ";
-                }
-            }
-            if (i < n - 1) {
-                matrixL += " \\\\ ";
-            }
-        }
-        matrixL += "\\end{pmatrix}";
-
-        let matrixU = "\\begin{pmatrix}";
-        for (let i = 0; i < n; i++) {
-            for (let j = 0; j < n; j++) {
-                matrixU += U[i][j];
-                if (j < n - 1) {
-                    matrixU += " & ";
-                }
-            }
-            if (i < n - 1) {
-                matrixU += " \\\\ ";
-            }
-        }
-        matrixU += "\\end{pmatrix}";
-
+        
+        let matrixD = createLatexMatrix(D);
+        let matrixL = createLatexMatrix(L);
+        let matrixU = createLatexMatrix(U);
+        
         let container = document.getElementById('matrix-container');
         let container2 = document.getElementById('diagonalisierungs-container');
         container.innerHTML = "<p> \\( \\mathbf{A} = " + matrixA + " \\)</p><p> \\( \\mathbf{b} = " + matrixB + " \\)</p><p> \\( \\mathbf{x^{(0)}} = " + matrixX + " \\)</p>";
         container2.innerHTML = "<p> \\( \\mathbf{D} = " + matrixD + " \\)</p><p> \\( \\mathbf{L} = " + matrixL + " \\)</p><p> \\( \\mathbf{U} = " + matrixU + " \\)</p>";
-
-        var gaussSolution = gaussElimination(A, b);
+        
+        var gaussSolution = gaussElimination(A, b, decimalPlaces);
         if (gaussSolution == null) {
             calculation.innerHTML = "<p>Das Gleichungssystem kann nicht mithilfe des Jacobi Verfahrens gelöst werden, da das Gleichungssystem unlösbar ist.</p>";
-
         }
-
+        
         if (D_inv != null && gaussSolution != null) {
-
             // Erstelle LaTeX-Matrix für inverse D
-            let matrixDInv = "\\begin{pmatrix}";
-            for (let i = 0; i < n; i++) {
-                for (let j = 0; j < n; j++) {
-                    matrixDInv += D_inv[i][j];
-                    if (j < n - 1) {
-                        matrixDInv += " & ";
-                    }
-                }
-                if (i < n - 1) {
-                    matrixDInv += " \\\\ ";
-                }
-            }
-            matrixDInv += "\\end{pmatrix}";
-
+            let matrixDInv = createLatexMatrix(D_inv);
+        
             // Hilfsfunktion zur Matrix-Vektor-Multiplikation
             function matVecMul(matrix, vector) {
                 const result = new Array(vector.length).fill(0);
@@ -289,22 +244,23 @@ document.addEventListener('DOMContentLoaded', function () {
                     for (let j = 0; j < vector.length; j++) {
                         result[i] += matrix[i][j] * vector[j];
                     }
+                    result[i] = parseFloat(result[i].toFixed(decimalPlaces));
                 }
                 return result;
             }
-
+        
             // Hilfsfunktion zur Vektor-Subtraktion
             function vecSub(vec1, vec2) {
-                return vec1.map((val, idx) => val - vec2[idx]);
+                return vec1.map((val, idx) => parseFloat((val - vec2[idx]).toFixed(decimalPlaces)));
             }
-
+        
             // Hilfsfunktion zur Matrix-Vektor-Multiplikation mit Inverse (Diagonalmatrix)
             function matDiagVecMul(matrix, vector) {
-                return matrix.map((row, idx) => row[idx] * vector[idx]);
+                return matrix.map((row, idx) => parseFloat((row[idx] * vector[idx]).toFixed(decimalPlaces)));
             }
-
-            startVector = vectorValues;
-            for (var i = 1; i <= iterationen || konvergenz; i++) {
+        
+            let startVector = vectorValues;
+            for (let i = 1; i <= iterationen; i++) {
                 let matrixStart = "\\begin{pmatrix} ";
                 for (let i = 0; i < startVector.length; i++) {
                     matrixStart += startVector[i];
@@ -339,7 +295,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     break
                 }
                 startVector = x1;
-                if(i==50){
+                if (i == 50) {
                     calculation.innerHTML += `<b>Konvergenz wurde nach ${i} Iterationen noch nicht erreicht</b>`
                     break;
                 }
@@ -351,7 +307,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 return latexString;
             }
-    
+
             let ergebnisJacobi = createLatexString(startVector);
             let ergebnisGauss = createLatexString(gaussSolution);
             jacobiDiv.innerHTML += `\\[ \\begin{array}{l} ${ergebnisJacobi} \\end{array} \\]`;
@@ -359,21 +315,21 @@ document.addEventListener('DOMContentLoaded', function () {
             function norm(vector) {
                 return Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0));
             }
-            
+
             function vectorDifference(vec1, vec2) {
                 return vec1.map((val, index) => val - vec2[index]);
             }
-            
+
             function percentageDifference(vec1, vec2) {
                 const diff = vectorDifference(vec1, vec2);
                 const normDiff = norm(diff);
                 const normRef = norm(vec2);
                 const percentageDiff = (normDiff / normRef) * 100;
-                return percentageDiff.toFixed(2); 
+                return percentageDiff.toFixed(decimalPlaces);
             }
 
             const result = percentageDifference(startVector, gaussSolution);
-            document.getElementById('abweichung').innerHTML ="<h4>"+ result + "% <br>Abweichung</h4>"
+            document.getElementById('abweichung').innerHTML = "<h4>" + result + "% <br>Abweichung</h4>"
         }
 
         MathJax.typeset();
@@ -430,7 +386,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    clearButton.addEventListener('click', function() {
+    clearButton.addEventListener('click', function () {
         for (var i = table.rows.length - 1; i >= 0; i--) {
             table.deleteRow(i);
             vector.deleteRow(i);
@@ -465,12 +421,17 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
-function gaussElimination(variable1, variable2) {
+function gaussElimination(variable1, variable2, decimalPlaces) {
     let n = variable1.length;
 
     // Augmented matrix [variable1|variable2]
     for (let i = 0; i < n; i++) {
         variable1[i].push(variable2[i]);
+    }
+
+    // Helper function to round numbers to the specified decimal places
+    function roundToDecimalPlaces(value, places) {
+        return parseFloat(value.toFixed(places));
     }
 
     // Forward elimination
@@ -495,11 +456,13 @@ function gaussElimination(variable1, variable2) {
         // Make all rows below this one 0 in current column
         for (let k = i + 1; k < n; k++) {
             let c = -variable1[k][i] / variable1[i][i];
+            c = roundToDecimalPlaces(c, decimalPlaces);
             for (let j = i; j < n + 1; j++) {
                 if (i == j) {
                     variable1[k][j] = 0;
                 } else {
                     variable1[k][j] += c * variable1[i][j];
+                    variable1[k][j] = roundToDecimalPlaces(variable1[k][j], decimalPlaces);
                 }
             }
         }
@@ -516,8 +479,10 @@ function gaussElimination(variable1, variable2) {
     let x = new Array(n).fill(0);
     for (let i = n - 1; i >= 0; i--) {
         x[i] = variable1[i][n] / variable1[i][i];
+        x[i] = roundToDecimalPlaces(x[i], decimalPlaces);
         for (let k = i - 1; k >= 0; k--) {
             variable1[k][n] -= variable1[k][i] * x[i];
+            variable1[k][n] = roundToDecimalPlaces(variable1[k][n], decimalPlaces);
         }
     }
 

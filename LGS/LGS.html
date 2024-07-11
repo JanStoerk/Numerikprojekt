@@ -242,12 +242,25 @@
         <button id="clearButton" class="btn btn-secondary"><i class="fa fa-paint-brush"></i></button>
         <button id="addButton" class="btn btn-secondary">Zeile hinzufügen</button>
         <button id="removeButton" class="btn btn-secondary">Zeile entfernen</button>
-        Anzahl Iterationen:
-        <input id="AnzahlIterationen" style="width: 50px;" type="text" placeholder="3">
-        <label>
-            <input type="checkbox" style="margin-left: 10px" id="myCheckbox"> Iteration bis zur Konvergenz
-            <input type="checkbox" style="margin-left: 10px" id="standardExample"> Standardbeispiel verwenden
-        </label>
+        <button id="standardExample" class="btn btn-secondary">Standardbeispiel verwenden</button>
+        Maximale Anzahl Iterationen:
+        <input id="AnzahlIterationen" style="width: 50px;" type="number" placeholder="3">
+        Anzahl Nachkomastellen:
+        <select id="nachkomastellen">
+            <option >1</option>
+            <option selected>2</option>
+            <option >3</option>
+            <option >4</option>
+            <option >5</option>
+            <option >6</option>
+            <option >7</option>
+            <option >8</option>
+            <option >9</option>
+            <option >10</option>
+        </select>
+            <!--<input type="checkbox" style="margin-left: 10px" id="myCheckbox"> Iteration bis zur Konvergenz -->
+            <!--<input type="checkbox" style="margin-left: 10px" id="standardExample"> Standardbeispiel verwenden -->
+        
         <div class="solution">
         </div>
         <br>
@@ -290,9 +303,8 @@
         <script src="./script.js">
         </script>
         <script>
-            // JavaScript, um das Input-Feld zu aktivieren/deaktivieren
+            /*
             const checkbox = document.getElementById('myCheckbox');
-            const example = document.getElementById('standardExample');
             const inputField = document.getElementById('AnzahlIterationen');
 
             checkbox.addEventListener('change', function () {
@@ -305,7 +317,7 @@
                     inputField.placeholder = '3'
                 }
 
-            });
+            });*/
         </script>
 </body>
 
