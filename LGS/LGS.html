@@ -1,0 +1,333 @@
+<!doctype html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="../LandingPage/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <header class="header">
+        <div class="brand">
+            <a href="../LandingPage/index.html" style="color:white;" class="link">
+                <img src="../pictures/infinite.png" style="width:50px; height:30px; align-self: center;" alt="Numerik">
+                <h1>Numerik</h1>
+            </a>
+        </div>
+        <button class="guide" onclick="showGuide()">
+            <img src="../pictures/guide.png" style="width:30px" alt="Guide">
+            <h4>Guide</h4>
+        </button>
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closePopup()">&times;</span>
+                <p>Zur Anwendung des Jacobi-Verfahrens muss die Matrix symmetrisch sein. Das Jacobi-Verfahren wird
+                    verwendet, um eine symmetrische Matrix in eine Diagonalmatrix zu transformieren, indem sukzessive
+                    Rotationen um verschiedene Achsen durchgeführt werden. Diese Rotationen können nur korrekt
+                    angewendet werden, wenn die Matrix symmetrisch ist.
+                    Ja, wenn die Diagonalmatrix
+                    𝐷
+                    D in einem Gleichungssystem
+                    𝐴
+                    𝑥
+                    =
+                    𝑏
+                    Ax=b nicht invertierbar ist, dann ist das Jacobi-Verfahren nicht anwendbar. Das Jacobi-Verfahren
+                    basiert auf der Iterationsvorschrift:
+
+                    𝑥
+                    (
+                    𝑘
+                    +
+                    1
+                    )
+                    =
+                    𝐷
+                    −
+                    1
+                    (
+                    𝑏
+                    −
+                    (
+                    𝐿
+                    +
+                    𝑈
+                    )
+                    𝑥
+                    (
+                    𝑘
+                    )
+                    )
+                    x
+                    (k+1)
+                    =D
+                    −1
+                    (b−(L+U)x
+                    (k)
+                    )
+
+                    Hierbei ist
+                    𝐷
+                    D die Diagonalmatrix, die die Diagonalelemente von
+                    𝐴
+                    A enthält,
+                    𝐿
+                    L ist die strikte untere Dreiecksmatrix und
+                    𝑈
+                    U ist die strikte obere Dreiecksmatrix.
+
+                    Wenn
+                    𝐷
+                    D nicht invertierbar ist, bedeutet das, dass mindestens ein Diagonalelement von
+                    𝐴
+                    A gleich null ist. Das führt dazu, dass die Inverse von
+                    𝐷
+                    D nicht existiert, und somit kann die Iterationsvorschrift nicht angewendet werden, da
+                    𝐷
+                    −
+                    1
+                    D
+                    −1
+                    in der Berechnung benötigt wird.
+
+                    In einem solchen Fall ist das Jacobi-Verfahren nicht geeignet, um das Gleichungssystem zu lösen. Es
+                    gibt jedoch alternative Methoden, die angewendet werden können, wie beispielsweise das
+                    Gauss-Seidel-Verfahren oder iterative Methoden wie die konjugierte Gradientenmethode, welche
+                    möglicherweise besser mit solchen Fällen umgehen können, abhängig von der Struktur der Matrix
+                    𝐴
+                    A.
+                    Hier sind die Schritte, die für jede Iteration durchgeführt werden:
+
+                    Berechne
+                    𝐿
+                    +
+                    𝑈
+                    L+U.
+                    Multipliziere
+                    𝐿
+                    +
+                    𝑈
+                    L+U mit
+                    𝑥
+                    (
+                    0
+                    )
+                    x
+                    (0)
+                    (Matrix-Vektor-Multiplikation).
+                    Subtrahiere das Ergebnis von
+                    𝑏
+                    b.
+                    Multipliziere das Ergebnis mit
+                    𝐷
+                    −
+                    1
+                    D
+                    −1
+                    .
+                    Das Jacobi-Verfahren ist ein iteratives Verfahren zur Lösung linearer Gleichungssysteme (LGS) der
+                    Form
+                    𝐴
+                    𝑥
+                    =
+                    𝑏
+                    Ax=b. Wenn das LGS nicht lösbar ist, gibt es einige Schritte, die du unternehmen kannst, um das
+                    Problem zu identifizieren und mögliche Lösungen zu finden:
+
+                    Überprüfung der Konsistenz des Systems:
+
+                    Prüfe, ob das System überhaupt lösbar ist. Ein System
+                    𝐴
+                    𝑥
+                    =
+                    𝑏
+                    Ax=b ist lösbar, wenn die Rang-Bedingung erfüllt ist, d.h., wenn der Rang der Matrix
+                    𝐴
+                    A gleich dem Rang der erweiterten Matrix
+                    [
+                    𝐴
+                    ∣
+                    𝑏
+                    ]
+                    [A∣b] ist.
+                    Überprüfung der Diagonaldominanz:
+
+                    Für das Jacobi-Verfahren ist es wichtig, dass die Matrix
+                    𝐴
+                    A diagonaldominant ist oder zumindest eine strikte Diagonaldominanz aufweist. Das bedeutet, dass für
+                    jede Zeile
+                    𝑖
+                    i der Betrag des Diagonalelements
+                    𝑎
+                    𝑖
+                    𝑖
+                    a
+                    ii
+                    ​
+                    größer sein sollte als die Summe der Beträge der anderen Elemente der Zeile:
+                    ∣
+                    𝑎
+                    𝑖
+                    𝑖
+                    ∣
+                    >
+                    ∑
+                    𝑗
+                    ≠
+                    𝑖
+                    ∣
+                    𝑎
+                    𝑖
+                    𝑗
+                    ∣
+                    ∣a
+                    ii
+                    ​
+                    ∣>∑
+                    j
+                    
+                    =i
+                    ​
+                    ∣a
+                    ij
+                    ​
+                    ∣. Wenn dies nicht der Fall ist, kann das Jacobi-Verfahren divergieren oder keine Lösung finden.
+                    Alternativen prüfen:
+
+                    Gaußsches Eliminationsverfahren: Ein direkteres Verfahren, das nicht auf Iterationen beruht und dir
+                    mehr Informationen über die Lösbarkeit des Systems geben kann.
+                </p>
+            </div>
+        </div>
+    </header>
+    <script>
+        function showGuide() {
+            var modal = document.getElementById("myModal");
+            modal.style.display = "block";
+            document.addEventListener("keydown", closeOnEscape);
+        }
+
+        function closePopup() {
+            var modal = document.getElementById("myModal");
+            modal.style.display = "none";
+            document.removeEventListener("keydown", closeOnEscape);
+        }
+
+        function closeOnEscape(event) {
+            if (event.key === "Escape") {
+                closePopup();
+            }
+        }
+    </script>
+    <div class="content">
+        <h4><b>Lösung linearer Gleichungssysteme: Jacobi Verfahren</b><button class="fa fa-info-circle"
+                onclick="showGuide()"
+                style="font-size:24px; margin-left: 10px; color:grey; border:0; background-color: transparent;"></button>
+        </h4>
+        <div style="display: flex;">
+            <table id="Gleichungssystem">
+            </table>
+            <div id="Vektoreingabe" style="display: flex; align-items: center; justify-content: center;">
+                <p>Startvektor (optional): x<sup>(0)</sup> = </p>
+                <table id="Startvektor" style="width:100px">
+                </table>
+            </div>
+            <table style=" width:450px" class="table table-hover">
+            <tbody>
+                <tr>
+                    <td><label for="funktion">Maximale Anzahl Iterationen</label></td>
+                    <td><input id="AnzahlIterationen" type="number" placeholder="3"></td>
+                </tr>
+            <tr>
+                <td>Anzahl Nachkommastellen</td>
+                <td>
+                    <select id="nachkomastellen" class="form-select">
+                        <option>1</option>
+                        <option selected>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                        <option>6</option>
+                        <option>7</option>
+                        <option>8</option>
+                        <option>9</option>
+                        <option>10</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+        </div>
+        <button id="saveButton" class="btn btn-secondary">Lösen</button>
+        <button id="clearButton" class="btn btn-secondary"><i class="fa fa-paint-brush"></i></button>
+        <button id="addButton" class="btn btn-secondary">Zeile hinzufügen</button>
+        <button id="removeButton" class="btn btn-secondary">Zeile entfernen</button>
+        <button id="standardExample" class="btn btn-secondary">Standardbeispiel verwenden</button>
+            <!--<input type="checkbox" style="margin-left: 10px" id="myCheckbox"> Iteration bis zur Konvergenz -->
+            <!--<input type="checkbox" style="margin-left: 10px" id="standardExample"> Standardbeispiel verwenden -->
+        
+        <div class="solution">
+        </div>
+        <br>
+        <div id="Rechnung">
+            <h5><b>Ausführliche Berechnung des Ergebnisses</b>
+            </h5>
+            <div class="matrix">
+                <div class="left">
+                    <b>1. Schritt: Matrixform</b>
+                    <div id="matrix-container" class="matrix-container">
+                    </div>
+                </div>
+                <div class="right">
+                    <b>2. Schritt: Diagonalisierung</b>
+                    <div id="diagonalisierungs-container" class="matrix-container">
+                    </div>
+                </div>
+            </div>
+            <div class="left">
+                <b>3. Schritt: Jacobi-Verfahren</b><button class="btn btn-light dropdown-toggle" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample"></button>
+                <div class="collapse show" id="collapseExample">
+                <div id="Iterationen">
+
+                </div>
+            </div>
+            </div>
+        </div>
+        <div id="Ergebnis">
+            <h5><b>Ergebnisdarstellung</b>
+            </h5>
+            <div class="matrixErgebnis">
+                <div id="ergebnisJacobi" class="left">
+                </div>
+                <div id="abweichung" class="result">
+                </div>
+                <div id="ergebnisGauss" class="right">
+                </div>
+            </div>
+        </div>
+        <script src="./script.js">
+        </script>
+        <script>
+            /*
+            const checkbox = document.getElementById('myCheckbox');
+            const inputField = document.getElementById('AnzahlIterationen');
+
+            checkbox.addEventListener('change', function () {
+                inputField.disabled = this.checked;
+                if (this.checked) {
+                    inputField.value = ''
+                    inputField.placeholder = '-'
+                } else {
+                    inputField.value = ''
+                    inputField.placeholder = '3'
+                }
+
+            });*/
+        </script>
+</body>
+
+</html>
