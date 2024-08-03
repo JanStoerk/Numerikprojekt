@@ -331,7 +331,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const result = percentageDifference(startVector, gaussSolution);
             document.getElementById('abweichung').innerHTML = "<h4>" + result + "% <br>Abweichung</h4>"
         }
-
+        
         MathJax.typeset();
         document.getElementById('Rechnung').style.display = 'block';
         document.getElementById('Ergebnis').style.display = 'block';

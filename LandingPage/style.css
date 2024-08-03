@@ -284,3 +284,28 @@ body::-webkit-scrollbar-button,
   margin-left: 10px;
 }
 
+#resultContainer{
+  flex: 1; 
+  text-align: left;
+}
+
+.controls {
+  display: flex;
+  gap: 20px;
+}
+.controls button {
+  background-color: grey;
+  border: none;
+  border-radius: 50%;
+  color: white;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  cursor: pointer;
+}
+.controls button:hover {
+  background-color: lightgrey;
+}
