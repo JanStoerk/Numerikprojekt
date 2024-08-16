@@ -1,0 +1,209 @@
+<!doctype html>
+<html>
+
+<head>
+    <!-- CSS Dateien -->
+    <link rel="stylesheet" href="../LandingPage/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" />
+
+    <!-- JavaScript Dateien -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.4.4/math.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.12.1.min.js"></script>
+
+
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <header class="header">
+        <div class="brand">
+            <a href="../LandingPage/index.html" style="color:white;" class="link">
+                <img src="../pictures/infinite.png" style="width:50px; height:30px; align-self: center;" alt="Numerik">
+                <h1>Numerik</h1>
+            </a>
+        </div>
+        <button class="guide" onclick="showGuide()">
+            <img src="../pictures/guide.png" style="width:30px" alt="Guide">
+            <h4>Guide</h4>
+        </button>
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closePopup()">&times;</span>
+                <p>das Branch-and-Bound-Verfahren kann sehr schnell zu einer großen Anzahl von Knoten und damit zu einem
+                    großen Baum führen, insbesondere wenn die Dimension des Problems oder die Anzahl der Variablen
+                    steigt. Dies liegt an der Natur des Verfahrens, das darauf basiert, den Lösungsraum rekursiv in
+                    kleinere Teilräume (Teilprobleme) zu unterteilen und zu prüfen.
+                    Warum wächst der Baum so schnell?
+                    Exponentielles Wachstum:
+
+                    Bei jedem Schritt wird der Lösungsraum in zwei oder mehr Teilräume unterteilt. Bei
+                    𝑛
+                    n Variablen und
+                    𝑏
+                    b möglichen Grenzen pro Variable können im schlimmsten Fall bis zu
+                    𝑏
+                    𝑛
+                    b
+                    n
+                    Knoten im Baum entstehen. Das bedeutet, dass die Anzahl der Knoten exponentiell mit der Anzahl der
+                    Variablen und den möglichen Grenzen ansteigt.
+                    Verzweigung in jede Richtung:
+
+                    Für jede Variable wird in beide Richtungen (kleinere und größere Werte) verzweigt, um alle möglichen
+                    Lösungen zu erkunden. Dies führt dazu, dass der Baum schnell sehr breit und tief wird.
+                    Zahlreiche Begrenzungen und Einschränkungen:
+
+                    Wenn das Problem viele Einschränkungen hat, könnte das Verfahren viele Möglichkeiten erkunden, bevor
+                    es die optimalen Werte findet. Dies erhöht ebenfalls die Anzahl der Knoten.</p>
+            </div>
+        </div>
+    </header>
+    <script>
+        function showGuide() {
+            var modal = document.getElementById("myModal");
+            modal.style.display = "block";
+            document.addEventListener("keydown", closeOnEscape);
+        }
+
+        function closePopup() {
+            var modal = document.getElementById("myModal");
+            modal.style.display = "none";
+            document.removeEventListener("keydown", closeOnEscape);
+        }
+
+        function closeOnEscape(event) {
+            if (event.key === "Escape") {
+                closePopup();
+            }
+        }
+    </script>
+    <div class="content">
+        <h4><b>Lineare Optimierung: Branch & Bound Verfahren</b><button class="fa fa-info-circle" onclick="showGuide()"
+                style="font-size:24px; margin-left: 10px; color:grey; border:0; background-color: transparent;"></button>
+        </h4><br>
+        <div style="display: flex; justify-content: space-around; align-items: center;">
+            <div style="flex: 1; text-align: center;">
+                <table style="margin: auto;" class="table table-hover" id="nebenbedingungen">
+                    <tbody>
+                        <tr>
+                            <td><label for="funktion">Maximierungsproblem</label></td>
+                            <td><input type="text" id="funktion"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="untereGrenze">Nebenbedingung 1</label></td>
+                            <td><input type="text" id="nebenbedingung1"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="obereGrenze">Nebenbedingung 2</label></td>
+                            <td><input type="text" id="nebenbedingung2"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br>
+                <button id="btnZeichne" class="btn btn-secondary">Nebenbedingung hinzufügen</button> <br><br>
+                <script>
+
+                    document.addEventListener('DOMContentLoaded', function () {
+                        const maxNebenbedingungen = 9;
+                        const nebenbedingungenTable = document.getElementById('nebenbedingungen');
+                        const btnZeichne = document.getElementById('btnZeichne');
+                        let nebenbedingungCount = 2;
+
+                        btnZeichne.addEventListener('click', function () {
+                            if (nebenbedingungCount < maxNebenbedingungen) {
+                                nebenbedingungCount++;
+                                const neueZeile = document.createElement('tr');
+                                neueZeile.innerHTML = `
+                                    <td><label for="nebenbedingung${nebenbedingungCount}">Nebenbedingung ${nebenbedingungCount}</label></td>
+                                    <td><input type="text" id="nebenbedingung${nebenbedingungCount}"></td>
+                                `;
+                                nebenbedingungenTable.querySelector('tbody').appendChild(neueZeile);
+                            } else if (nebenbedingungCount = maxNebenbedingungen) {
+                                nebenbedingungCount++;
+                                const neueZeile = document.createElement('tr');
+                                neueZeile.innerHTML = `
+                                    <td><label for="nebenbedingung${nebenbedingungCount}">Nebenbedingung ${nebenbedingungCount}</label></td>
+                                    <td><input type="text" id="nebenbedingung${nebenbedingungCount}"></td>
+                                `;
+                                nebenbedingungenTable.querySelector('tbody').appendChild(neueZeile);
+                                btnZeichne.disabled = true;
+                            }
+                        });
+                    });
+                </script>
+                <div class="controls">
+                    <div style="margin:auto; display:flex">
+                        <button id="skip-back">
+                            <i class="fas fa-backward"></i>
+                        </button>
+                        <button id="btnStart" style="margin-inline: 20px;">
+                            <i class="fas fa-play" id="play-icon"></i>
+                            <i class="fas fa-pause" id="pause-icon" style="display: none;"></i>
+                        </button>
+                        <button id="skip-forward">
+                            <i class="fas fa-forward"></i>
+                        </button>
+                    </div>
+                </div>
+                <br>
+                <!-- <input type="checkbox" style="margin-top: 10px;" id="myCheckbox" class="form-check-input"> <label
+                    id="checkboxLabel" for="myCheckbox">Binäres Problem</label> -->
+            </div>
+            <div>
+                <div style="display: flex; align-items: center; justify-content: center;">
+                    <span class="badge rounded-pill bg-primary">Gültige Lösung</span>
+                    <span class="badge rounded-pill bg-danger">Ungültige Lösung</span>
+                    <!--  <span class="badge rounded-pill bg-warning text-dark">Momentan beste Lösung</span>-->
+                    <span class="badge rounded-pill bg-dark">Verworfener Teilbaum</span>
+                </div>
+                <div id="ggb-element"
+                    style="flex: 1; text-align: center; margin: auto; height:600px; width:600px; border:1px solid black">
+                </div>
+                <br>
+            </div>
+            <div style="flex: 1; text-align: center; margin-left:30px">
+                <button id="branchButton" class="btn btn-secondary">Baum
+                    erstellen</button><br>
+                <table style="margin: auto;" class="table table-hover" id="nebenbedingungen">
+                    <tbody>
+                        <tr>
+                            <td><label for="funktion">Obere Schranke</label></td>
+                            <td><label id="obereSchranke"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="untereGrenze">Untere Schranke</label></td>
+                            <td><label id="untereSchranke"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="obereGrenze">Momentan beste Lösung</label></td>
+                            <td><label id="momentanesErgebnis"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="obereGrenze">Ergebnis</label></td>
+                            <td><label id="optimalesErgebnis"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="obereGrenze">Anzahl weiterer möglicher Lösungen</label></td>
+                            <td><label id="anzahlLoesungen"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="obereGrenze">Anzahl verworfener Teilbäume</label></td>
+                            <td><label id="prunedTrees"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div id="resultContainer"></div><br>
+            </div>
+        </div>
+        <div id="diagramm" style="width:1400px;height:400px;display:none"></div>
+    </div>
+    <script src="./script.js"></script>
+</body>
+
+</html>
