@@ -1,10 +1,12 @@
 class BranchAndBound {
-    constructor(objectiveCoefficients, constraintsCoefficients, constraintsBounds, fx) {
+    constructor(variables, objectiveCoefficients, constraintsCoefficients, constraintsBounds, constraintTypes, fx) {
         this.bestSolution = null;
+        this.variables = variables;
         this.bestObjectiveValue = -Infinity;
         this.objectiveCoefficients = objectiveCoefficients;
         this.constraintsCoefficients = constraintsCoefficients;
         this.constraintsBounds = constraintsBounds;
+        this.constraintTypes = constraintTypes;
         this.numVariables = objectiveCoefficients.length;
         this.initialBounds = this.computeInitialBounds();
         this.nodes = new vis.DataSet([{ id: 1, label: `Max ` + fx, title: 'Startpunkt' }]);
@@ -19,8 +21,12 @@ class BranchAndBound {
         this.maxIterations = 100;
         this.createTree();
         this.network;
-        this.bestNodeId = 0;
+        this.bestNodeId = null;
         this.history=[];
+    }
+
+    resetTree(){
+        this.network.setData({ nodes: [], edges: [] });
     }
 
     computeInitialBounds() {
@@ -54,18 +60,47 @@ class BranchAndBound {
     }
 
     satisfiesConstraints(solution) {
-        console.log(solution)
+        console.log(solution);
         const allSatisfied = this.constraintsCoefficients.every((coeffs, index) => {
-
+            // Berechne den linken Wert der Ungleichung (lhs)
             const lhs = coeffs.reduce((sum, coeff, varIndex) =>
                 sum + coeff * solution[varIndex], 0);
-            const satisfied = lhs <= this.constraintsBounds[index];
-            console.log(`Constraint ${index}: ${lhs} <= ${this.constraintsBounds[index]} -> ${satisfied}`);
+            
+            // Hole den rechten Wert (constraint bound) und den Typ der Ungleichung
+            const rhs = this.constraintsBounds[index];
+            const constraintType = this.constraintTypes[index];
+            
+            // Überprüfe basierend auf dem constraintType
+            let satisfied;
+            switch (constraintType) {
+                case '<':
+                    satisfied = lhs < rhs;
+                    break;
+                case '<=':
+                    satisfied = lhs <= rhs;
+                    break;
+                case '>':
+                    satisfied = lhs > rhs;
+                    break;
+                case '>=':
+                    satisfied = lhs >= rhs;
+                    break;
+                case '=':
+                    satisfied = lhs === rhs;
+                    break;
+                default:
+                    console.error(`Unbekannter Constraint-Typ: ${constraintType}`);
+                    satisfied = false;
+            }
+    
+            console.log(`Constraint ${index}: ${lhs} ${constraintType} ${rhs} -> ${satisfied}`);
             return satisfied;
         });
-        console.log("AllSatisfied: " + allSatisfied)
+    
+        console.log("AllSatisfied: " + allSatisfied);
         return allSatisfied;
     }
+    
 
     iterate() {
 
@@ -74,6 +109,21 @@ class BranchAndBound {
                 animation: {
                     duration: 1000,
                     easingFunction: "easeInOutQuad"
+                }
+            });
+            this.nodes.update({
+                id: this.bestNodeId,
+                color: {
+                    background: '#c5e4d1',
+                    border: '#198754',
+                    highlight: {
+                        background: '#c5e4d1',
+                        border: '#198754'
+                    },
+                    hover: {
+                        background: '#c5e4d1',
+                        border: '#198754'
+                    }
                 }
             });
             return true;
@@ -86,7 +136,9 @@ class BranchAndBound {
         console.log("Parent: " + node.parentId)
         if (currentNode && currentNode.color && currentNode.color.background === '#4d4848') {
             console.log(`Abbrechen: Parent Node ${node.parentId} ist schwarz.`);
-            return "pruned"; // Funktion beenden, wenn die Parent-Node schwarz ist
+
+            this.iterate() // Funktion beenden, wenn die Parent-Node schwarz ist
+            return;
         }
         this.history.push({
             stack: [...this.stack], 
@@ -95,7 +147,7 @@ class BranchAndBound {
 
         const midpoint = bounds.map(([low, high]) => Math.floor((low + high) / 2));
         const nodeId = this.nodeIdCounter++;
-        const label = midpoint.map((value, index) => `x${index + 1} = ${value}`).join(', ');
+        const label = midpoint.map((value, index) => `${this.variables[index]} = ${value}`).join(', ');
         const keyValuePairs = midpoint.map((value) => [value]);
         this.nodes.add({ id: nodeId, label: label, title: label });
         let edgeOptions = { from: node.parentId, to: nodeId };
@@ -121,6 +173,42 @@ class BranchAndBound {
                 }
             });*/
             console.log(`Iteration ${this.iterations + 1}: Current best solution: ${JSON.stringify(this.bestSolution)}, Objective: ${this.bestObjectiveValue}`);
+              // Wenn es eine vorherige beste Node gibt, färbe sie blau
+        if (this.bestNodeId !== null && this.bestNodeId !== nodeId) {
+            this.nodes.update({
+                id: this.bestNodeId,
+                color: {
+                    background: '#97c2fc',
+                    border: '#2b7ce9',
+                    highlight: {
+                        background: '#97c2fc',
+                        border: '#2b7ce9'
+                    },
+                    hover: {
+                        background: '#97c2fc',
+                        border: '#2b7ce9'
+                    }
+                }
+            });
+        }
+
+        // Aktuelle beste Node grün färben
+        this.nodes.update({
+            id: nodeId,
+            color: {
+                background: '#c5e4d1',
+                border: '#198754',
+                highlight: {
+                    background: '#c5e4d1',
+                    border: '#198754'
+                },
+                hover: {
+                    background: '#c5e4d1',
+                    border: '#198754'
+                }
+            }
+        });
+            this.bestNodeId = nodeId;
         } else if (upperBound <= this.bestObjectiveValue) {
             edgeOptions.color = { color: 'black' };
             edgeOptions.dashes = true;
@@ -350,6 +438,80 @@ function parseConstraint(input) {
     return { coefficients: filledCoefficients, variables: allVariables, bound };
 }
 
+function extractVariablesAndCoefficients(objectiveFunction, constraints) {
+    function parseCoefficient(coefficientStr) {
+        // Erkenne und verarbeite Brüche wie '4/5'
+        if (coefficientStr.includes('/')) {
+            const [numerator, denominator] = coefficientStr.split('/').map(Number);
+            return numerator / denominator;
+        }
+        return parseFloat(coefficientStr) || (coefficientStr === '-' ? -1 : 1);
+    }
+
+    function extractFromExpression(expression) {
+        // Erweitere den regulären Ausdruck, um auch '*' zu berücksichtigen
+        const regex = /([+-]?\d*\.?\d*\/?\d*\.?\d*)\*?([a-zA-Z]+)/g;
+        let match;
+        const variableMap = new Map();
+
+        while ((match = regex.exec(expression)) !== null) {
+            const coefficient = parseCoefficient(match[1]);
+            const variable = match[2];
+            variableMap.set(variable, coefficient);
+        }
+
+        return variableMap;
+    }
+
+    // Sammle alle Variablennamen
+    const allKeys = new Set();
+
+    // Extrahiere Variablen und Koeffizienten aus der Zielfunktion
+    const objectiveFunctionMap = extractFromExpression(objectiveFunction);
+    objectiveFunctionMap.forEach((_, key) => allKeys.add(key));  // Alle Variablen aus der Zielfunktion sammeln
+
+    // Arrays für Zielfunktion (Variablen und Koeffizienten)
+    const sortedKeys = Array.from(allKeys).sort();
+    const objectiveValues = sortedKeys.map(key => objectiveFunctionMap.get(key) || 0);  // Fehlende Werte = 0
+
+    // Arrays für Constraints
+    const constraintTypes = [];
+    const constraintCoefficients = [];
+    const constraintBounds = [];
+
+    constraints.forEach((constraint, index) => {
+        // Extrahiere die Art der Ungleichung und den rechten Wert
+        const match = constraint.match(/^(.*?)(<=|>=|=|<|>)(.*)$/);
+        if (match) {
+            const [_, lhs, inequality, rhs] = match;
+            const constraintMap = extractFromExpression(lhs.trim());
+            
+            // Füge die Variablen aus dem Constraint hinzu
+            constraintMap.forEach((_, key) => allKeys.add(key));
+            
+            // Speichere die Ungleichungsart und den Grenzwert
+            constraintTypes.push(inequality);
+            constraintBounds.push(parseFloat(rhs.trim()));
+
+            // Berechne die Koeffizienten für jede Variable in sortedKeys
+            const coeffArray = sortedKeys.map(key => constraintMap.get(key) || 0);
+            constraintCoefficients.push(coeffArray);
+        } else {
+            console.error(`Constraint ${index + 1} could not be parsed: ${constraint}`);
+        }
+    });
+
+    // Rückgabe der Arrays
+    return {
+        variables: sortedKeys,
+        objectiveCoefficients: objectiveValues,
+        constraintTypes: constraintTypes,
+        constraintCoefficients: constraintCoefficients,
+        constraintBounds: constraintBounds
+    };
+}
+
+
 document.addEventListener('DOMContentLoaded', function () {
     const btnStart = document.getElementById('branchButton');
     const skipForwardButton = document.getElementById('skip-forward');
@@ -368,18 +530,14 @@ document.addEventListener('DOMContentLoaded', function () {
     function getInputs() {
         funktion = document.getElementById('funktion').value.trim().replace(/\s+/g, '');
         funktion = funktion.replace(',', '.');
-        var parsedFunction = parseObjectiveFunction(funktion);
-        coefficients = parsedFunction.coefficients;
-        allVariables = parsedFunction.variables;
-        console.log("Alle Variablen in der Funktion: " + allVariables)
+        var parsedFunction = Algebrite.run(`simplify(${funktion})`);
         for (let i = 1; i <= conditionCount; i++) {
             const input = document.getElementById('nebenbedingung' + i);
             if (input && input.value) {
                 nebenbedingungen.push(input.value);
-                constraintsCoefficients.push(parseConstraint(input.value).coefficients)
-                constraintsBounds.push(parseConstraint(input.value).bound)
             }
         }
+        return extractVariablesAndCoefficients(parsedFunction, nebenbedingungen);
     }
 
     btnStart.addEventListener('click', function () {
@@ -398,10 +556,12 @@ document.addEventListener('DOMContentLoaded', function () {
         if (bbSolver) {
             bbSolver.iterate();
             updateResults(bbSolver);
+            stopFunction = true;
+            playIcon.style.display = 'block';
+            pauseIcon.style.display = 'none';
         } else {
-            getInputs()
-            erstelleAbweichungsdiagramm()
-            bbSolver = new BranchAndBound(coefficients, constraintsCoefficients, constraintsBounds, funktion);
+            var extractedInputs = getInputs()
+            bbSolver = new BranchAndBound( extractedInputs.variables,extractedInputs.objectiveCoefficients, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes, funktion);
             bbSolver.iterate();
             updateResults(bbSolver);
         }
@@ -420,9 +580,8 @@ document.addEventListener('DOMContentLoaded', function () {
             stopFunction = false;
         }
         if (!bbSolver) {
-            getInputs()
-            erstelleAbweichungsdiagramm()
-            bbSolver = new BranchAndBound(coefficients, constraintsCoefficients, constraintsBounds, funktion);
+            var extractedInputs = getInputs()
+            bbSolver = new BranchAndBound( extractedInputs.variables,extractedInputs.objectiveCoefficients, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes, funktion);
         }
         var i = 0;
         while (i < 100) {
@@ -433,22 +592,22 @@ document.addEventListener('DOMContentLoaded', function () {
             var end = bbSolver.iterate();
             updateResults(bbSolver);
             if (end == true) {
+                playIcon.style.display = 'block';
+                pauseIcon.style.display = 'none';
                 break;
             }
             if (end != "pruned") await new Promise(resolve => setTimeout(resolve, 1000));
-
         }
     });
 
+    let allNodes = bbSolver.nodes.get();
     skipBackwardButton.addEventListener('click', function () {
-
-        let allNodes = bbSolver.nodes.get();
-
+    
         // Letzte Node und Edge erhalten
         let lastNode = allNodes[allNodes.length - 1];
         let lastNodeId = lastNode.id;
         if (lastNodeId <= 1) {
-            return;
+            return; // Keine Nodes zu entfernen, wenn nur der Startpunkt vorhanden ist
         }
     
         let allEdges = bbSolver.edges.getIds();
@@ -463,14 +622,31 @@ document.addEventListener('DOMContentLoaded', function () {
         bbSolver.nodeIdCounter--;
         bbSolver.nodes.remove(lastNodeId);
         bbSolver.edges.remove(lastEdgeId);
-        console.log(bbSolver.stack)
+    
+        // Historie zurücksetzen
         var historyStack = bbSolver.history.pop();
         bbSolver.stack = historyStack.stack;
-        console.log(bbSolver.stack)
-        bbSolver.stack.push(historyStack.node)
-        console.log(bbSolver.stack)
-
-        bbSolver.network.focus(lastNodeId-1, {
+        bbSolver.stack.push(historyStack.node);
+    
+        // Überprüfen, ob die entfernte Node die beste Node war und ggf. die beste Lösung zurücksetzen
+        if (bbSolver.bestNodeId === lastNodeId) {
+            bbSolver.bestNodeId = null;
+            bbSolver.bestSolution = null;
+            bbSolver.bestObjectiveValue = -Infinity;
+    
+            // Die beste Lösung in der verbleibenden Node-Kollektion neu berechnen
+            bbSolver.nodes.get().forEach(node => {
+                const midpoint = bbSolver.parseLabelToMidpoint(node.label);
+                const objectiveValue = bbSolver.evaluateObjective(midpoint);
+                if (objectiveValue > bbSolver.bestObjectiveValue) {
+                    bbSolver.bestObjectiveValue = objectiveValue;
+                    bbSolver.bestSolution = midpoint;
+                    bbSolver.bestNodeId = node.id;
+                }
+            });
+        }
+    
+        bbSolver.network.focus(bbSolver.stack[bbSolver.stack.length - 1].parentId, {
             scale: 1.5,
             animation: {
                 duration: 1000,
@@ -480,7 +656,6 @@ document.addEventListener('DOMContentLoaded', function () {
     
         updateResults(bbSolver);
     });
-
     
 
     function updateResults(bbSolver) {
@@ -586,8 +761,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
         document.getElementById('diagramm').style.display = "inline";
     }
-
     window.addEventListener('blur', () => {
+        playIcon.style.display = 'block';
+        pauseIcon.style.display = 'none';
         stopFunction = true;
+        
     });
 });

@@ -132,7 +132,7 @@ background-color: #D4D4D4;
     border: 1px solid #888;
     max-width: 1000px; 
   }
-  
+  /*
   .close {
     color: #aaa;
     font-size: 28px;
@@ -148,7 +148,7 @@ background-color: #D4D4D4;
     color: red;
     text-decoration: none;
     cursor: pointer;
-  }
+  }*/
   
   .content{
     margin-inline: 50px;
@@ -240,7 +240,7 @@ input[type=number] {
   overflow-x: auto;
   overflow-y: hidden;
 }
-
+/*
 
 body::-webkit-scrollbar,
 .content .MathJax::-webkit-scrollbar {
@@ -265,7 +265,7 @@ body::-webkit-scrollbar-thumb,
 body::-webkit-scrollbar-button,
 .content .MathJax::-webkit-scrollbar-button {
   display: none;
-}
+}*/
 
 .containerIntegration {
   display: flex;
@@ -308,3 +308,8 @@ body::-webkit-scrollbar-button,
 .controls button:hover {
   background-color: lightgrey;
 }
+
+.modal-content{
+overflow-y:auto;
+}
+
