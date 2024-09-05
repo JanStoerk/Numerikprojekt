@@ -15,6 +15,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.4.4/math.min.js"></script>
     <script src="https://cdn.plot.ly/plotly-2.12.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/algebrite@1.4.0/dist/algebrite.bundle-for-browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.14/all.min.js"></script>
 
 
     <meta charset="UTF-8">
@@ -108,34 +110,6 @@
                 <br>
                 <button id="btnZeichne" class="btn btn-secondary">Nebenbedingung hinzufügen</button> <br><br>
                 <script>
-
-                    document.addEventListener('DOMContentLoaded', function () {
-                        const maxNebenbedingungen = 9;
-                        const nebenbedingungenTable = document.getElementById('nebenbedingungen');
-                        const btnZeichne = document.getElementById('btnZeichne');
-                        let nebenbedingungCount = 2;
-
-                        btnZeichne.addEventListener('click', function () {
-                            if (nebenbedingungCount < maxNebenbedingungen) {
-                                nebenbedingungCount++;
-                                const neueZeile = document.createElement('tr');
-                                neueZeile.innerHTML = `
-                                    <td><label for="nebenbedingung${nebenbedingungCount}">Nebenbedingung ${nebenbedingungCount}</label></td>
-                                    <td><input type="text" id="nebenbedingung${nebenbedingungCount}"></td>
-                                `;
-                                nebenbedingungenTable.querySelector('tbody').appendChild(neueZeile);
-                            } else if (nebenbedingungCount = maxNebenbedingungen) {
-                                nebenbedingungCount++;
-                                const neueZeile = document.createElement('tr');
-                                neueZeile.innerHTML = `
-                                    <td><label for="nebenbedingung${nebenbedingungCount}">Nebenbedingung ${nebenbedingungCount}</label></td>
-                                    <td><input type="text" id="nebenbedingung${nebenbedingungCount}"></td>
-                                `;
-                                nebenbedingungenTable.querySelector('tbody').appendChild(neueZeile);
-                                btnZeichne.disabled = true;
-                            }
-                        });
-                    });
                 </script>
                 <div class="controls">
                     <div style="margin:auto; display:flex">
@@ -157,6 +131,7 @@
             </div>
             <div>
                 <div style="display: flex; align-items: center; justify-content: center;">
+                    <span class="badge rounded-pill bg-success">Beste Lösung</span>
                     <span class="badge rounded-pill bg-primary">Gültige Lösung</span>
                     <span class="badge rounded-pill bg-danger">Ungültige Lösung</span>
                     <!--  <span class="badge rounded-pill bg-warning text-dark">Momentan beste Lösung</span>-->

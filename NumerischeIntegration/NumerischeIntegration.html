@@ -35,20 +35,75 @@
             <img src="../pictures/guide.png" style="width:30px" alt="Guide">
             <h4>Guide</h4>
         </button>
-        <div id="myModal" class="modal">
-            <div class="modal-content">
-                <span class="close" onclick="closePopup()">&times;</span>
-                <p>Test
-                </p>
-            </div>
+     <!-- Modal -->
+  <div id="myModal" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header d-flex">
+          <img src="../pictures/infinite.png" style="width:50px; height:30px;" alt="Numerik">
+          <div>
+                <h5 class="modal-title" id="exampleModalLabel">Inhaltsverzeichnis</h5>
+           
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
+        <div class="modal-body">
+          <!-- Inhaltsverzeichnis -->
+          <ul id="toc" class="list-group">
+            <li class="list-group-item">
+              <a href="#" onclick="scrollToSection('section1')">1. Beschreibung des numerischen Verfahrens</a>
+              <ul class="list-group mt-2">
+                <li class="list-group-item"><a href="#" onclick="scrollToSection('subsection1a')">a. Einschränkungen</a></li>
+                <li class="list-group-item"><a href="#" onclick="scrollToSection('subsection1b')">b. …</a></li>
+              </ul>
+            </li>
+            <li class="list-group-item"><a href="#" onclick="scrollToSection('section2')">2. Bedienungsanleitung</a></li>
+            <li class="list-group-item"><a href="#" onclick="scrollToSection('section3')">3. Handlungsempfehlungen</a></li>
+            <li class="list-group-item"><a href="#" onclick="scrollToSection('section4')">4. Quellen</a></li>
+          </ul>
+          <!-- Abschnitte im Modal -->
+          <div id="section1" class="section">
+            <h2>Beschreibung des numerischen Verfahrens</h2>
+            <p>Inhalt zur Beschreibung des numerischen Verfahrens...</p>
+          </div>
+          <div id="subsection1a" class="section">
+            <h3>Einschränkungen</h3>
+            <p>Inhalt zu den Einschränkungen...</p>
+          </div>
+          <div id="subsection1b" class="section">
+            <h3>…</h3>
+            <p>Weitere Inhalte...</p>
+          </div>
+          <div id="section2" class="section">
+            <h2>Bedienungsanleitung</h2>
+            <p>Inhalt zur Bedienungsanleitung...</p>
+          </div>
+          <div id="section3" class="section">
+            <h2>Handlungsempfehlungen</h2>
+            <p>Inhalt zu den Handlungsempfehlungen...</p>
+          </div>
+          <div id="section4" class="section">
+            <h2>Quellen</h2>
+            <p>Inhalt zu den Quellen...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+        
     </header>
     <script>
-        function showGuide() {
-            var modal = document.getElementById("myModal");
-            modal.style.display = "block";
-            document.addEventListener("keydown", closeOnEscape);
-        }
+          function showGuide() {
+      var myModal = new bootstrap.Modal(document.getElementById('myModal'));
+      myModal.show();
+    }
+
+    function scrollToSection(sectionId) {
+      const section = document.getElementById(sectionId);
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
 
         function closePopup() {
             var modal = document.getElementById("myModal");
@@ -67,7 +122,8 @@
             <div class="headerIntegration">
                 <h4 id="integration-method"><b>Numerische Integration: Trapezregel</b></h4>
                 <button class="fa fa-info-circle" onclick="showGuide()"
-                    style="font-size:24px; margin-left: 10px; color:grey; border:0; background-color: transparent;"></button>
+                style="font-size:24px; margin-left: 10px; color:grey; border:0; background-color: transparent;">
+        </button>
             </div>
             <div class="radio-buttons">
                 <input class="form-check-input" type="radio" id="trapez" name="integration-method" value="Trapezregel"

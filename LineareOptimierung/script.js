@@ -1,13 +1,13 @@
 class BranchAndBound {
-    constructor(objectiveCoefficients, constraintsCoefficients, constraintsBounds, fx) {
+    constructor(coefficents, constraints, funktion) {
+        this.coefficents = coefficents;
+        this.constraints = constraints;
+        this.numVariables = Object.keys(coefficents).length;
+
         this.bestSolution = null;
         this.bestObjectiveValue = -Infinity;
-        this.objectiveCoefficients = objectiveCoefficients;
-        this.constraintsCoefficients = constraintsCoefficients;
-        this.constraintsBounds = constraintsBounds;
-        this.numVariables = objectiveCoefficients.length;
         this.initialBounds = this.computeInitialBounds();
-        this.nodes = new vis.DataSet([{ id: 1, label: `Max ` + fx, title: 'Startpunkt' }]);
+        this.nodes = new vis.DataSet([{ id: 1, label: `Max ` + funktion, title: 'Startpunkt' }]);
         this.edges = new vis.DataSet([]);
         this.nodeIdCounter = 2;
         this.lowerBound = Infinity;
@@ -16,35 +16,137 @@ class BranchAndBound {
         this.prunedTreeCount = 0;
         this.stack = [{ bounds: this.initialBounds, path: 'start', parentId: 1 }];
         this.iterations = 0;
-        this.maxIterations = 100;
+        this.maxIterations = 500;
         this.createTree();
         this.network;
         this.bestNodeId = 0;
-        this.history=[];
+        this.history = [];
     }
 
     computeInitialBounds() {
-        let bounds = Array(this.numVariables).fill(null).map(() => [0, Infinity]);
-        this.constraintsCoefficients.forEach((constraint, constraintIndex) => {
-            constraint.forEach((coeff, varIndex) => {
-                if (coeff > 0 && varIndex < this.numVariables) {
-                    const maxVal = Math.floor(this.constraintsBounds[constraintIndex] / coeff);
-                    bounds[varIndex][1] = Math.min(bounds[varIndex][1], maxVal);
+        // Bestimme die Namen der Variablen
+        const variableNames = Array.from(new Set(
+            this.constraints.flatMap(constraint => Object.keys(constraint).filter(key => key !== 'rhs' && key !== 'inequality'))
+        ));
+    
+        // Berechne die Schranken basierend auf den Constraints
+        const bounds = this.calculateBoundsFromConstraints(this.constraints, variableNames);
+    
+        // Stelle sicher, dass die Obergrenzen unendlich bleiben, falls nicht durch andere Bedingungen begrenzt
+        return bounds.map(bound => [bound[0], isFinite(bound[1]) ? bound[1] : Infinity]);
+    }
+    
+
+    evaluateObjective(keyValuePairs) {
+        let objectiveValue = 0;
+    
+        // Debugging-Ausgabe für keyValuePairs
+        console.log('Key Value Pairs:', keyValuePairs);
+    
+        for (const [variable, coeff] of Object.entries(this.coefficents)) {
+            // Finde das passende Pair für die aktuelle Variable
+            const pair = keyValuePairs.find(pair => pair.variable === variable);
+    
+            // Debugging-Ausgabe für das gefundene Pair
+            console.log(`Variable: ${variable}, Coefficient: ${coeff}`);
+            console.log('Found pair:', pair);
+    
+            // Setze den Wert auf 0, wenn kein passendes Paar gefunden wurde
+            const value = pair ? pair.value : 0;
+    
+            // Debugging-Ausgabe für den Wert
+            console.log(`Value for ${variable}: ${value}`);
+    
+            objectiveValue += coeff * value;
+        }
+    
+        console.log(`Objective Value: ${objectiveValue}`);
+        return objectiveValue;
+    }
+    
+    
+    
+
+
+    calculateBoundsFromConstraints(constraints, variableNames) {
+        // Initialisiere die Schranken für jede Variable
+        let bounds = Array(variableNames.length).fill(null).map(() => [0, Infinity]);
+    
+        // Erstelle eine Zuordnung von Variablennamen zu Indexen
+        const variableIndexMap = variableNames.reduce((map, name, index) => {
+            map[name] = index;
+            return map;
+        }, {});
+    
+        // Verarbeite jede Constraint
+        constraints.forEach(constraint => {
+            const { rhs, inequality, ...coefficients } = constraint;
+    
+            // Verarbeite jede Variable in der aktuellen Constraint
+            for (const [varName, coeff] of Object.entries(coefficients)) {
+                const varIndex = variableIndexMap[varName];
+    
+                if (varIndex !== undefined) {
+                    if (coeff > 0) {
+                        // Berechne die maximale Grenze
+                        const maxVal = Math.floor(rhs / coeff);
+                        bounds[varIndex][1] = Math.min(bounds[varIndex][1], maxVal);
+                    } else if (coeff < 0) {
+                        // Berechne die minimale Grenze
+                        const minVal = Math.ceil(rhs / coeff);
+                        bounds[varIndex][0] = Math.max(bounds[varIndex][0], minVal);
+                    }
                 }
-            });
+            }
+    
+            // Behandle die Ungleichungsart
+            switch (inequality) {
+                case '=':
+                    variableNames.forEach((_, varIndex) => {
+                        if (bounds[varIndex][0] < rhs) {
+                            bounds[varIndex][1] = bounds[varIndex][0] = Math.min(bounds[varIndex][1], rhs);
+                        }
+                    });
+                    break;
+                case '>=':
+                    variableNames.forEach((_, varIndex) => {
+                        if (bounds[varIndex][0] < rhs) {
+                            bounds[varIndex][0] = rhs;
+                        }
+                    });
+                    break;
+                case '<=':
+                    // Bei <=-Ungleichungen haben wir bereits die Obergrenze verarbeitet
+                    break;
+                default:
+                    throw new Error(`Unbekannter Ungleichungstyp: ${inequality}`);
+            }
         });
-        return bounds.map(bound => [bound[0], isFinite(bound[1]) ? bound[1] : Math.floor(10 * this.objectiveCoefficients[bounds.length - 1])]);
+    
+        return bounds;
     }
 
-    evaluateObjective(solution) {
-        return this.objectiveCoefficients.reduce((sum, coeff, index) => sum + coeff * solution[index], 0);
-    }
-
-
-    calculateUpperBound(bounds) {
-        const upperBound = bounds.reduce((sum, [low, high], index) => sum + high * this.objectiveCoefficients[index], 0);
+    calculateUpperBound() {
+        // Bestimme die Namen der Variablen
+        const variableNames = Array.from(new Set(
+            this.constraints.flatMap(constraint => Object.keys(constraint).filter(key => key !== 'rhs' && key !== 'inequality'))
+        ));
+    
+        // Berechne die Schranken basierend auf den Constraints
+        const bounds = this.calculateBoundsFromConstraints(this.constraints, variableNames);
+    
+        // Berechne die obere Schranke basierend auf den berechneten Grenzen und den Koeffizienten
+        const upperBound = bounds.reduce((sum, [low, high], index) => {
+            const varName = variableNames[index];
+            const coefficient = this.coefficents[varName] || 0; // Koeffizienten aus this.coefficents abrufen
+            return sum + high * coefficient;
+        }, 0);
+    
         return upperBound;
     }
+    
+    
+    
 
 
     solve(maxIterations) {
@@ -53,22 +155,62 @@ class BranchAndBound {
         }
     }
 
-    satisfiesConstraints(solution) {
-        console.log(solution)
-        const allSatisfied = this.constraintsCoefficients.every((coeffs, index) => {
-
-            const lhs = coeffs.reduce((sum, coeff, varIndex) =>
-                sum + coeff * solution[varIndex], 0);
-            const satisfied = lhs <= this.constraintsBounds[index];
-            console.log(`Constraint ${index}: ${lhs} <= ${this.constraintsBounds[index]} -> ${satisfied}`);
-            return satisfied;
-        });
-        console.log("AllSatisfied: " + allSatisfied)
-        return allSatisfied;
+    satisfiesConstraints(keyValuePairs) {
+        console.log(keyValuePairs);
+    
+        // Konvertiere keyValuePairs in ein Map für schnellen Zugriff
+        const valuesMap = new Map(keyValuePairs.map(pair => [pair.variable, pair.value]));
+    
+        for (let i = 0; i < this.constraints.length; i++) {
+            const constraint = this.constraints[i];
+            let lhs = 0;
+    
+            // Berechne den LHS der Bedingung
+            for (const [variable, coeff] of Object.entries(constraint)) {
+                if (variable !== 'rhs' && variable !== 'inequality') {
+                    const value = valuesMap.get(variable) || 0; // Hole den Wert der Variablen aus der Map
+                    lhs += coeff * value;
+                }
+            }
+    
+            // Hole den Typ der Bedingung und den Wert der rechten Seite (rhs)
+            const constraintType = constraint.inequality;
+            const bound = constraint.rhs;
+            let satisfied;
+    
+            // Überprüfe, ob die Bedingung erfüllt ist
+            switch (constraintType) {
+                case '<=':
+                    satisfied = lhs <= bound;
+                    break;
+                case '>=':
+                    satisfied = lhs >= bound;
+                    break;
+                case '<':
+                    satisfied = lhs < bound;
+                    break;
+                case '>':
+                    satisfied = lhs > bound;
+                    break;
+                default:
+                    throw new Error(`Unsupported constraint type: ${constraintType}`);
+            }
+    
+            // Falls eine Bedingung nicht erfüllt ist, kann die Funktion direkt false zurückgeben
+            if (!satisfied) {
+                return false;
+            }
+        }
+    
+        // Alle Bedingungen sind erfüllt
+        return true;
     }
+    
+
+
+
 
     iterate() {
-
         if (this.stack.length === 0 || this.iterations >= this.maxIterations) {
             this.network.fit({
                 animation: {
@@ -76,51 +218,65 @@ class BranchAndBound {
                     easingFunction: "easeInOutQuad"
                 }
             });
+            this.nodes.update({
+                id: this.bestNodeId,
+                color: {
+                    background: '#c5e4d1',
+                    border: '#198754',
+                    highlight: {
+                        background: '#c5e4d1',
+                        border: '#198754'
+                    },
+                    hover: {
+                        background: '#c5e4d1',
+                        border: '#198754'
+                    }
+                }
+            });
             return true;
         }
-
+    
         const node = this.stack.pop();
         const bounds = node.bounds;
-
+    
         const currentNode = this.nodes.get(node.parentId);
-        console.log("Parent: " + node.parentId)
         if (currentNode && currentNode.color && currentNode.color.background === '#4d4848') {
             console.log(`Abbrechen: Parent Node ${node.parentId} ist schwarz.`);
             return "pruned"; // Funktion beenden, wenn die Parent-Node schwarz ist
         }
         this.history.push({
-            stack: [...this.stack], 
+            stack: [...this.stack],
             node: node,
         });
-
+    
+        // Berechne den Mittelpunkt der Schranken
         const midpoint = bounds.map(([low, high]) => Math.floor((low + high) / 2));
+        
+        // Erstelle eine eindeutige ID für den neuen Knoten
         const nodeId = this.nodeIdCounter++;
-        const label = midpoint.map((value, index) => `x${index + 1} = ${value}`).join(', ');
-        const keyValuePairs = midpoint.map((value) => [value]);
+        
+        // Erstelle ein Label für den neuen Knoten
+        const variableNames = Object.keys(this.coefficents);
+        const label = midpoint.map((value, index) => `${variableNames[index]} = ${value}`).join(', ');
+    
+        // Erstelle keyValuePairs als Array von Objekten
+        const keyValuePairs = midpoint.map((value, index) => ({
+            variable: variableNames[index],
+            value: value
+        }));
+        console.log('Key Value Pairs 1:', keyValuePairs);
+    
+        // Füge den neuen Knoten zum Graphen hinzu
         this.nodes.add({ id: nodeId, label: label, title: label });
+        
+        // Erstelle die Kantenoptionen
         let edgeOptions = { from: node.parentId, to: nodeId };
-
+    
+        // Berechne den oberen Grenzwert
         var upperBound = this.calculateUpperBound(bounds);
         if (this.explore(midpoint)) {
-            /*edgeOptions.color = { color: '#948715' };
-            edgeOptions.color.highlight = '#948715';
-            edgeOptions.color.hover = '#948715';
-            this.nodes.update({
-                id: nodeId,
-                color: {
-                    background: '#c9bd4b',
-                    border: '#948715',
-                    highlight: {
-                        background: '#c9bd4b',
-                        border: '#948715'
-                    },
-                    hover: {
-                        background: '#c9bd4b',
-                        border: '#948715'
-                    }
-                }
-            });*/
             console.log(`Iteration ${this.iterations + 1}: Current best solution: ${JSON.stringify(this.bestSolution)}, Objective: ${this.bestObjectiveValue}`);
+            this.bestNodeId = nodeId;
         } else if (upperBound <= this.bestObjectiveValue) {
             edgeOptions.color = { color: 'black' };
             edgeOptions.dashes = true;
@@ -142,8 +298,7 @@ class BranchAndBound {
                 }
             });
             this.prunedTreeCount++;
-        }
-        else if (!this.satisfiesConstraints(keyValuePairs)) {
+        } else if (!this.satisfiesConstraints(keyValuePairs)) {
             edgeOptions.color = { color: 'red' };
             edgeOptions.color.highlight = 'red';
             edgeOptions.color.hover = 'red';
@@ -167,9 +322,9 @@ class BranchAndBound {
             edgeOptions.color.highlight = 'blue';
             edgeOptions.color.hover = 'blue';
         }
-
+    
         this.edges.add(edgeOptions);
-
+    
         this.network.focus(nodeId, {
             scale: 1.5,
             animation: {
@@ -177,28 +332,30 @@ class BranchAndBound {
                 easingFunction: "easeInOutQuad"
             }
         });
-
+    
+        // Teilen der Schranken für die nächste Iteration
         bounds.forEach((bound, index) => {
             const [low, high] = bound;
             const mid = midpoint[index];
-
+    
             if (low <= mid - 1) {
                 const newBounds = bounds.map((b, i) => i === index ? [low, mid - 1] : b);
-                this.stack.push({ bounds: newBounds, path: `${node.path} -> x${index + 1} <= ${mid - 1}`, parentId: nodeId });
+                this.stack.push({ bounds: newBounds, path: `${node.path} -> ${variableNames[index]} <= ${mid - 1}`, parentId: nodeId });
             }
-
+    
             if (mid + 1 <= high) {
                 const newBounds = bounds.map((b, i) => i === index ? [mid + 1, high] : b);
-                this.stack.push({ bounds: newBounds, path: `${node.path} -> x${index + 1} >= ${mid + 1}`, parentId: nodeId });
+                this.stack.push({ bounds: newBounds, path: `${node.path} -> ${variableNames[index]} >= ${mid + 1}`, parentId: nodeId });
             }
         });
-
+    
         this.iterations++;
-        this.lowerBound = Math.min(this.lowerBound, this.evaluateObjective(midpoint));
+        this.lowerBound = Math.min(this.lowerBound, this.evaluateObjective(keyValuePairs));
         this.possibleSolutions = this.stack.length;
-
+    
         this.globalUpperBound = Math.max(this.globalUpperBound, upperBound);
     }
+    
 
 
 
@@ -236,7 +393,7 @@ class BranchAndBound {
         });
 
         this.iterations++;
-        this.lowerBound = Math.min(this.lowerBound, this.evaluateObjective(midpoint));
+        this.lowerBound = Math.min(this.lowerBound, this.evaluateObjective(keyValuePairs));
         this.possibleSolutions = this.stack.length;
 
         this.globalUpperBound = Math.max(this.globalUpperBound, upperBound);
@@ -253,7 +410,7 @@ class BranchAndBound {
         }
         return false;
     }
-    
+
 
     createTree() {
         const container = document.getElementById('ggb-element');
@@ -309,10 +466,8 @@ class BranchAndBound {
 
         this.network = new vis.Network(container, data, options);
     }
-    
-}
 
-var allVariables = ['x', 'y'];
+}
 
 function parseObjectiveFunction(lhs) {
     const regex = /([+-]?\d*\.?\d*)([a-zA-Z]+)/g;
@@ -329,66 +484,141 @@ function parseObjectiveFunction(lhs) {
     return { coefficients, variables };
 }
 
+function extractVariablesAndCoefficients(objectiveFunction, constraints) {
+    function parseCoefficient(coefficientStr) {
+        // Erkenne und verarbeite Brüche wie '4/5'
+        if (coefficientStr.includes('/')) {
+            const [numerator, denominator] = coefficientStr.split('/').map(Number);
+            return numerator / denominator;
+        }
+        return parseFloat(coefficientStr) || (coefficientStr === '-' ? -1 : 1);
+    }
 
-function parseConstraint(input) {
+    function extractFromExpression(expression) {
+        // Erweitere den regulären Ausdruck, um auch '*' zu berücksichtigen
+        const regex = /([+-]?\d*\.?\d*\/?\d*\.?\d*)\*?([a-zA-Z]+)/g;
+        let match;
+        const variableMap = new Map();
 
-    input = input.replace(/\s+/g, '');
+        while ((match = regex.exec(expression)) !== null) {
+            const coefficient = parseCoefficient(match[1]);
+            const variable = match[2];
+            variableMap.set(variable, coefficient);
+        }
 
-    const [lhs, rhs] = input.split('<=');
-    const { coefficients, variables } = parseObjectiveFunction(lhs);
+        return variableMap;
+    }
 
-    const filledCoefficients = new Array(allVariables.length).fill(0);
+    // Extrahiere Variablen und Koeffizienten aus der Zielfunktion
+    const objectiveFunctionMap = extractFromExpression(objectiveFunction);
+    console.log("Objective Function Variables and Coefficients:");
+    console.log(Object.fromEntries(objectiveFunctionMap));
 
-    variables.forEach((variable, index) => {
-        const varIndex = allVariables.indexOf(variable);
-        if (varIndex !== -1) {
-            filledCoefficients[varIndex] = coefficients[index];
+    // Extrahiere Variablen, Koeffizienten und Ungleichungsart aus den Nebenbedingungen
+    var allConstraints = [];
+    constraints.forEach((constraint, index) => {
+        // Extrahiere die Art der Ungleichung und den rechten Wert
+        const match = constraint.match(/^(.*?)(<=|>=|=)(.*)$/);
+        if (match) {
+            const [_, lhs, inequality, rhs] = match;
+
+            const constraintMap = extractFromExpression(lhs.trim());
+
+            // Speichere den Grenzwert der Ungleichung in der Map
+            constraintMap.set('rhs', parseFloat(rhs.trim()));
+
+            // Füge die Ungleichungsart hinzu
+            constraintMap.set('inequality', inequality);
+
+            console.log(`Constraint ${index + 1} Variables, Coefficients, and Inequality Type:`);
+            console.log(Object.fromEntries(constraintMap));
+            allConstraints.push(Object.fromEntries(constraintMap))
+        } else {
+            console.error(`Constraint ${index + 1} could not be parsed: ${constraint}`);
         }
     });
-
-    const bound = parseFloat(rhs);
-    return { coefficients: filledCoefficients, variables: allVariables, bound };
+    return [Object.fromEntries(objectiveFunctionMap), allConstraints];
 }
-
 document.addEventListener('DOMContentLoaded', function () {
     const btnStart = document.getElementById('branchButton');
     const skipForwardButton = document.getElementById('skip-forward');
     const playButton = document.getElementById('btnStart');
     const skipBackwardButton = document.getElementById('skip-back');
     const addConditionBtn = document.getElementById('addConditionBtn');
-    let conditionCount = 3;
     let bbSolver = null;
     var nebenbedingungen = [];
-    var constraintsCoefficients = [];
-    var constraintsBounds = [];
-    var coefficients = []
     var funktion = "";
     let stopFunction = false;
+    const maxNebenbedingungen = 9;
+    const nebenbedingungenTable = document.getElementById('nebenbedingungen');
+    const btnZeichne = document.getElementById('btnZeichne');
+    let nebenbedingungCount = 2;
 
     function getInputs() {
         funktion = document.getElementById('funktion').value.trim().replace(/\s+/g, '');
         funktion = funktion.replace(',', '.');
-        var parsedFunction = parseObjectiveFunction(funktion);
-        coefficients = parsedFunction.coefficients;
-        allVariables = parsedFunction.variables;
-        console.log("Alle Variablen in der Funktion: " + allVariables)
-        for (let i = 1; i <= conditionCount; i++) {
+        const parsedFunc = Algebrite.run(`simplify(${funktion})`);
+        console.log(parsedFunc)
+        for (let i = 1; i <= nebenbedingungCount; i++) {
             const input = document.getElementById('nebenbedingung' + i);
             if (input && input.value) {
-                nebenbedingungen.push(input.value);
-                constraintsCoefficients.push(parseConstraint(input.value).coefficients)
-                constraintsBounds.push(parseConstraint(input.value).bound)
+                var parsedNebenbedingung =  simplifyInequality(input.value);
+                console.log(parsedNebenbedingung)
+                nebenbedingungen.push(parsedNebenbedingung);
             }
         }
+        return extractVariablesAndCoefficients(parsedFunc, nebenbedingungen);
     }
+
+    function simplifyInequality(ungleichung) {
+        // Zerlegen der Ungleichung in linke und rechte Seite und das Ungleichheitszeichen
+        let match = ungleichung.match(/(.*?)(<=|>=|<|>)(.*)/);
+        if (!match) {
+            throw new Error("Ungültige Ungleichung");
+        }
+    
+        let leftSide = match[1].trim();
+        let operator = match[2];
+        let rightSide = match[3].trim();
+    
+        // Beide Seiten vereinfachen
+        let simplifiedLeft = Algebrite.run(`simplify(${leftSide})`);
+        let simplifiedRight = Algebrite.run(`simplify(${rightSide})`);
+    
+        // Zusammenfügen der vereinfachten Seiten
+        let simplifiedInequality = `${simplifiedLeft} ${operator} ${simplifiedRight}`;
+        
+        return simplifiedInequality;
+    }
+
+    btnZeichne.addEventListener('click', function () {
+        if (nebenbedingungCount < maxNebenbedingungen) {
+            nebenbedingungCount++;
+            const neueZeile = document.createElement('tr');
+            neueZeile.innerHTML = `
+                <td><label for="nebenbedingung${nebenbedingungCount}">Nebenbedingung ${nebenbedingungCount}</label></td>
+                <td><input type="text" id="nebenbedingung${nebenbedingungCount}"></td>
+            `;
+            nebenbedingungenTable.querySelector('tbody').appendChild(neueZeile);
+        } else if (nebenbedingungCount = maxNebenbedingungen) {
+            nebenbedingungCount++;
+            const neueZeile = document.createElement('tr');
+            neueZeile.innerHTML = `
+                <td><label for="nebenbedingung${nebenbedingungCount}">Nebenbedingung ${nebenbedingungCount}</label></td>
+                <td><input type="text" id="nebenbedingung${nebenbedingungCount}"></td>
+            `;
+            nebenbedingungenTable.querySelector('tbody').appendChild(neueZeile);
+            btnZeichne.disabled = true;
+        }
+    });
 
     btnStart.addEventListener('click', function () {
 
         getInputs()
 
-        const maxIterations = 100;
+        const maxIterations = 500;
 
-        bbSolver = new BranchAndBound(coefficients, constraintsCoefficients, constraintsBounds, funktion);
+        bbSolver = new BranchAndBound(coefficients, constraintsCoefficients, constraintsBounds, constraintTypes, funktion);
         bbSolver.solve(maxIterations);
 
         updateResults(bbSolver);
@@ -399,9 +629,11 @@ document.addEventListener('DOMContentLoaded', function () {
             bbSolver.iterate();
             updateResults(bbSolver);
         } else {
-            getInputs()
-            erstelleAbweichungsdiagramm()
-            bbSolver = new BranchAndBound(coefficients, constraintsCoefficients, constraintsBounds, funktion);
+            var input = getInputs()
+            var coefficents = input[0]
+            var constraints = input[1]
+            console.log("Koeffizienten und Constraints vor der Baumerstellung: "+coefficents+ " : "+ constraints)
+            bbSolver = new BranchAndBound(coefficents, constraints, funktion);
             bbSolver.iterate();
             updateResults(bbSolver);
         }
@@ -422,10 +654,10 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!bbSolver) {
             getInputs()
             erstelleAbweichungsdiagramm()
-            bbSolver = new BranchAndBound(coefficients, constraintsCoefficients, constraintsBounds, funktion);
+            bbSolver = new BranchAndBound(coefficients, constraintsCoefficients, constraintsBounds, constraintTypes, funktion);
         }
         var i = 0;
-        while (i < 100) {
+        while (i < 500) {
             if (stopFunction) {
                 break;
             }
@@ -450,38 +682,35 @@ document.addEventListener('DOMContentLoaded', function () {
         if (lastNodeId <= 1) {
             return;
         }
-    
+
         let allEdges = bbSolver.edges.getIds();
         let lastEdgeId = allEdges[allEdges.length - 1];
-    
+
         // Letzte Node und Edge entfernen
         bbSolver.network.body.data.nodes.remove(lastNodeId);
         bbSolver.network.body.data.edges.remove(lastEdgeId);
-    
+
         // Node und Stack zurücksetzen
         bbSolver.iterations--;
         bbSolver.nodeIdCounter--;
         bbSolver.nodes.remove(lastNodeId);
         bbSolver.edges.remove(lastEdgeId);
-        console.log(bbSolver.stack)
         var historyStack = bbSolver.history.pop();
         bbSolver.stack = historyStack.stack;
-        console.log(bbSolver.stack)
         bbSolver.stack.push(historyStack.node)
-        console.log(bbSolver.stack)
 
-        bbSolver.network.focus(lastNodeId-1, {
+        bbSolver.network.focus(lastNodeId - 1, {
             scale: 1.5,
             animation: {
                 duration: 1000,
                 easingFunction: "easeInOutQuad"
             }
         });
-    
+
         updateResults(bbSolver);
     });
 
-    
+
 
     function updateResults(bbSolver) {
         const obereSchrankeInput = document.getElementById('obereSchranke');
@@ -499,13 +728,14 @@ document.addEventListener('DOMContentLoaded', function () {
         prunedTrees.innerHTML = bbSolver.prunedTreeCount;
     }
 
-    function erstelleAbweichungsdiagramm(){
-        if(document.getElementById('diagramm').style.display == "inline"){
+    function erstelleAbweichungsdiagramm() {
+        return;
+        if (document.getElementById('diagramm').style.display == "inline") {
             return;
         }
         var currentSolutions = [];
-        tempSolver = new BranchAndBound(coefficients, constraintsCoefficients, constraintsBounds, funktion);
-        for(var i=1; i<=100;i++){
+        tempSolver = new BranchAndBound(coefficients, constraintsCoefficients, constraintsBounds, constraintTypes, funktion);
+        for (var i = 1; i <= 100; i++) {
             var end = tempSolver.iterate()
             currentSolutions.push(tempSolver.bestObjectiveValue)
             if (end == true) {
@@ -516,9 +746,9 @@ document.addEventListener('DOMContentLoaded', function () {
         var numberOfIterations = currentSolutions.length;
         var fehlerWerte = [];
         var iterations = [];
-        for(var i=1;i<=numberOfIterations;i++){
+        for (var i = 1; i <= numberOfIterations; i++) {
             fehlerWerte.push(Math.abs(bestSolution - currentSolutions[i]))
-            iterations.push(i); 
+            iterations.push(i);
         }
         console.log(fehlerWerte)
 
