@@ -509,14 +509,12 @@ function extractVariablesAndCoefficients(objectiveFunction, constraints) {
     };
 }
 
-
 document.addEventListener('DOMContentLoaded', function () {
     const btnStart = document.getElementById('branchButton');
     const skipForwardButton = document.getElementById('skip-forward');
     const playButton = document.getElementById('btnStart');
     const skipBackwardButton = document.getElementById('skip-back');
     const addConditionBtn = document.getElementById('addConditionBtn');
-    let conditionCount = 3;
     let bbSolver = null;
     var nebenbedingungen = [];
     var constraintsCoefficients = [];
@@ -524,6 +522,31 @@ document.addEventListener('DOMContentLoaded', function () {
     var coefficients = []
     var funktion = "";
     let stopFunction = false;
+    const maxNebenbedingungen = 9;
+    const nebenbedingungenTable = document.getElementById('nebenbedingungen');
+    const btnZeichne = document.getElementById('btnZeichne');
+    let nebenbedingungCount = 2;
+
+    btnZeichne.addEventListener('click', function () {
+        if (nebenbedingungCount < maxNebenbedingungen) {
+            nebenbedingungCount++;
+            const neueZeile = document.createElement('tr');
+            neueZeile.innerHTML = `
+                <td><label for="nebenbedingung${nebenbedingungCount}">Nebenbedingung ${nebenbedingungCount}</label></td>
+                <td><input type="text" id="nebenbedingung${nebenbedingungCount}"></td>
+            `;
+            nebenbedingungenTable.querySelector('tbody').appendChild(neueZeile);
+        } else if (nebenbedingungCount = maxNebenbedingungen) {
+            nebenbedingungCount++;
+            const neueZeile = document.createElement('tr');
+            neueZeile.innerHTML = `
+                <td><label for="nebenbedingung${nebenbedingungCount}">Nebenbedingung ${nebenbedingungCount}</label></td>
+                <td><input type="text" id="nebenbedingung${nebenbedingungCount}"></td>
+            `;
+            nebenbedingungenTable.querySelector('tbody').appendChild(neueZeile);
+            btnZeichne.disabled = true;
+        }
+    });
 
     function checkInputs() {
         if (document.getElementById('funktion').value.trim().replace(/\s+/g, '')) {
@@ -541,7 +564,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var parsedFunction = Algebrite.run(`simplify(${funktion})`);
         const linearPattern = /^([+-]?\d*\/?\d*)x([+-][\d*\/?\d*y]*)$/;
 
-        for (let i = 1; i <= conditionCount; i++) {
+        for (let i = 1; i <= nebenbedingungCount; i++) {
             const input = document.getElementById('nebenbedingung' + i);
             if (input && input.value) {
                 nebenbedingungen.push(input.value);

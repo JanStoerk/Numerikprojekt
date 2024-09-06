@@ -162,36 +162,6 @@ Das bedeutet: Welche Lösung getestet wird, hängt von der Reihenfolge ab, in de
                 </table>
                 <br>
                 <button id="btnZeichne" class="btn btn-secondary">Nebenbedingung hinzufügen</button> <br><br>
-                <script>
-
-                    document.addEventListener('DOMContentLoaded', function () {
-                        const maxNebenbedingungen = 9;
-                        const nebenbedingungenTable = document.getElementById('nebenbedingungen');
-                        const btnZeichne = document.getElementById('btnZeichne');
-                        let nebenbedingungCount = 2;
-
-                        btnZeichne.addEventListener('click', function () {
-                            if (nebenbedingungCount < maxNebenbedingungen) {
-                                nebenbedingungCount++;
-                                const neueZeile = document.createElement('tr');
-                                neueZeile.innerHTML = `
-                                    <td><label for="nebenbedingung${nebenbedingungCount}">Nebenbedingung ${nebenbedingungCount}</label></td>
-                                    <td><input type="text" id="nebenbedingung${nebenbedingungCount}"></td>
-                                `;
-                                nebenbedingungenTable.querySelector('tbody').appendChild(neueZeile);
-                            } else if (nebenbedingungCount = maxNebenbedingungen) {
-                                nebenbedingungCount++;
-                                const neueZeile = document.createElement('tr');
-                                neueZeile.innerHTML = `
-                                    <td><label for="nebenbedingung${nebenbedingungCount}">Nebenbedingung ${nebenbedingungCount}</label></td>
-                                    <td><input type="text" id="nebenbedingung${nebenbedingungCount}"></td>
-                                `;
-                                nebenbedingungenTable.querySelector('tbody').appendChild(neueZeile);
-                                btnZeichne.disabled = true;
-                            }
-                        });
-                    });
-                </script>
                 <div class="controls">
                     <div style="margin:auto; display:flex">
                         <button id="skip-back">
