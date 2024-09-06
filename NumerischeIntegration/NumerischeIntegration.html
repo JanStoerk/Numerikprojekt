@@ -33,10 +33,31 @@
                 <h1>Numerik</h1>
             </a>
         </div>
-        <button class="guide" onclick="showGuide()">
+        <button class="guide" data-toggle="modal" data-target="#guideModal">
             <img src="../pictures/guide.png" style="width:30px" alt="Guide">
             <h4>Guide</h4>
         </button>
+        
+        <!-- Bootstrap Modal -->
+        <div class="modal fade" id="guideModal" tabindex="-1" role="dialog" aria-labelledby="guideModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl" style="margin-top:50px; height:600px;">
+                <div class="modal-content"style="margin-top:50px; height:600px;">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="guideModalLabel">Guide</h5>
+                        <button type="button" class="btn btn-light" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Inhalt des Modals hier einfügen -->
+                       Anleitung zur Verwendung der App
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="modal fade bd-example-modal-lg" id="myModal" tabindex="-1"aria-labelledby="exampleModalLabel"
             aria-hidden="true">
@@ -229,25 +250,6 @@
         </div>
 
     </header>
-    <script>
-        function showGuide() {
-            var modal = document.getElementById("myModal");
-            modal.style.display = "block";
-            document.addEventListener("keydown", closeOnEscape);
-        }
-
-        function closePopup() {
-            var modal = document.getElementById("myModal");
-            modal.style.display = "none";
-            document.removeEventListener("keydown", closeOnEscape);
-        }
-
-        function closeOnEscape(event) {
-            if (event.key === "Escape") {
-                closePopup();
-            }
-        }
-    </script>
     <div class="content">
         <div class="containerIntegration">
             <div class="headerIntegration">

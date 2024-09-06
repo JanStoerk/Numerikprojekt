@@ -138,25 +138,6 @@ Das bedeutet: Welche Lösung getestet wird, hängt von der Reihenfolge ab, in de
             </div>
         </div>
     </header>
-    <script>
-        function showGuide() {
-            var modal = document.getElementById("myModal");
-            modal.style.display = "block";
-            document.addEventListener("keydown", closeOnEscape);
-        }
-
-        function closePopup() {
-            var modal = document.getElementById("myModal");
-            modal.style.display = "none";
-            document.removeEventListener("keydown", closeOnEscape);
-        }
-
-        function closeOnEscape(event) {
-            if (event.key === "Escape") {
-                closePopup();
-            }
-        }
-    </script>
     <div class="content">
         <h4><b>Lineare Optimierung: Branch & Bound Verfahren</b><button class="fa fa-info-circle" onclick="showGuide()"
                 style="font-size:24px; margin-left: 10px; color:grey; border:0; background-color: transparent;"></button>
@@ -243,8 +224,8 @@ Das bedeutet: Welche Lösung getestet wird, hängt von der Reihenfolge ab, in de
                 <br>
             </div>
             <div style="flex: 1; text-align: center; margin-left:30px">
-                <button id="branchButton" class="btn btn-secondary">Baum
-                    erstellen</button><br>
+                <button id="branchButton" class="btn btn-secondary">Abweichungsdiagramm     
+                    erstellen</button><br><br>
                 <table style="margin: auto;" class="table table-hover" id="nebenbedingungen">
                     <tbody>
                         <tr>

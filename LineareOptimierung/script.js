@@ -18,11 +18,12 @@ class BranchAndBound {
         this.prunedTreeCount = 0;
         this.stack = [{ bounds: this.initialBounds, path: 'start', parentId: 1 }];
         this.iterations = 0;
-        this.maxIterations = 100;
+        this.maxIterations = 500;
         this.createTree();
         this.network;
         this.bestNodeId = null;
         this.history=[];
+        this.skipAnimation;
     }
 
     resetTree(){
@@ -54,9 +55,86 @@ class BranchAndBound {
 
 
     solve(maxIterations) {
-        while (this.stack.length > 0 && this.iterations < this.maxIterations) {
+        this.skipAnimation = true;
+        var currentSolutions =[];
+        while (this.stack.length > 0 && this.iterations < maxIterations) {
             this.iterate();
+            currentSolutions.push(this.bestObjectiveValue)
         }
+        var bestSolution = this.bestObjectiveValue;
+        var numberOfIterations = currentSolutions.length;
+        var fehlerWerte = [];
+        var iterations = [];
+        for(var i=0;i<=numberOfIterations;i++){
+            fehlerWerte.push(Math.abs(bestSolution - currentSolutions[i]))
+            iterations.push(i); 
+        }
+        console.log(fehlerWerte)
+
+        const trace = {
+            x: iterations,
+            y: fehlerWerte,
+            type: 'scatter',
+            mode: 'lines+markers',
+            name: 'Fehler'
+        };
+
+        const layout = {
+            title: "Abweichungsdiagramm",
+            xaxis: {
+                title: 'Iteration'
+            },
+            yaxis: {
+                title: 'Absoluter Fehler'
+            },
+            dragmode: 'pan'
+        };
+
+        const config = {
+            displaylogo: false,
+            modeBarButtonsToRemove: [
+                'zoom2d',
+                'pan2d',
+                'select2d',
+                'lasso2d',
+                'zoomIn2d',
+                'zoomOut2d',
+                'autoScale2d',
+                'hoverClosestCartesian',
+                'hoverCompareCartesian',
+                'toggleSpikelines',
+                'resetScale2d',
+                'toImage'
+            ],
+            modeBarButtonsToAdd: [{
+                name: 'Bild als PNG herunterladen',
+                icon: Plotly.Icons.camera,
+                click: function (gd) {
+                    Plotly.downloadImage(gd, {
+                        format: 'png',
+                        filename: 'Numerische Integration Abweichungsdiagramm',
+                        height: 600,
+                        width: 1200,
+                        scale: 1
+                    });
+                }
+            },
+            {
+                name: 'Achsen zurücksetzen',
+                icon: Plotly.Icons.home,
+                click: function (gd) {
+                    Plotly.relayout(gd, {
+                        'xaxis.autorange': true,
+                        'yaxis.autorange': true
+                    });
+                }
+            }]
+        };
+
+        Plotly.newPlot('diagramm', [trace], layout, config);
+
+        document.getElementById('diagramm').style.display = "inline";
+        this.skipAnimation = false;
     }
 
     satisfiesConstraints(solution) {
@@ -257,7 +335,7 @@ class BranchAndBound {
         }
 
         this.edges.add(edgeOptions);
-
+        if(!this.skipAnimation){
         this.network.focus(nodeId, {
             scale: 1.5,
             animation: {
@@ -265,49 +343,7 @@ class BranchAndBound {
                 easingFunction: "easeInOutQuad"
             }
         });
-
-        bounds.forEach((bound, index) => {
-            const [low, high] = bound;
-            const mid = midpoint[index];
-
-            if (low <= mid - 1) {
-                const newBounds = bounds.map((b, i) => i === index ? [low, mid - 1] : b);
-                this.stack.push({ bounds: newBounds, path: `${node.path} -> x${index + 1} <= ${mid - 1}`, parentId: nodeId });
-            }
-
-            if (mid + 1 <= high) {
-                const newBounds = bounds.map((b, i) => i === index ? [mid + 1, high] : b);
-                this.stack.push({ bounds: newBounds, path: `${node.path} -> x${index + 1} >= ${mid + 1}`, parentId: nodeId });
-            }
-        });
-
-        this.iterations++;
-        this.lowerBound = Math.min(this.lowerBound, this.evaluateObjective(midpoint));
-        this.possibleSolutions = this.stack.length;
-
-        this.globalUpperBound = Math.max(this.globalUpperBound, upperBound);
     }
-
-
-
-    iterateWithoutTree() {
-
-
-        const node = this.stack.pop();
-        const bounds = node.bounds;
-
-        const currentNode = this.nodes.get(node.parentId);
-        if (currentNode && currentNode.color && currentNode.color.background === '#4d4848') {
-            return "pruned";
-        }
-
-        const midpoint = bounds.map(([low, high]) => Math.floor((low + high) / 2));
-        const nodeId = this.nodeIdCounter++;
-        const label = midpoint.map((value, index) => `x${index + 1} = ${value}`).join(', ');
-        this.nodes.add({ id: nodeId, label: label, title: label });
-
-        var upperBound = this.calculateUpperBound(bounds);
-
         bounds.forEach((bound, index) => {
             const [low, high] = bound;
             const mid = midpoint[index];
@@ -473,7 +509,7 @@ function extractVariablesAndCoefficients(objectiveFunction, constraints) {
     // Arrays für Zielfunktion (Variablen und Koeffizienten)
     const sortedKeys = Array.from(allKeys).sort();
     const objectiveValues = sortedKeys.map(key => objectiveFunctionMap.get(key) || 0);  // Fehlende Werte = 0
-
+    console.log(objectiveValues)
     // Arrays für Constraints
     const constraintTypes = [];
     const constraintCoefficients = [];
@@ -527,10 +563,13 @@ document.addEventListener('DOMContentLoaded', function () {
     var funktion = "";
     let stopFunction = false;
 
+    
     function getInputs() {
         funktion = document.getElementById('funktion').value.trim().replace(/\s+/g, '');
         funktion = funktion.replace(',', '.');
         var parsedFunction = Algebrite.run(`simplify(${funktion})`);
+        const linearPattern = /^([+-]?\d*\/?\d*)x([+-][\d*\/?\d*y]*)$/;
+
         for (let i = 1; i <= conditionCount; i++) {
             const input = document.getElementById('nebenbedingung' + i);
             if (input && input.value) {
@@ -542,11 +581,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     btnStart.addEventListener('click', function () {
 
-        getInputs()
+        var extractedInputs = getInputs()
+        bbSolver = new BranchAndBound( extractedInputs.variables,extractedInputs.objectiveCoefficients, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes, funktion);
 
-        const maxIterations = 100;
-
-        bbSolver = new BranchAndBound(coefficients, constraintsCoefficients, constraintsBounds, funktion);
+        const maxIterations = 500;
         bbSolver.solve(maxIterations);
 
         updateResults(bbSolver);
@@ -600,14 +638,15 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    let allNodes = bbSolver.nodes.get();
     skipBackwardButton.addEventListener('click', function () {
-    
+
+        let allNodes = bbSolver.nodes.get();
+
         // Letzte Node und Edge erhalten
         let lastNode = allNodes[allNodes.length - 1];
         let lastNodeId = lastNode.id;
         if (lastNodeId <= 1) {
-            return; // Keine Nodes zu entfernen, wenn nur der Startpunkt vorhanden ist
+            return;
         }
     
         let allEdges = bbSolver.edges.getIds();
@@ -622,31 +661,14 @@ document.addEventListener('DOMContentLoaded', function () {
         bbSolver.nodeIdCounter--;
         bbSolver.nodes.remove(lastNodeId);
         bbSolver.edges.remove(lastEdgeId);
-    
-        // Historie zurücksetzen
+        console.log(bbSolver.stack)
         var historyStack = bbSolver.history.pop();
         bbSolver.stack = historyStack.stack;
-        bbSolver.stack.push(historyStack.node);
-    
-        // Überprüfen, ob die entfernte Node die beste Node war und ggf. die beste Lösung zurücksetzen
-        if (bbSolver.bestNodeId === lastNodeId) {
-            bbSolver.bestNodeId = null;
-            bbSolver.bestSolution = null;
-            bbSolver.bestObjectiveValue = -Infinity;
-    
-            // Die beste Lösung in der verbleibenden Node-Kollektion neu berechnen
-            bbSolver.nodes.get().forEach(node => {
-                const midpoint = bbSolver.parseLabelToMidpoint(node.label);
-                const objectiveValue = bbSolver.evaluateObjective(midpoint);
-                if (objectiveValue > bbSolver.bestObjectiveValue) {
-                    bbSolver.bestObjectiveValue = objectiveValue;
-                    bbSolver.bestSolution = midpoint;
-                    bbSolver.bestNodeId = node.id;
-                }
-            });
-        }
-    
-        bbSolver.network.focus(bbSolver.stack[bbSolver.stack.length - 1].parentId, {
+        console.log(bbSolver.stack)
+        bbSolver.stack.push(historyStack.node)
+        console.log(bbSolver.stack)
+
+        bbSolver.network.focus(lastNodeId-1, {
             scale: 1.5,
             animation: {
                 duration: 1000,
@@ -656,6 +678,7 @@ document.addEventListener('DOMContentLoaded', function () {
     
         updateResults(bbSolver);
     });
+
     
 
     function updateResults(bbSolver) {
@@ -674,93 +697,7 @@ document.addEventListener('DOMContentLoaded', function () {
         prunedTrees.innerHTML = bbSolver.prunedTreeCount;
     }
 
-    function erstelleAbweichungsdiagramm(){
-        if(document.getElementById('diagramm').style.display == "inline"){
-            return;
-        }
-        var currentSolutions = [];
-        tempSolver = new BranchAndBound(coefficients, constraintsCoefficients, constraintsBounds, funktion);
-        for(var i=1; i<=100;i++){
-            var end = tempSolver.iterate()
-            currentSolutions.push(tempSolver.bestObjectiveValue)
-            if (end == true) {
-                break;
-            }
-        }
-        var bestSolution = tempSolver.bestObjectiveValue;
-        var numberOfIterations = currentSolutions.length;
-        var fehlerWerte = [];
-        var iterations = [];
-        for(var i=1;i<=numberOfIterations;i++){
-            fehlerWerte.push(Math.abs(bestSolution - currentSolutions[i]))
-            iterations.push(i); 
-        }
-        console.log(fehlerWerte)
 
-        const trace = {
-            x: iterations,
-            y: fehlerWerte,
-            type: 'scatter',
-            mode: 'lines+markers',
-            name: 'Fehler'
-        };
-
-        const layout = {
-            title: "Abweichungsdiagramm",
-            xaxis: {
-                title: 'Iteration'
-            },
-            yaxis: {
-                title: 'Absoluter Fehler'
-            },
-            dragmode: 'pan'
-        };
-
-        const config = {
-            displaylogo: false,
-            modeBarButtonsToRemove: [
-                'zoom2d',
-                'pan2d',
-                'select2d',
-                'lasso2d',
-                'zoomIn2d',
-                'zoomOut2d',
-                'autoScale2d',
-                'hoverClosestCartesian',
-                'hoverCompareCartesian',
-                'toggleSpikelines',
-                'resetScale2d',
-                'toImage'
-            ],
-            modeBarButtonsToAdd: [{
-                name: 'Bild als PNG herunterladen',
-                icon: Plotly.Icons.camera,
-                click: function (gd) {
-                    Plotly.downloadImage(gd, {
-                        format: 'png',
-                        filename: 'Numerische Integration Abweichungsdiagramm',
-                        height: 600,
-                        width: 1200,
-                        scale: 1
-                    });
-                }
-            },
-            {
-                name: 'Achsen zurücksetzen',
-                icon: Plotly.Icons.home,
-                click: function (gd) {
-                    Plotly.relayout(gd, {
-                        'xaxis.autorange': true,
-                        'yaxis.autorange': true
-                    });
-                }
-            }]
-        };
-
-        Plotly.newPlot('diagramm', [trace], layout, config);
-
-        document.getElementById('diagramm').style.display = "inline";
-    }
     window.addEventListener('blur', () => {
         playIcon.style.display = 'block';
         pauseIcon.style.display = 'none';
