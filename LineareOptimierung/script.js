@@ -18,7 +18,7 @@ class BranchAndBound {
         this.prunedTreeCount = 0;
         this.stack = [{ bounds: this.initialBounds, path: 'start', parentId: 1 }];
         this.iterations = 0;
-        this.maxIterations = 500;
+        this.maxIterations = 100;
         this.createTree();
         this.network;
         this.bestNodeId = null;
@@ -436,44 +436,6 @@ class BranchAndBound {
     
 }
 
-var allVariables = ['x', 'y'];
-
-function parseObjectiveFunction(lhs) {
-    const regex = /([+-]?\d*\.?\d*)([a-zA-Z]+)/g;
-    let match;
-    const coefficients = [];
-    const variables = [];
-
-    while ((match = regex.exec(lhs)) !== null) {
-        const coefficient = parseFloat(match[1]) || (match[1] === '-' ? -1 : 1);
-        const variable = match[2];
-        coefficients.push(coefficient);
-        variables.push(variable);
-    }
-    return { coefficients, variables };
-}
-
-
-function parseConstraint(input) {
-
-    input = input.replace(/\s+/g, '');
-
-    const [lhs, rhs] = input.split('<=');
-    const { coefficients, variables } = parseObjectiveFunction(lhs);
-
-    const filledCoefficients = new Array(allVariables.length).fill(0);
-
-    variables.forEach((variable, index) => {
-        const varIndex = allVariables.indexOf(variable);
-        if (varIndex !== -1) {
-            filledCoefficients[varIndex] = coefficients[index];
-        }
-    });
-
-    const bound = parseFloat(rhs);
-    return { coefficients: filledCoefficients, variables: allVariables, bound };
-}
-
 function extractVariablesAndCoefficients(objectiveFunction, constraints) {
     function parseCoefficient(coefficientStr) {
         // Erkenne und verarbeite Brüche wie '4/5'
@@ -563,6 +525,15 @@ document.addEventListener('DOMContentLoaded', function () {
     var funktion = "";
     let stopFunction = false;
 
+    function checkInputs() {
+        if (document.getElementById('funktion').value.trim().replace(/\s+/g, '')) {
+            btnStart.disabled = false;
+        } else {
+            btnStart.disabled = true;
+        }
+    }
+    document.getElementById('funktion').addEventListener('input', checkInputs);
+
     
     function getInputs() {
         funktion = document.getElementById('funktion').value.trim().replace(/\s+/g, '');
@@ -584,7 +555,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var extractedInputs = getInputs()
         bbSolver = new BranchAndBound( extractedInputs.variables,extractedInputs.objectiveCoefficients, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes, funktion);
 
-        const maxIterations = 500;
+        const maxIterations = 100;
         bbSolver.solve(maxIterations);
 
         updateResults(bbSolver);
@@ -598,10 +569,13 @@ document.addEventListener('DOMContentLoaded', function () {
             playIcon.style.display = 'block';
             pauseIcon.style.display = 'none';
         } else {
-            var extractedInputs = getInputs()
-            bbSolver = new BranchAndBound( extractedInputs.variables,extractedInputs.objectiveCoefficients, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes, funktion);
-            bbSolver.iterate();
-            updateResults(bbSolver);
+            var extractedInputs = getInputs();
+            if (!checkForUnboundedSolution(extractedInputs.variables, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes)) {
+           
+                bbSolver = new BranchAndBound(extractedInputs.variables, extractedInputs.objectiveCoefficients, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes, funktion);
+                bbSolver.iterate();
+                updateResults(bbSolver);
+            }
         }
     });
     const playIcon = document.getElementById('play-icon');
@@ -679,6 +653,56 @@ document.addEventListener('DOMContentLoaded', function () {
         updateResults(bbSolver);
     });
 
+    function checkForUnboundedSolution(variables, constraintCoefficients, constraintBounds, constraintTypes) {
+        const variableCount = variables.length;
+        const constraintCount = constraintCoefficients.length;
+    
+        // Array, um zu speichern, ob eine Variable durch eine Bedingung eingeschränkt ist
+        let boundedVariables = new Array(variableCount).fill(false);
+    
+        // Schleife über alle Constraints
+        for (let i = 0; i < constraintCount; i++) {
+            const coeffs = constraintCoefficients[i];
+            const constraintType = constraintTypes[i];
+    
+            // Wenn es eine <= oder = Bedingung ist, könnte es eine obere Schranke geben
+            if (constraintType === "<=" || constraintType === "=") {
+                for (let j = 0; j < coeffs.length; j++) {
+                    const coeff = coeffs[j];
+    
+                    // Wenn der Koeffizient positiv ist, schränkt es die entsprechende Variable nach oben ein
+                    if (coeff > 0) {
+                        boundedVariables[j] = true;
+                    }
+                }
+            }
+        }
+    
+        // Sammle alle unbeschränkten Variablen
+        let unboundedVariables = [];
+        for (let i = 0; i < variableCount; i++) {
+            if (!boundedVariables[i]) {
+                unboundedVariables.push(variables[i]);
+            }
+        }
+    
+        // Wenn es unbeschränkte Variablen gibt, zeige das Popover an
+        if (unboundedVariables.length > 0) {
+            const unboundedVarNames = unboundedVariables.join(', '); // Unbeschränkte Variablen in eine Liste umwandeln
+    
+            // Popover über dem Element mit der ID inputElementId anzeigen
+            $('#funktion').popover({
+                title: 'Unbeschränkte Lösung',
+                content: 'Die folgenden Variablen sind unbeschränkt: ' + unboundedVarNames,
+                placement: 'top',
+                trigger: 'focus'
+            }).popover('show');
+    
+            return true; 
+        }
+    
+        return false;
+    }
     
 
     function updateResults(bbSolver) {
