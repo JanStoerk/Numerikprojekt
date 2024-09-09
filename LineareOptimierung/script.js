@@ -18,7 +18,7 @@ class BranchAndBound {
         this.prunedTreeCount = 0;
         this.stack = [{ bounds: this.initialBounds, path: 'start', parentId: 1 }];
         this.iterations = 0;
-        this.maxIterations = 500;
+        this.maxIterations = 200;
         this.createTree();
         this.network;
         this.bestNodeId = null;
@@ -32,16 +32,47 @@ class BranchAndBound {
 
     computeInitialBounds() {
         let bounds = Array(this.numVariables).fill(null).map(() => [0, Infinity]);
+    
         this.constraintsCoefficients.forEach((constraint, constraintIndex) => {
+            const rhs = this.constraintsBounds[constraintIndex];
+            const constraintType = this.constraintTypes[constraintIndex];
+    
             constraint.forEach((coeff, varIndex) => {
-                if (coeff > 0 && varIndex < this.numVariables) {
-                    const maxVal = Math.floor(this.constraintsBounds[constraintIndex] / coeff);
-                    bounds[varIndex][1] = Math.min(bounds[varIndex][1], maxVal);
+                if (coeff !== 0 && varIndex < this.numVariables) {
+                    const boundValue = Math.floor(rhs / coeff);
+    
+                    switch (constraintType) {
+                        case '<':
+                        case '<=':
+                            if (coeff > 0) {
+                                bounds[varIndex][1] = Math.min(bounds[varIndex][1], boundValue);
+                            } else {
+                                bounds[varIndex][0] = Math.max(bounds[varIndex][0], boundValue);
+                            }
+                            break;
+                        case '>':
+                        case '>=':
+                            if (coeff > 0) {
+                                bounds[varIndex][0] = Math.max(bounds[varIndex][0], boundValue);
+                            } else {
+                                bounds[varIndex][1] = Math.min(bounds[varIndex][1], boundValue);
+                            }
+                            break;
+                        case '=':
+                            const exactValue = Math.floor(rhs / coeff);
+                            bounds[varIndex][0] = bounds[varIndex][1] = exactValue;
+                            break;
+                    }
                 }
             });
         });
-        return bounds.map(bound => [bound[0], isFinite(bound[1]) ? bound[1] : Math.floor(10 * this.objectiveCoefficients[bounds.length - 1])]);
+    
+        return bounds.map(bound => [
+            isFinite(bound[0]) ? bound[0] : Math.floor(-10 * this.objectiveCoefficients[bounds.length - 1]),
+            isFinite(bound[1]) ? bound[1] : Math.floor(10 * this.objectiveCoefficients[bounds.length - 1])
+        ]);
     }
+    
 
     evaluateObjective(solution) {
         return this.objectiveCoefficients.reduce((sum, coeff, index) => sum + coeff * solution[index], 0);
@@ -221,6 +252,12 @@ class BranchAndBound {
         this.history.push({
             stack: [...this.stack],
             node: node,
+            bestObjectiveValue: this.bestObjectiveValue,
+            bestSolution: this.bestSolution,
+            bestNodeId:this.bestNodeId,
+            lowerBound:this.lowerBound,
+            globalUpperBound:this.globalUpperBound
+
         });
 
         const midpoint = bounds.map(([low, high]) => Math.floor((low + high) / 2));
@@ -377,7 +414,6 @@ class BranchAndBound {
         }
         return false;
     }
-
 
     createTree() {
         const container = document.getElementById('ggb-element');
@@ -675,11 +711,12 @@ document.addEventListener('DOMContentLoaded', function () {
     skipBackwardButton.addEventListener('click', function () {
 
         let allNodes = bbSolver.nodes.get();
-
+        console.log(allNodes)
         // Letzte Node und Edge erhalten
         let lastNode = allNodes[allNodes.length - 1];
         let lastNodeId = lastNode.id;
-        if (lastNodeId <= 1) {
+        console.log(lastNodeId)
+        if (lastNodeId == 1) {
             return;
         }
 
@@ -695,12 +732,33 @@ document.addEventListener('DOMContentLoaded', function () {
         bbSolver.nodeIdCounter--;
         bbSolver.nodes.remove(lastNodeId);
         bbSolver.edges.remove(lastEdgeId);
-        console.log(bbSolver.stack)
         var historyStack = bbSolver.history.pop();
         bbSolver.stack = historyStack.stack;
-        console.log(bbSolver.stack)
         bbSolver.stack.push(historyStack.node)
-        console.log(bbSolver.stack)
+
+        bbSolver.bestNodeId = historyStack.bestNodeId;
+        bbSolver.bestSolution = historyStack.bestSolution; 
+        bbSolver.bestObjectiveValue = historyStack.bestObjectiveValue; 
+        bbSolver.lowerBound = historyStack.lowerBound;
+        bbSolver.globalUpperBound = historyStack.globalUpperBound;
+
+        if(!bbSolver.bestNodeId==null){
+            bbSolver.nodes.update({
+                id: bbSolver.bestNodeId,
+                color: {
+                    background: '#c5e4d1',
+                    border: '#198754',
+                    highlight: {
+                        background: '#c5e4d1',
+                        border: '#198754'
+                    },
+                    hover: {
+                        background: '#c5e4d1',
+                        border: '#198754'
+                    }
+                }
+            });
+        }
 
         bbSolver.network.focus(lastNodeId - 1, {
             scale: 1.5,
@@ -775,7 +833,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         obereSchrankeInput.innerHTML = bbSolver.bestObjectiveValue;
         untereSchrankeInput.innerHTML = bbSolver.lowerBound;
-        momentanesErgebnisLabel.innerHTML = JSON.stringify(bbSolver.bestSolution);
+        if (bbSolver.bestSolution!= null) {
+            momentanesErgebnisLabel.innerHTML = JSON.stringify(bbSolver.bestSolution);
+        }else{
+            momentanesErgebnisLabel.innerHTML = "Kein Ergebnis gefunden";
+        }
         optimalesErgebnisLabel.innerHTML = bbSolver.bestObjectiveValue;
         anzahlLoesungenLabel.innerHTML = bbSolver.possibleSolutions;
         prunedTrees.innerHTML = bbSolver.prunedTreeCount;
