@@ -18,15 +18,15 @@ class BranchAndBound {
         this.prunedTreeCount = 0;
         this.stack = [{ bounds: this.initialBounds, path: 'start', parentId: 1 }];
         this.iterations = 0;
-        this.maxIterations = 100;
+        this.maxIterations = 500;
         this.createTree();
         this.network;
         this.bestNodeId = null;
-        this.history=[];
+        this.history = [];
         this.skipAnimation;
     }
 
-    resetTree(){
+    resetTree() {
         this.network.setData({ nodes: [], edges: [] });
     }
 
@@ -54,10 +54,10 @@ class BranchAndBound {
     }
 
 
-    solve(maxIterations) {
+    solve() {
         this.skipAnimation = true;
-        var currentSolutions =[];
-        while (this.stack.length > 0 && this.iterations < maxIterations) {
+        var currentSolutions = [];
+        while (this.stack.length > 0 && this.iterations < this.maxIterations) {
             this.iterate();
             currentSolutions.push(this.bestObjectiveValue)
         }
@@ -65,9 +65,9 @@ class BranchAndBound {
         var numberOfIterations = currentSolutions.length;
         var fehlerWerte = [];
         var iterations = [];
-        for(var i=0;i<=numberOfIterations;i++){
+        for (var i = 0; i <= numberOfIterations; i++) {
             fehlerWerte.push(Math.abs(bestSolution - currentSolutions[i]))
-            iterations.push(i); 
+            iterations.push(i);
         }
         console.log(fehlerWerte)
 
@@ -143,11 +143,11 @@ class BranchAndBound {
             // Berechne den linken Wert der Ungleichung (lhs)
             const lhs = coeffs.reduce((sum, coeff, varIndex) =>
                 sum + coeff * solution[varIndex], 0);
-            
+
             // Hole den rechten Wert (constraint bound) und den Typ der Ungleichung
             const rhs = this.constraintsBounds[index];
             const constraintType = this.constraintTypes[index];
-            
+
             // Überprüfe basierend auf dem constraintType
             let satisfied;
             switch (constraintType) {
@@ -170,15 +170,15 @@ class BranchAndBound {
                     console.error(`Unbekannter Constraint-Typ: ${constraintType}`);
                     satisfied = false;
             }
-    
+
             console.log(`Constraint ${index}: ${lhs} ${constraintType} ${rhs} -> ${satisfied}`);
             return satisfied;
         });
-    
+
         console.log("AllSatisfied: " + allSatisfied);
         return allSatisfied;
     }
-    
+
 
     iterate() {
 
@@ -219,7 +219,7 @@ class BranchAndBound {
             return;
         }
         this.history.push({
-            stack: [...this.stack], 
+            stack: [...this.stack],
             node: node,
         });
 
@@ -251,41 +251,41 @@ class BranchAndBound {
                 }
             });*/
             console.log(`Iteration ${this.iterations + 1}: Current best solution: ${JSON.stringify(this.bestSolution)}, Objective: ${this.bestObjectiveValue}`);
-              // Wenn es eine vorherige beste Node gibt, färbe sie blau
-        if (this.bestNodeId !== null && this.bestNodeId !== nodeId) {
-            this.nodes.update({
-                id: this.bestNodeId,
-                color: {
-                    background: '#97c2fc',
-                    border: '#2b7ce9',
-                    highlight: {
+            // Wenn es eine vorherige beste Node gibt, färbe sie blau
+            if (this.bestNodeId !== null && this.bestNodeId !== nodeId) {
+                this.nodes.update({
+                    id: this.bestNodeId,
+                    color: {
                         background: '#97c2fc',
-                        border: '#2b7ce9'
+                        border: '#2b7ce9',
+                        highlight: {
+                            background: '#97c2fc',
+                            border: '#2b7ce9'
+                        },
+                        hover: {
+                            background: '#97c2fc',
+                            border: '#2b7ce9'
+                        }
+                    }
+                });
+            }
+
+            // Aktuelle beste Node grün färben
+            this.nodes.update({
+                id: nodeId,
+                color: {
+                    background: '#c5e4d1',
+                    border: '#198754',
+                    highlight: {
+                        background: '#c5e4d1',
+                        border: '#198754'
                     },
                     hover: {
-                        background: '#97c2fc',
-                        border: '#2b7ce9'
+                        background: '#c5e4d1',
+                        border: '#198754'
                     }
                 }
             });
-        }
-
-        // Aktuelle beste Node grün färben
-        this.nodes.update({
-            id: nodeId,
-            color: {
-                background: '#c5e4d1',
-                border: '#198754',
-                highlight: {
-                    background: '#c5e4d1',
-                    border: '#198754'
-                },
-                hover: {
-                    background: '#c5e4d1',
-                    border: '#198754'
-                }
-            }
-        });
             this.bestNodeId = nodeId;
         } else if (upperBound <= this.bestObjectiveValue) {
             edgeOptions.color = { color: 'black' };
@@ -335,15 +335,15 @@ class BranchAndBound {
         }
 
         this.edges.add(edgeOptions);
-        if(!this.skipAnimation){
-        this.network.focus(nodeId, {
-            scale: 1.5,
-            animation: {
-                duration: 1000,
-                easingFunction: "easeInOutQuad"
-            }
-        });
-    }
+        if (!this.skipAnimation) {
+            this.network.focus(nodeId, {
+                scale: 1.5,
+                animation: {
+                    duration: 1000,
+                    easingFunction: "easeInOutQuad"
+                }
+            });
+        }
         bounds.forEach((bound, index) => {
             const [low, high] = bound;
             const mid = midpoint[index];
@@ -377,7 +377,7 @@ class BranchAndBound {
         }
         return false;
     }
-    
+
 
     createTree() {
         const container = document.getElementById('ggb-element');
@@ -433,7 +433,7 @@ class BranchAndBound {
 
         this.network = new vis.Network(container, data, options);
     }
-    
+
 }
 
 function extractVariablesAndCoefficients(objectiveFunction, constraints) {
@@ -483,10 +483,10 @@ function extractVariablesAndCoefficients(objectiveFunction, constraints) {
         if (match) {
             const [_, lhs, inequality, rhs] = match;
             const constraintMap = extractFromExpression(lhs.trim());
-            
+
             // Füge die Variablen aus dem Constraint hinzu
             constraintMap.forEach((_, key) => allKeys.add(key));
-            
+
             // Speichere die Ungleichungsart und den Grenzwert
             constraintTypes.push(inequality);
             constraintBounds.push(parseFloat(rhs.trim()));
@@ -514,17 +514,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const skipForwardButton = document.getElementById('skip-forward');
     const playButton = document.getElementById('btnStart');
     const skipBackwardButton = document.getElementById('skip-back');
-    const addConditionBtn = document.getElementById('addConditionBtn');
     let bbSolver = null;
     var nebenbedingungen = [];
-    var constraintsCoefficients = [];
-    var constraintsBounds = [];
-    var coefficients = []
     var funktion = "";
     let stopFunction = false;
     const maxNebenbedingungen = 9;
     const nebenbedingungenTable = document.getElementById('nebenbedingungen');
     const btnZeichne = document.getElementById('btnZeichne');
+    const resetTree = document.getElementById('resetTree');
     let nebenbedingungCount = 2;
 
     btnZeichne.addEventListener('click', function () {
@@ -548,6 +545,31 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    resetTree.addEventListener('click', function () {
+        reset()
+    });
+
+    function reset() {
+        if (bbSolver != null) {
+            bbSolver.resetTree();
+            bbSolver = null;
+        }
+        for (let i = 1; i <= nebenbedingungCount; i++) {
+            const input = document.getElementById('nebenbedingung' + i);
+            input.disabled = false;
+        }
+        document.getElementById('funktion').disabled = false;
+        btnZeichne.disabled = false;
+        resetTree.disabled = true;
+        document.getElementById('diagramm').style.display = "none";
+        document.getElementById('obereSchranke').innerHTML = "";
+        document.getElementById('untereSchranke').innerHTML = ""
+        document.getElementById('momentanesErgebnis').innerHTML = ""
+        document.getElementById('optimalesErgebnis').innerHTML = ""
+        document.getElementById('anzahlLoesungen').innerHTML = ""
+        document.getElementById('prunedTrees').innerHTML = ""
+    }
+
     function checkInputs() {
         if (document.getElementById('funktion').value.trim().replace(/\s+/g, '')) {
             btnStart.disabled = false;
@@ -557,31 +579,39 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     document.getElementById('funktion').addEventListener('input', checkInputs);
 
-    
+
     function getInputs() {
-        funktion = document.getElementById('funktion').value.trim().replace(/\s+/g, '');
+        nebenbedingungen = [];
+        $('#funktion').popover('dispose');
+        const funktionInput = document.getElementById('funktion');
+        funktion = funktionInput.value.trim().replace(/\s+/g, '');
         funktion = funktion.replace(',', '.');
         var parsedFunction = Algebrite.run(`simplify(${funktion})`);
-        const linearPattern = /^([+-]?\d*\/?\d*)x([+-][\d*\/?\d*y]*)$/;
 
         for (let i = 1; i <= nebenbedingungCount; i++) {
             const input = document.getElementById('nebenbedingung' + i);
+            input.disabled = true;
             if (input && input.value) {
                 nebenbedingungen.push(input.value);
             }
         }
+        funktionInput.disabled = true;
+        btnZeichne.disabled = true;
+        resetTree.disabled = false;
         return extractVariablesAndCoefficients(parsedFunction, nebenbedingungen);
     }
 
     btnStart.addEventListener('click', function () {
 
         var extractedInputs = getInputs()
-        bbSolver = new BranchAndBound( extractedInputs.variables,extractedInputs.objectiveCoefficients, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes, funktion);
+        if (!checkForUnboundedSolution(extractedInputs.variables, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes)) {
+            bbSolver = new BranchAndBound(extractedInputs.variables, extractedInputs.objectiveCoefficients, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes, funktion);
 
-        const maxIterations = 100;
-        bbSolver.solve(maxIterations);
-
-        updateResults(bbSolver);
+            bbSolver.solve();
+            updateResults(bbSolver);
+        } else {
+            reset();
+        }
     });
 
     skipForwardButton.addEventListener('click', function () {
@@ -594,10 +624,12 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             var extractedInputs = getInputs();
             if (!checkForUnboundedSolution(extractedInputs.variables, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes)) {
-           
+
                 bbSolver = new BranchAndBound(extractedInputs.variables, extractedInputs.objectiveCoefficients, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes, funktion);
                 bbSolver.iterate();
                 updateResults(bbSolver);
+            } else {
+                reset();
             }
         }
     });
@@ -616,14 +648,19 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         if (!bbSolver) {
             var extractedInputs = getInputs()
-            bbSolver = new BranchAndBound( extractedInputs.variables,extractedInputs.objectiveCoefficients, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes, funktion);
+            if (!checkForUnboundedSolution(extractedInputs.variables, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes)) {
+                bbSolver = new BranchAndBound(extractedInputs.variables, extractedInputs.objectiveCoefficients, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes, funktion);
+            } else {
+                reset();
+            }
         }
-        var i = 0;
-        while (i < 100) {
+
+        while (bbSolver.iterations < bbSolver.maxIterations) {
             if (stopFunction) {
+                playIcon.style.display = 'block';
+                pauseIcon.style.display = 'none';
                 break;
             }
-            i++;
             var end = bbSolver.iterate();
             updateResults(bbSolver);
             if (end == true) {
@@ -645,14 +682,14 @@ document.addEventListener('DOMContentLoaded', function () {
         if (lastNodeId <= 1) {
             return;
         }
-    
+
         let allEdges = bbSolver.edges.getIds();
         let lastEdgeId = allEdges[allEdges.length - 1];
-    
+
         // Letzte Node und Edge entfernen
         bbSolver.network.body.data.nodes.remove(lastNodeId);
         bbSolver.network.body.data.edges.remove(lastEdgeId);
-    
+
         // Node und Stack zurücksetzen
         bbSolver.iterations--;
         bbSolver.nodeIdCounter--;
@@ -665,34 +702,34 @@ document.addEventListener('DOMContentLoaded', function () {
         bbSolver.stack.push(historyStack.node)
         console.log(bbSolver.stack)
 
-        bbSolver.network.focus(lastNodeId-1, {
+        bbSolver.network.focus(lastNodeId - 1, {
             scale: 1.5,
             animation: {
                 duration: 1000,
                 easingFunction: "easeInOutQuad"
             }
         });
-    
+
         updateResults(bbSolver);
     });
 
     function checkForUnboundedSolution(variables, constraintCoefficients, constraintBounds, constraintTypes) {
         const variableCount = variables.length;
         const constraintCount = constraintCoefficients.length;
-    
+
         // Array, um zu speichern, ob eine Variable durch eine Bedingung eingeschränkt ist
         let boundedVariables = new Array(variableCount).fill(false);
-    
+
         // Schleife über alle Constraints
         for (let i = 0; i < constraintCount; i++) {
             const coeffs = constraintCoefficients[i];
             const constraintType = constraintTypes[i];
-    
+
             // Wenn es eine <= oder = Bedingung ist, könnte es eine obere Schranke geben
             if (constraintType === "<=" || constraintType === "=") {
                 for (let j = 0; j < coeffs.length; j++) {
                     const coeff = coeffs[j];
-    
+
                     // Wenn der Koeffizient positiv ist, schränkt es die entsprechende Variable nach oben ein
                     if (coeff > 0) {
                         boundedVariables[j] = true;
@@ -700,7 +737,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
         }
-    
+
         // Sammle alle unbeschränkten Variablen
         let unboundedVariables = [];
         for (let i = 0; i < variableCount; i++) {
@@ -708,11 +745,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 unboundedVariables.push(variables[i]);
             }
         }
-    
+
         // Wenn es unbeschränkte Variablen gibt, zeige das Popover an
         if (unboundedVariables.length > 0) {
             const unboundedVarNames = unboundedVariables.join(', '); // Unbeschränkte Variablen in eine Liste umwandeln
-    
+
             // Popover über dem Element mit der ID inputElementId anzeigen
             $('#funktion').popover({
                 title: 'Unbeschränkte Lösung',
@@ -720,13 +757,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 placement: 'top',
                 trigger: 'focus'
             }).popover('show');
-    
-            return true; 
+
+            return true;
         }
-    
+
         return false;
     }
-    
+
 
     function updateResults(bbSolver) {
         const obereSchrankeInput = document.getElementById('obereSchranke');
@@ -749,6 +786,6 @@ document.addEventListener('DOMContentLoaded', function () {
         playIcon.style.display = 'block';
         pauseIcon.style.display = 'none';
         stopFunction = true;
-        
+
     });
 });
