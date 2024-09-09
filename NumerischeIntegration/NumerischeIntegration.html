@@ -16,6 +16,8 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"
+        async></script>
     <style>
         table td {
             vertical-align: middle;
@@ -31,43 +33,231 @@
                 <h1>Numerik</h1>
             </a>
         </div>
-        <button class="guide" onclick="showGuide()">
+        <button class="guide" data-toggle="modal" data-target="#guideModal">
             <img src="../pictures/guide.png" style="width:30px" alt="Guide">
             <h4>Guide</h4>
         </button>
-        <div id="myModal" class="modal">
-            <div class="modal-content">
-                <span class="close" onclick="closePopup()">&times;</span>
-                <p>Test
-                </p>
+        
+        <!-- Bootstrap Modal -->
+        <div class="modal fade" id="guideModal" tabindex="-1" role="dialog" aria-labelledby="guideModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl" style="margin-top:50px; height:600px;">
+                <div class="modal-content"style="margin-top:50px; height:600px;">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="guideModalLabel">Guide</h5>
+                        <button type="button" class="btn btn-light" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Inhalt des Modals hier einfügen -->
+                       Anleitung zur Verwendung der App
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button>
+                    </div>
+                </div>
             </div>
         </div>
+
+        <div class="modal fade bd-example-modal-lg" id="myModal" tabindex="-1"aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-xl" style="margin-top:50px; height:600px;">
+                <div class="modal-content"style="margin-top:50px; height:600px;">
+                    <div class="modal-header">
+                        <h3 class="modal-title" id="exampleModalLabel">Numerische Integration: Trapezregel</h3>
+                        <button type="button" class="btn btn-light" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true"><b>&times;</b></span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container mt-4">
+                            <style>
+                                /* Ersteres Level (erste Ebene des Inhaltsverzeichnisses) */
+                                .nav > .nav-item {
+                                  margin-bottom: 3px; /* Reduziert den Abstand zwischen den Hauptelementen */
+                                }
+                              
+                                /* Zweites Level (Unterpunkte) */
+                                .nav .nav > .nav-item {
+                                  margin-bottom: 0px; /* Weniger Abstand zwischen den Unterpunkten */
+                                }
+                              
+                                /* Optional: Reduziere den Abstand des Links innerhalb eines Listenelements */
+                                .nav-link {
+                                  padding: 0.2rem 0; /* Reduziert den Abstand um den Textlink herum */
+                                }
+                              </style>
+                            <nav class="mb-4">
+                                <h4>Inhaltsverzeichnis</h4>
+                                <ul class="nav flex-column">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#beschreibung">1. Beschreibung</a>
+                                            <ul class="nav flex-column ms-3"> <!-- Zweite Ebene -->
+                                                <li class="nav-item">
+                                                    <a class="nav-link" href="#fehler">1.1 Fehlerschätzung</a>
+                                                </li>
+                                               
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" href="#usecases">1.2 Anwendungsmöglichkeiten</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" href="#limits">1.3 Einschränkungen</a>
+                                                        </li>
+                                                </li>
+                                            </ul>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#bedienungsanleitung">2. Bedienungsanleitung</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#handlungsempfehlungen">3. Handlungsempfehlungen</a>
+                                    </li>
+                                </ul>
+                            </nav>
+
+                            <main>
+                                <section id="beschreibung" class="mb-4">
+                                    <h4>1. Beschreibung</h4>
+                                    <p>Die numerische Integration ist ein wesentlicher Bestandteil der numerischen
+                                        Mathematik und wird verwendet, um Integrale von Funktionen zu approximieren, die
+                                        schwer oder gar nicht analytisch lösbar sind. Eines der bekanntesten Verfahren
+                                        zur numerischen Integration ist die <b>Trapezregel</b>. Die Grundidee der
+                                        Trapezregel besteht darin, den Bereich unter einer Kurve durch Trapeze zu
+                                        approximieren, anstatt die exakte Fläche unter der Kurve zu berechnen.</p>
+                                    <p>Mathematisch wird dies erreicht, indem der Integrationsbereich \([a, b]\) in
+                                        \(n\) gleich große Intervalle unterteilt wird. Für jedes Intervall wird ein
+                                        Trapez konstruiert, dessen Basis die x-Achse und dessen parallele Seiten durch
+                                        die Funktion \(f(x)\) an den Endpunkten des Intervalls definiert werden. Die
+                                        Summe der Flächen dieser Trapeze ergibt eine Näherung für das Integral:</p>
+                                    <p>\[
+                                        \int_a^b f(x) \, dx \approx \sum_{i=1}^{n} \frac{f(x_i) + f(x_{i+1})}{2} \cdot
+                                        \Delta x
+                                        \]</p>
+                                    <p>wobei \(\Delta x = \frac{b-a}{n}\) die Breite der Intervalle und \(x_i\) die
+                                        diskreten Stützpunkte sind. Durch Erhöhung der Anzahl der Trapeze \(n\) (bzw.
+                                        Verkleinerung von \(\Delta x\)) lässt sich die Genauigkeit der Approximation
+                                        steigern. Mathematisch ausgedrückt, nähert sich die Approximation also dem exakten Integral im Bereich \([a, b]\) an, wenn 
+                                        \(n → ∞\). Es gibt verschiedene Ansätze, um die Fläche unter einer Kurve durch Trapeze zu approximieren. Eine Möglichkeit besteht darin, die Kurve durch eine gerade Linie zwischen den Funktionswerten an den Endpunkten des Intervalls 
+                                        \([a,b]\) zu ersetzen. Diese Methode wird als <b>Sehnentrapezformel</b> bezeichnet und berechnet die Fläche der Trapeze, die durch die Sehne und die x-Achse begrenzt werden. Diese Varainte wird auch innerhalb dieser App zur Approximation verwendet.
+                                        Eine bekannte Alternative dazu bildet die Mittelpunktsregel, die darauf basiert, im Mittel des Intervalls eine Tangente an die Kurve zu legen Diese Methode nutzt die Tangente an der Stelle 
+                                        \(\frac{a+b}{2}\)
+                                          und berechnet die Fläche der Trapeze, die durch diese Tangente und die x-Achse begrenzt werden.</p>
+                                          <section id="fehler" class="mb-4"></section>
+                                          <h5>1.1 Fehlerschätzung</h5>
+                                          <p> Der Fehler der Trapezregel hängt von der zweiten Ableitung der approximierten Funktion ab. Konkret wird der Fehler 
+                                            \(E\) der Trapezregel für eine Funktion 
+                                            \(f\), die auf dem Intervall 
+                                           
+                                            \([a,b]\) integriert wird, durch die folgende Fehlerformel abgeschätzt:
+                                            
+                                            \[E = -\frac{(b-a)^3}{12n^2} \cdot f''(\xi)\]
+                                            Dabei ist \(f''(\xi)\)
+                                            die zweite Ableitung der Funktion an einer unbekannten Stelle 
+                                           \(\xi∈[a,b]\). Der Fehler ist also proportional zu \(\frac{1}{n^2}\).
+                                            Das bedeutet, je kleiner die zweite Ableitung ist und je mehr Trapeze verwendet werden, desto kleiner wird der Fehler.
+                                            Um die Größe der zweiten Ableitung besser zu kontrollieren, wird in der Praxis häufig die Funktion vorab geglättet oder eine spezielle Transformationen angewandt, um Funktionen zu erhalten, deren Ableitungen kleiner sind. 
+                                            Hierfür können beispielsweise <b>Splines</b> zur Interpolation verwendet werden, was insbesondere bei stark schwankenden oder diskreten Daten den Integrationsfehler minimiert. Eine weitere gängige Technik zur Verbesserung der Genauigkeit ist die <b>Richardson-Extrapolation</b>, bei der durch geschicktes Kombinieren von Integralen mit unterschiedlichen Schrittweiten der Fehler systematisch reduziert wird.</p>
+                                            <section id="usecases" class="mb-4">
+                                    <h5>1.2 Anwendungsmöglichkeiten</h5>
+                                    <p>Die Trapezregel stellt eine flexible und schnelle Methode zur näherungsweisen Berechnung von
+                                        Integralen dar. Sie ist einfach zu implementieren und kann auf eine Vielzahl von Funktionen angewendet werden, ohne dass spezielle Anpassungen erforderlich sind. Besonders in Fällen, in denen die Funktion keine extremen Variationen aufweist, liefert die Trapezregel brauchbare Ergebnisse. Daher eignet sie sich gut für viele praktische
+                                        Anwendungen, insbesondere dann, wenn eine grobe Annäherung des
+                                        Integrals ausreicht.  Da die Berechnung der Fläche unter jedem Trapez unabhängig von den anderen ist, kann die Trapezregel außerdem leicht parallelisiert werden. Dies ermöglicht eine effiziente Nutzung von Mehrkernprozessoren und kann die Berechnungszeit erheblich verkürzen, insbesondere bei sehr großen Intervallen oder hoher Trapezanzahl.</p>
+                                        Die Methode kann auch als Grundlage für genauere Verfahren
+                                        wie die Simpsonregel oder höhere Newton-Cotes-Formeln verwendet werden. Die Ergebnisse der Trapezregel können auch zur Verbesserung und Validierung anderer numerischer Integrationsmethoden verwendet werden.
+                                             </section> 
+                                             <section id="limits" class="mb-4"></section>
+                                             <h5>1.3 Einschränkungen</h5>
+                                     <p> Aufgrund seiner Einfachheit weist das Trapezverfahren einige Einschränkungen auf, die seine Genauigkeit beeinträchtigen können. Eine wesentliche Einschränkung ist, dass es besonders bei stark gekrümmten Funktionen zu Ungenauigkeiten kommt. 
+                                        Dies liegt daran, dass die lineare Verbindung der Funktionswerte an den Intervallgrenzen die tatsächliche Krümmung der Funktion nicht gut erfasst. Das Fehlerformel für das Trapezverfahren (siehe <a href="#fehler">1.1 Fehlerschätzung</a>) macht deutlich, dass das Trapezverfahren besonders ungenau ist, wenn die Funktion eine starke Krümmung hat, da 
+                                      
+                                        \(f''(x)\) in diesen Fällen groß wird. Für lineare Funktionen, bei denen 
+                                        
+                                        die zweite Ableitung null ist, liefert das Trapezverfahren jedoch exakte Ergebnisse.
+                                       Zudem kann das Trapezverfahren bei Funktionen mit diskontinuierlichen Ableitungen oder Sprüngen in der Funktion selbst ungenau sein, da diese Sprünge nicht korrekt berücksichtigt werden können. 
+                                         Zusätzlich hängt die Genauigkeit des Verfahrens stark von der Wahl der Anzahl der verwendeten Trapeze ab: Bei einer groben Unterteilung des Intervalls, also wenigen Trapezen, ist die Fehleranfälligkeit größer. Auch wenn die Genauigkeit durch eine Erhöhung der Anzahl der Teilintervalle verbessert werden kann, kann dies den Rechenaufwand erheblich erhöhen. Daher ist das Trapezverfahren vor allem für glatte Funktionen oder für Fälle geeignet, in denen nur eine grobe Schätzung der Fläche erforderlich ist.
+                                       </p>  <p>Abgesehen von der Genauigkeit erreicht die
+                                         Trapezregel außerdem nur eine lineare Konvergenz. Das bedeutet, dass die Fehlerreduktion mit der Verdopplung der Anzahl der Trapeze \(n\) relativ langsam erfolgt, da sich der Fehler nur um einen konstanten Faktor verringert, im Gegensatz zu schnelleren Verfahren wie der Simpsonregel, die quadratische Konvergenz aufweist.</p>
+                                        
+                                <section id="bedienungsanleitung" class="mb-4">
+                                    <h4>2. Bedienungsanleitung</h4>
+                                    <ol>
+                                        <li><b>Funktion eingeben</b>: Im Feld „Funktion \(f(x)\)“ kann der Benutzer die
+                                            zu integrierende Funktion eingeben. Diese Funktion wird dann im
+                                            Koordinatensystem dargestellt.</li>
+                                        <li><b>Grenzen festlegen</b>: Untere und obere Grenzen der Integration werden in
+                                            die entsprechenden Felder eingegeben. Diese Grenzen bestimmen das Intervall
+                                            \([a, b]\), über das das Integral berechnet wird.</li>
+                                        <li><b>Anzahl der Trapeze einstellen</b>: Über einen Schieberegler kann die
+                                            Anzahl der Trapeze festgelegt werden, die zur Approximation verwendet
+                                            werden. Je mehr Trapeze verwendet werden, desto genauer wird die
+                                            Approximation des Integrals.</li>
+                                        <li><b>Berechnung starten</b>: Durch Klick auf den Button „Berechne Integral“
+                                            wird die numerische Integration gestartet. Das Ergebnis wird angezeigt und
+                                            im Koordinatensystem visualisiert.</li>
+                                        <li><b>Vergleich mit Stammfunktion</b>: Der Benutzer hat die Möglichkeit, eine
+                                            Stammfunktion \(F(x)\) manuell einzugeben. Die App verwendet diese
+                                            Stammfunktion, um den genauen Wert des bestimmten Integrals zu berechnen.
+                                            Die Stammfunktion selbst wird jedoch nicht im Koordinatensystem
+                                            visualisiert. Stattdessen vergleicht die App das Ergebnis der Trapezregel
+                                            mit dem analytischen Wert, der aus der Stammfunktion berechnet wurde, und
+                                            zeigt die Abweichung in einem separaten Feld an.</li>
+                                        <li><b>Ergebnisdarstellung und Abweichungsdiagramm</b>: Die App zeigt sowohl das
+                                            numerische Ergebnis der Trapezregel als auch das exakte Ergebnis, basierend
+                                            auf der eingegebenen Stammfunktion. Ein Abweichungsdiagramm visualisiert die
+                                            Differenz zwischen den beiden Ergebnissen über die Anzahl der Trapeze, um
+                                            die Genauigkeit der numerischen Methode darzustellen.</li>
+                                        <li><b>Anpassung der Nachkommastellen</b>: Die Anzahl der Nachkommastellen, die
+                                            im Ergebnis angezeigt werden, kann angepasst werden, um die Präzision der
+                                            Anzeige zu kontrollieren.</li>
+                                    </ol>
+                                </section>
+
+                                <section id="handlungsempfehlungen" class="mb-4">
+                                    <h4>3. Handlungsempfehlungen</h4>
+                                    <ul>
+                                        <li><b>Verwendung von glatten Funktionen</b>: Die Trapezregel eignet sich
+                                            besonders gut für Funktionen, die relativ glatt und kontinuierlich sind. Für
+                                            Funktionen mit scharfen Spitzen, Unstetigkeiten oder sehr hohen Gradienten
+                                            sollte die Anzahl der Trapeze erhöht werden, um eine akzeptable Genauigkeit
+                                            zu erzielen.</li>
+                                        <li><b>Anpassung der Trapezanzahl</b>: Um eine Balance zwischen Rechenaufwand
+                                            und Genauigkeit zu finden, sollte die Anzahl der Trapeze an die Komplexität
+                                            der Funktion angepasst werden. Eine hohe Anzahl von Trapezen kann zwar die
+                                            Genauigkeit erhöhen, jedoch auch die Berechnungszeit verlängern.</li>
+                                        <li><b>Eingabe der Stammfunktion</b>: Um die Genauigkeit der numerischen
+                                            Integration zu überprüfen, sollte, wenn möglich, die Stammfunktion \(F(x)\)
+                                            eingegeben werden. Die Anwendung berechnet dann sowohl das Ergebnis der
+                                            numerischen Integration als auch den exakten Wert des Integrals und zeigt
+                                            die Abweichung an. Dieser Vergleich ist besonders hilfreich, um das
+                                            Verständnis der Genauigkeit und Effizienz der Trapezregel zu fördern.</li>
+                                        <li><b>Vergleich mit analytischen Lösungen</b>: Wann immer möglich, sollte das
+                                            Ergebnis der numerischen Integration mit einer bekannten analytischen Lösung
+                                            verglichen werden, um die Genauigkeit der numerischen Methode zu überprüfen.
+                                        </li>
+                                        <li><b>Verwendung der Simpsonregel</b>: Für Funktionen, bei denen die
+                                            Trapezregel ungenaue Ergebnisse liefert, kann die Simpsonregel als
+                                            Alternative gewählt werden, da sie in der Regel eine bessere Approximation
+                                            bietet, insbesondere bei Funktionen, die durch Parabeln besser beschrieben
+                                            werden.</li>
+                                    </ul>
+                                </section>
+                            </main>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
     </header>
-    <script>
-        function showGuide() {
-            var modal = document.getElementById("myModal");
-            modal.style.display = "block";
-            document.addEventListener("keydown", closeOnEscape);
-        }
-
-        function closePopup() {
-            var modal = document.getElementById("myModal");
-            modal.style.display = "none";
-            document.removeEventListener("keydown", closeOnEscape);
-        }
-
-        function closeOnEscape(event) {
-            if (event.key === "Escape") {
-                closePopup();
-            }
-        }
-    </script>
     <div class="content">
         <div class="containerIntegration">
             <div class="headerIntegration">
                 <h4 id="integration-method"><b>Numerische Integration: Trapezregel</b></h4>
-                <button class="fa fa-info-circle" onclick="showGuide()"
-                    style="font-size:24px; margin-left: 10px; color:grey; border:0; background-color: transparent;"></button>
+                <button class="fa fa-info-circle"
+                    style="font-size:24px; margin-left: 10px; color:grey; border:0; background-color: transparent;"
+                    data-toggle="modal" data-target="#myModal"></button>
             </div>
             <div class="radio-buttons">
                 <input class="form-check-input" type="radio" id="trapez" name="integration-method" value="Trapezregel"
@@ -93,8 +283,8 @@
                         document.getElementById('btnZeichne').disabled = true;
                         var checkbox = document.getElementById('myCheckbox')
                         checkbox.checked = false;
-                        checkbox.style.display ="none"
-                        document.getElementById('checkboxLabel').style.display="none"
+                        checkbox.style.display = "none"
+                        document.getElementById('checkboxLabel').style.display = "none"
                         document.getElementById('stammfunktionContainer').style.display = "none";
                     }
                     const resultContainer = document.getElementById('resultContainer').innerHTML = "";

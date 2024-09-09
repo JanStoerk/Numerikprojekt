@@ -15,6 +15,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.4.4/math.min.js"></script>
     <script src="https://cdn.plot.ly/plotly-2.12.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/algebrite@1.4.0/dist/algebrite.bundle-for-browser.min.js"></script>
 
 
     <meta charset="UTF-8">
@@ -61,28 +62,82 @@
 
                     Wenn das Problem viele Einschränkungen hat, könnte das Verfahren viele Möglichkeiten erkunden, bevor
                     es die optimalen Werte findet. Dies erhöht ebenfalls die Anzahl der Knoten.</p>
+                    <p>
+                        . Verständnis des Verfahrens: Baumstruktur und Iteration
+Du arbeitest mit einem iterativen Verfahren, das einen Baum aufbaut. Jeder Knoten im Baum repräsentiert eine potenzielle Lösung.
+Die Knoten werden durch das Teilen des Suchraums erzeugt. Der ursprüngliche Suchraum (die Wurzel) wird in Unterräume aufgeteilt, und die Mitte jedes Teilraums wird als potenzielle Lösung getestet.
+Jeder Knoten hat eine Eltern-Knoten und kann mehrere Kind-Knoten haben, die jeweils einen weiteren Unterraum repräsentieren.
+2. Wie werden Lösungen ausgewählt und getestet?
+In jedem Schritt wird ein Knoten aus einem Stapel (stack) genommen. Dieser Stapel enthält alle noch zu untersuchenden Teilräume.
+Der ausgewählte Knoten repräsentiert einen Bereich im Suchraum mit bestimmten Grenzen (bounds).
+Die Methode wählt dann die Mitte des Teilraums als potenzielle Lösung (das sogenannte "Midpoint-Verfahren"). Diese Mitte wird getestet, um festzustellen, ob sie eine bessere Lösung als die bisherige beste Lösung ist.
+Welche Lösung als erstes getestet wird, hängt also davon ab, welcher Knoten als erstes vom Stapel genommen wird, und das wird wiederum durch die Reihenfolge der Knoten bestimmt, die durch die rekursive Aufteilung des Suchraums entstehen.
+3. Können Lösungen mehrfach erzeugt werden?
+Ja, mehrfache Erzeugung gleicher Lösungen ist möglich. Dies kann in folgenden Szenarien auftreten:
+
+Unterschiedliche Teilbäume könnten ähnliche oder sogar identische Lösungen erzeugen, wenn sie Teilräume überlappen. Stell dir das vor wie zwei Äste eines Baumes, die sich in unterschiedlichen Teilen der Iteration verzweigen, aber schließlich den gleichen Bereich des Suchraums repräsentieren.
+Bei jeder Iteration wird die Mitte des aktuellen Teilraums als neue Lösung getestet. Wenn mehrere Teilbäume Bereiche erzeugen, deren Mittelpunkte identisch sind, wird diese Lösung mehrfach als Knoten erzeugt.
+Beispiel:
+
+Nehmen wir an, der Suchraum reicht von 
+[
+0
+,
+100
+]
+[0,100] und du teilst ihn in zwei Hälften: 
+[
+0
+,
+50
+]
+[0,50] und 
+[
+51
+,
+100
+]
+[51,100]. Die Mitte von 
+[
+0
+,
+50
+]
+[0,50] ist 
+25
+25, und die Mitte von 
+[
+51
+,
+100
+]
+[51,100] ist 
+75
+75.
+Wenn du weiter unterteilst, könnten Teilräume wie 
+[
+0
+,
+25
+]
+[0,25] und 
+[
+26
+,
+50
+]
+[26,50] den gleichen Wert 
+12
+12 oder 
+38
+38 als Mitte haben. Wenn zwei verschiedene Äste diese gleichen Mittelpunkte erzeugen, werden die Knoten doppelt erzeugt, obwohl sie dieselbe Lösung darstellen.
+4. Wie wird festgelegt, welche Lösung getestet wird?
+Priorität des Stapels (Stack): Der Stapel bestimmt, in welcher Reihenfolge Teilräume untersucht werden. Normalerweise funktioniert der Stapel wie eine Last-In-First-Out (LIFO)-Struktur, was bedeutet, dass der zuletzt hinzugefügte Teilraum als nächstes untersucht wird.
+Das bedeutet: Welche Lösung getestet wird, hängt von der Reihenfolge ab, in der die Teilräume in den Stapel gelegt werden.
+                    </p>
             </div>
         </div>
     </header>
-    <script>
-        function showGuide() {
-            var modal = document.getElementById("myModal");
-            modal.style.display = "block";
-            document.addEventListener("keydown", closeOnEscape);
-        }
-
-        function closePopup() {
-            var modal = document.getElementById("myModal");
-            modal.style.display = "none";
-            document.removeEventListener("keydown", closeOnEscape);
-        }
-
-        function closeOnEscape(event) {
-            if (event.key === "Escape") {
-                closePopup();
-            }
-        }
-    </script>
     <div class="content">
         <h4><b>Lineare Optimierung: Branch & Bound Verfahren</b><button class="fa fa-info-circle" onclick="showGuide()"
                 style="font-size:24px; margin-left: 10px; color:grey; border:0; background-color: transparent;"></button>
@@ -107,36 +162,7 @@
                 </table>
                 <br>
                 <button id="btnZeichne" class="btn btn-secondary">Nebenbedingung hinzufügen</button> <br><br>
-                <script>
-
-                    document.addEventListener('DOMContentLoaded', function () {
-                        const maxNebenbedingungen = 9;
-                        const nebenbedingungenTable = document.getElementById('nebenbedingungen');
-                        const btnZeichne = document.getElementById('btnZeichne');
-                        let nebenbedingungCount = 2;
-
-                        btnZeichne.addEventListener('click', function () {
-                            if (nebenbedingungCount < maxNebenbedingungen) {
-                                nebenbedingungCount++;
-                                const neueZeile = document.createElement('tr');
-                                neueZeile.innerHTML = `
-                                    <td><label for="nebenbedingung${nebenbedingungCount}">Nebenbedingung ${nebenbedingungCount}</label></td>
-                                    <td><input type="text" id="nebenbedingung${nebenbedingungCount}"></td>
-                                `;
-                                nebenbedingungenTable.querySelector('tbody').appendChild(neueZeile);
-                            } else if (nebenbedingungCount = maxNebenbedingungen) {
-                                nebenbedingungCount++;
-                                const neueZeile = document.createElement('tr');
-                                neueZeile.innerHTML = `
-                                    <td><label for="nebenbedingung${nebenbedingungCount}">Nebenbedingung ${nebenbedingungCount}</label></td>
-                                    <td><input type="text" id="nebenbedingung${nebenbedingungCount}"></td>
-                                `;
-                                nebenbedingungenTable.querySelector('tbody').appendChild(neueZeile);
-                                btnZeichne.disabled = true;
-                            }
-                        });
-                    });
-                </script>
+                <button id="resetTree" class="btn btn-secondary" disabled>Baum zurücksetzen</button> <br><br>
                 <div class="controls">
                     <div style="margin:auto; display:flex">
                         <button id="skip-back">
@@ -157,6 +183,7 @@
             </div>
             <div>
                 <div style="display: flex; align-items: center; justify-content: center;">
+                    <span class="badge rounded-pill bg-success">Beste Lösung</span>
                     <span class="badge rounded-pill bg-primary">Gültige Lösung</span>
                     <span class="badge rounded-pill bg-danger">Ungültige Lösung</span>
                     <!--  <span class="badge rounded-pill bg-warning text-dark">Momentan beste Lösung</span>-->
@@ -168,8 +195,8 @@
                 <br>
             </div>
             <div style="flex: 1; text-align: center; margin-left:30px">
-                <button id="branchButton" class="btn btn-secondary">Baum
-                    erstellen</button><br>
+                <button id="branchButton" class="btn btn-secondary" disabled>Abweichungsdiagramm     
+                    erstellen</button><br><br>
                 <table style="margin: auto;" class="table table-hover" id="nebenbedingungen">
                     <tbody>
                         <tr>

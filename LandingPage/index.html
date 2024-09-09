@@ -49,50 +49,62 @@
 }
   </script>
   
-  <table style="margin: auto; margin-top:50px">
-    <tbody>
-    <tr>
-      <td>
-        <a href="../NumerischeIntegration/NumerischeIntegration.html" class="link">
+  <div class="kachel-container">
+    <div class="kachel-item">
+      <a href="../NumerischeIntegration/NumerischeIntegration.html" class="link">
         <div id="Integration" class="kachel">
           <img id="integrationImage" src="../pictures/IntegrationLogo0.png" class="logo">
           <p>Numerische Integration</p>
         </div>
       </a>
-      </td>
-      <td>
-        <a href="../LGS/LGS.html" class="link">
+    </div>
+    <div class="kachel-item">
+      <a href="../LGS/LGS.html" class="link">
         <div id="LGS" class="kachel">
           <img id="lgsImage" src="../pictures/LoesungLinearerGleichungssystemeLogo.png" class="logo">
           <p>Lösung linearer Gleichungssysteme</p>
         </div>
       </a>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <a href="../LineareOptimierung/LineareOptimierung.html" class="link">
+    </div>
+    <div class="kachel-item">
+      <a href="../LineareOptimierung/LineareOptimierung.html" class="link">
         <div class="kachel">
           <div class="container">
             <img src="../pictures/LineareOptimierungPfeil.png" class="pfeil">
             <img src="../pictures/LineareOptimierungZahnrad.png" class="zahnrad rotating logo">
-        </div>
+          </div>
           <p>Lineare Optimierung</p>
         </div>
       </a>
-      </td>
-      <td>
-        <a href="../NichtLineareAusgleichsprobleme/NichtLineareAusgleichsprobleme.html" class="link">
-        <div id="NLA" class="kachel">
-          <img id="nlaImage" src="../pictures/NichtLineareAusgleichsproblemeLogo.png" class="logo">
-          <p>Nicht lineare Ausgleichsprobleme</p>
-        </div>
-      </a>
-      </td>
-    </tr>
-    <a href="http://www.kirchbergnet.de/impressum.php" class="impressum-link" style="color:slategray">Impressum</a>
-  </tbody>
-  </table>
+    </div>
+  </div>
+  <a href="http://www.kirchbergnet.de/impressum.php" class="impressum-link" style="color:slategray">Impressum</a>
   <script src="animations.js"></script>
+
+<style>
+  .kachel-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 20px;
+    justify-items: center;
+    margin: 40px auto;
+    width: 80%;
+  }
+
+  .kachel-item:nth-child(3) {
+    grid-column: 1 / span 2;
+  }
+
+  .kachel {
+    text-align: center;
+  }
+
+  .logo {
+    width: 100px;
+  }
+
+
+
+</style>
 </body>
 </html>
