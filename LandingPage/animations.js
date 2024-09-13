@@ -23,3 +23,5 @@ function addHoverAnimation(elementId, images, imageElementId) {
 addHoverAnimation("LGS", ["../pictures/LoesungLinearerGleichungssystemeLogo.png", "../pictures/LoesungLinearerGleichungssystemeLogo2.png", "../pictures/LoesungLinearerGleichungssystemeLogo3.png", "../pictures/LoesungLinearerGleichungssystemeLogo4.png", "../pictures/LoesungLinearerGleichungssystemeLogo5.png", "../pictures/LoesungLinearerGleichungssystemeLogo6.png"], "lgsImage");
 //Animation für Numerische Integration
 addHoverAnimation("Integration", ["../pictures/IntegrationLogo0.png", "../pictures/IntegrationLogo1.png", "../pictures/IntegrationLogo2.png", "../pictures/IntegrationLogo3.png", "../pictures/IntegrationLogo4.png"], "integrationImage");
+
+module.exports = addHoverAnimation; // Export the function

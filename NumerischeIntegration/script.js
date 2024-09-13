@@ -1,21 +1,4 @@
 
-let fehlerWerte = [];
-var params = {
-    "appName": "classic",
-    "width": 600,
-    "height": 600,
-    "enableRightClick": false,
-    "showZoomButtons": true,
-    "showToolbar": false,
-    "showMenuBar": false,
-    "showAlgebraInput": false,
-    "useBrowserForJS": true,
-    "algebraView": false
-}
-var applet = new GGBApplet(params, true);
-window.addEventListener("load", function () {
-    applet.inject('ggb-element');
-});
 //Gutes Beispiel: x^2 + log(x) + sin(x^4)
 function ggbOnInit() {
     console.log("GeoGebra Applet initialized");
@@ -30,18 +13,70 @@ function ggbOnInit() {
         console.error("ggbApplet is not defined");
     }
 }
-
 document.addEventListener('DOMContentLoaded', function () {
-    var button = document.getElementById('integralButton');
-    button.style.display = "none"
+    let fehlerWerte = [];
+    var params = {
+    "appName": "classic",
+    "width": 600,
+    "height": 600,
+    "enableRightClick": false,
+    "showZoomButtons": true,
+    "showToolbar": false,
+    "showMenuBar": false,
+    "showAlgebraInput": false,
+    "useBrowserForJS": true,
+    "algebraView": false
+}
+var applet = new GGBApplet(params, true);
+    applet.inject('ggb-element');
+    let integralBtn = document.getElementById('integralButton');
+    integralBtn.style.display = "none"
+
+let playPauseButton = document.getElementById('play-pause');
+let forwardButton = document.getElementById('skip-forward');
+let backwardButton = document.getElementById('skip-back');
+let playIcon = document.getElementById('play-icon');
+let pauseIcon = document.getElementById('pause-icon');
+let zeichneFunktionButton = document.getElementById('btnZeichne');
+let slider = document.getElementById('punktPosition');
+let stopLoop = true;
+let trapez = document.getElementById('trapez');
+let simpson = document.getElementById('simpson');
+let stammfunktion = document.getElementById('myCheckbox');
+let stammFunktionInput = document.getElementById('stammfunktionContainer');
+
+zeichneFunktionButton.addEventListener('click', function(){
+    zeichneFunktion();
 });
 
-const playPauseButton = document.getElementById('play-pause');
-const forwardButton = document.getElementById('skip-forward');
-const backwardButton = document.getElementById('skip-back');
-const playIcon = document.getElementById('play-icon');
-const pauseIcon = document.getElementById('pause-icon');
-let stopLoop = true;
+slider.addEventListener('change', function(){
+    zeichneFunktion();
+})
+
+slider.addEventListener('input', function(){
+    bewegePunkt(slider.value);
+})
+
+integralBtn.addEventListener('click', function(){
+    berechneIntegral();
+});
+
+
+trapez.addEventListener('change', function(){
+    updateHeader(trapez);
+})
+
+simpson.addEventListener('change', function(){
+    updateHeader(simpson);
+})
+
+forwardButton.addEventListener('click', function (){
+    stepwiseChange(1)
+})
+backwardButton.addEventListener('click', function (){
+    stepwiseChange(-1)
+})
+
 playPauseButton.addEventListener('click', async () => {
     stopLoop = !stopLoop;
     const isPlaying = playIcon.style.display === 'none';
@@ -80,17 +115,13 @@ function stepwiseChange(step) {
     zeichneFunktion();
 }
 
-
-const stammfunktion = document.getElementById('myCheckbox');
-const stammFunktionInput = document.getElementById('stammfunktionContainer');
-const integralButton = document.getElementById('integralButton');
 stammfunktion.addEventListener('change', function () {
     $('#stammfunktion').popover({
         trigger: 'manual', container: 'body'
 
     });
     if (stammfunktion.checked) {
-        integralButton.disabled = true;
+        integralBtn.disabled = true;
         stammFunktionInput.style.display = "inline"
         $('#stammfunktion').popover('show');
         function validateInputs() {
@@ -101,10 +132,10 @@ stammfunktion.addEventListener('change', function () {
             
             if (areFunctionsEquivalent(funktion, ableitung)) {
                 $('#stammfunktion').popover('hide');
-                integralButton.disabled = false;
+                integralBtn.disabled = false;
             } else {
                 $('#stammfunktion').popover('show');
-                integralButton.disabled = true;
+                integralBtn.disabled = true;
             }
         }
         
@@ -112,7 +143,7 @@ stammfunktion.addEventListener('change', function () {
     } else {
         stammFunktionInput.style.display = "none"
         $('#stammfunktion').popover('hide');
-        integralButton.disabled = false;
+        integralBtn.disabled = false;
         document.getElementById('stammfunktion').value = null;
     }
 
@@ -135,147 +166,6 @@ function areFunctionsEquivalent(func1, func2) {
     }
   }
 
-
-function zeichneFunktion() {
-    var trapez = document.getElementById("trapez").checked;
-    if (trapez) {
-        console.log("Trapez")
-        zeichneFunktionTrapez();
-    } else {
-        console.log("Simpson")
-        zeichneFunktionSimpson();
-    }
-}
-function zeichneFunktionTrapez() {
-    ggbApplet.reset()
-    var funktion = document.getElementById('funktion').value.trim();
-    var untereGrenze = document.getElementById('untereGrenze').value.trim();
-    untereGrenze = Number(untereGrenze);
-    var obereGrenze = document.getElementById('obereGrenze').value.trim();
-    obereGrenze = Number(obereGrenze);
-    var anzahlTrapeze = document.getElementById('punktPosition').value;
-    try {
-        var fxLabel = ggbApplet.evalCommandGetLabels('f(x)=' + funktion);
-        if (fxLabel == null) {
-            document.getElementById('myCheckbox').style.display = "none"
-            document.getElementById('checkboxLabel').style.display = "none"
-            return;
-        }
-        ggbApplet.setColor(fxLabel, 62, 137, 62)
-        var functionLabel = ggbApplet.evalCommandGetLabels('g(x) = 0');
-        ggbApplet.setVisible(functionLabel, false);
-        breite = (obereGrenze - untereGrenze) / anzahlTrapeze;
-        for (var i = 0; i < anzahlTrapeze; i++) {
-            var a = untereGrenze + (i * breite);
-
-            var b = untereGrenze + (i + 1) * breite;
-
-            var fa = ggbApplet.getValue("f(" + a + ")");
-            var fb = ggbApplet.getValue("f(" + b + ")");
-
-            //var polygonLabel = ggbApplet.evalCommandGetLabels('Polygon((' + x1 + ',g(' + x1 + ')), (' + x2 + ', g(' + x2 + ')), (' + x2 + ',f(' + x2 + ')), (' + x1 + ', f(' + x1 + ')))');
-            line1 = ggbApplet.evalCommandGetLabels(`Segment((${a}, ${fa}), (${a}, 0))`);
-            line2 = ggbApplet.evalCommandGetLabels(`Segment((${b}, ${fb}), (${b}, 0))`);
-            line3 = ggbApplet.evalCommandGetLabels(`Segment((${a}, 0),(${b}, 0))`);
-            line4 = ggbApplet.evalCommandGetLabels(`Segment((${a}, ${fa}),(${b}, ${fb}))`);
-
-            ggbApplet.setColor(line1, 167, 93, 56)
-            ggbApplet.setColor(line2, 167, 93, 56)
-            ggbApplet.setColor(line3, 167, 93, 56)
-            ggbApplet.setColor(line4, 167, 93, 56)
-            ggbApplet.setFixed(line1, true, true);
-            ggbApplet.setFixed(line2, true, true);
-            ggbApplet.setFixed(line3, true, true);
-            ggbApplet.setFixed(line4, true, true);
-            //ggbApplet.setFixed(polygonLabel, true, false);
-        }
-    } catch (error) {
-        console.error('Fehler beim Auswerten der Funktion:', error);
-    }
-    document.getElementById('myCheckbox').style.display = "inline"
-    document.getElementById('checkboxLabel').style.display = "inline"
-    var button = document.getElementById('integralButton');
-    button.style.display = "inline"
-    document.getElementById('nachkomastellenContainer').style.display = "inline";
-}
-
-function zeichneFunktionSimpson() {
-    ggbApplet.reset()
-    var funktion = document.getElementById('funktion').value.trim();
-    var untereGrenze = document.getElementById('untereGrenze').value.trim();
-    untereGrenze = Number(untereGrenze);
-    var obereGrenze = document.getElementById('obereGrenze').value.trim();
-    obereGrenze = Number(obereGrenze);
-    var anzahlTrapeze = document.getElementById('punktPosition').value;
-    try {
-        var fxLabel = ggbApplet.evalCommandGetLabels('f(x)=' + funktion);
-        if (fxLabel == null) {
-            document.getElementById('myCheckbox').style.display = "none"
-            document.getElementById('checkboxLabel').style.display = "none"
-            return;
-        }
-        ggbApplet.setColor(fxLabel, 62, 137, 62)
-        var functionLabel = ggbApplet.evalCommandGetLabels('g(x) = 0');
-        ggbApplet.setVisible(functionLabel, false);
-        breite = (obereGrenze - untereGrenze) / anzahlTrapeze;
-        for (var i = 0; i < anzahlTrapeze; i++) {
-            var a = untereGrenze + (i * breite);
-
-            var b = untereGrenze + (i + 1) * breite;
-            var m = (a + b) / 2;
-
-            // Berechne die Funktionswerte
-            var fa = ggbApplet.getValue("f(" + a + ")");
-            var fm = ggbApplet.getValue("f(" + m + ")");
-            var fb = ggbApplet.getValue("f(" + b + ")");
-
-            // Berechnung der Koeffizienten A, B, C der Parabel y = Ax^2 + Bx + C
-            var Matrix = [
-                [a * a, a, 1],
-                [m * m, m, 1],
-                [b * b, b, 1]
-            ];
-
-            var Vector = [fa, fm, fb];
-
-            // Lösung des linearen Gleichungssystems
-            var invMatrix = math.inv(Matrix);
-            var result = math.multiply(invMatrix, Vector);
-            var A = result[0];
-            var B = result[1];
-            var C = result[2];
-
-
-            // Definiere die Parabel und erstelle die Kurve
-            const curveCommand = `Curve(t, ${A} * t^2 + ${B} * t + ${C}, t, ${a}, ${b})`;
-            const parabel = ggbApplet.evalCommandGetLabels(curveCommand);
-
-            console.log(a + " " + fa)
-            line1 = ggbApplet.evalCommandGetLabels(`Segment((${a}, ${fa}), (${a}, 0))`);
-            line2 = ggbApplet.evalCommandGetLabels(`Segment((${b}, ${fb}), (${b}, 0))`);
-            line3 = ggbApplet.evalCommandGetLabels(`Segment((${a}, 0),(${b}, 0))`);
-
-            ggbApplet.setColor(parabel, 167, 93, 56)
-            ggbApplet.setColor(line1, 167, 93, 56)
-            ggbApplet.setColor(line2, 167, 93, 56)
-            ggbApplet.setColor(line3, 167, 93, 56)
-            ggbApplet.setFixed(parabel, true, true);
-            ggbApplet.setFixed(line1, true, true);
-            ggbApplet.setFixed(line2, true, true);
-            ggbApplet.setFixed(line3, true, true);
-            //ggbApplet.evalCommandGetLabels('Polygon((' + a + ',g(' + a + ')), (' + a + ', f(' + a + ')), (' + b + ', f(' + b + ')), (' + b + ',g(' + b + ')))');
-
-            //var polygonLabel = ggbApplet.evalCommandGetLabels('Polygon((' + x1 + ',g(' + x1 + ')), (' + x2 + ', g(' + x2 + ')), (' + x2 + ',f(' + x2 + ')), (' + m + ',f(' + m + ')), (' + x1 + ', f(' + x1 + ')))');
-            //ggbApplet.setFixed(polygonLabel, true, false);
-        }
-    } catch (error) {
-        console.error('Fehler beim Auswerten der Funktion:', error);
-    }
-    document.getElementById('myCheckbox').style.display = "inline"
-    document.getElementById('checkboxLabel').style.display = "inline"
-    var button = document.getElementById('integralButton');
-    button.style.display = "inline"
-}
 
 function berechneIntegral() {
     if (window.myChart) {
@@ -540,7 +430,6 @@ function checkInputs() {
     const funktion = document.getElementById('funktion').value;
     const untereGrenze = document.getElementById('untereGrenze').value;
     const obereGrenze = document.getElementById('obereGrenze').value;
-    const zeichneFunktionButton = document.getElementById('btnZeichne');
     const forward = document.getElementById('skip-forward');
     const backward = document.getElementById('skip-back');
     const play = document.getElementById('play-pause');
@@ -600,3 +489,181 @@ function bewegePunkt(value) {
         return;
     }
 }
+
+function updateHeader(radio) {
+    if (radio.checked) {
+        document.getElementById('integration-method').innerHTML = `<b>Numerische Integration: ${radio.value}</b>`;
+        ggbApplet.reset()
+        if (checkInputs()) {
+            zeichneFunktion()
+        } else {
+            var integralBtn = document.getElementById('integralButton');
+            integralBtn.style.display = "none"
+            const nachkommastellen = document.getElementById('nachkomastellenContainer').style.display = "none";
+            document.getElementById('btnZeichne').disabled = true;
+            var checkbox = document.getElementById('myCheckbox')
+            checkbox.checked = false;
+            checkbox.style.display = "none"
+            document.getElementById('checkboxLabel').style.display = "none"
+            document.getElementById('stammfunktionContainer').style.display = "none";
+        }
+        const resultContainer = document.getElementById('resultContainer').innerHTML = "";
+        const histogramm = document.getElementById('abweichungsHistogramm').innerHTML = "";
+        if (radio.value == "Simpsonregel") {
+            document.getElementById('sliderValue').innerText = "Anzahl Parabeln: " + document.getElementById('punktPosition').value;
+
+        } else {
+            document.getElementById('sliderValue').innerText = "Anzahl Trapeze: " + document.getElementById('punktPosition').value;
+
+        }
+
+    }
+}
+
+
+function zeichneFunktion() {
+    if (trapez.checked) {
+        console.log("Trapez")
+        zeichneFunktionTrapez();
+    } else {
+        console.log("Simpson")
+        zeichneFunktionSimpson();
+    }
+}
+function zeichneFunktionTrapez() {
+    ggbApplet.reset()
+    var funktion = document.getElementById('funktion').value.trim();
+    var untereGrenze = document.getElementById('untereGrenze').value.trim();
+    untereGrenze = Number(untereGrenze);
+    var obereGrenze = document.getElementById('obereGrenze').value.trim();
+    obereGrenze = Number(obereGrenze);
+    var anzahlTrapeze = document.getElementById('punktPosition').value;
+    try {
+        var fxLabel = ggbApplet.evalCommandGetLabels('f(x)=' + funktion);
+        if (fxLabel == null) {
+            document.getElementById('myCheckbox').style.display = "none"
+            document.getElementById('checkboxLabel').style.display = "none"
+            return;
+        }
+        ggbApplet.setColor(fxLabel, 62, 137, 62)
+        var functionLabel = ggbApplet.evalCommandGetLabels('g(x) = 0');
+        ggbApplet.setVisible(functionLabel, false);
+        breite = (obereGrenze - untereGrenze) / anzahlTrapeze;
+        for (var i = 0; i < anzahlTrapeze; i++) {
+            var a = untereGrenze + (i * breite);
+
+            var b = untereGrenze + (i + 1) * breite;
+
+            var fa = ggbApplet.getValue("f(" + a + ")");
+            var fb = ggbApplet.getValue("f(" + b + ")");
+
+            //var polygonLabel = ggbApplet.evalCommandGetLabels('Polygon((' + x1 + ',g(' + x1 + ')), (' + x2 + ', g(' + x2 + ')), (' + x2 + ',f(' + x2 + ')), (' + x1 + ', f(' + x1 + ')))');
+            line1 = ggbApplet.evalCommandGetLabels(`Segment((${a}, ${fa}), (${a}, 0))`);
+            line2 = ggbApplet.evalCommandGetLabels(`Segment((${b}, ${fb}), (${b}, 0))`);
+            line3 = ggbApplet.evalCommandGetLabels(`Segment((${a}, 0),(${b}, 0))`);
+            line4 = ggbApplet.evalCommandGetLabels(`Segment((${a}, ${fa}),(${b}, ${fb}))`);
+
+            ggbApplet.setColor(line1, 167, 93, 56)
+            ggbApplet.setColor(line2, 167, 93, 56)
+            ggbApplet.setColor(line3, 167, 93, 56)
+            ggbApplet.setColor(line4, 167, 93, 56)
+            ggbApplet.setFixed(line1, true, true);
+            ggbApplet.setFixed(line2, true, true);
+            ggbApplet.setFixed(line3, true, true);
+            ggbApplet.setFixed(line4, true, true);
+            //ggbApplet.setFixed(polygonLabel, true, false);
+        }
+    } catch (error) {
+        console.error('Fehler beim Auswerten der Funktion:', error);
+    }
+    document.getElementById('myCheckbox').style.display = "inline"
+    document.getElementById('checkboxLabel').style.display = "inline"
+    var integralBtn = document.getElementById('integralButton');
+    integralBtn.style.display = "inline"
+    document.getElementById('nachkomastellenContainer').style.display = "inline";
+}
+
+function zeichneFunktionSimpson() {
+    ggbApplet.reset()
+    var funktion = document.getElementById('funktion').value.trim();
+    var untereGrenze = document.getElementById('untereGrenze').value.trim();
+    untereGrenze = Number(untereGrenze);
+    var obereGrenze = document.getElementById('obereGrenze').value.trim();
+    obereGrenze = Number(obereGrenze);
+    var anzahlTrapeze = document.getElementById('punktPosition').value;
+    try {
+        var fxLabel = ggbApplet.evalCommandGetLabels('f(x)=' + funktion);
+        if (fxLabel == null) {
+            document.getElementById('myCheckbox').style.display = "none"
+            document.getElementById('checkboxLabel').style.display = "none"
+            return;
+        }
+        ggbApplet.setColor(fxLabel, 62, 137, 62)
+        var functionLabel = ggbApplet.evalCommandGetLabels('g(x) = 0');
+        ggbApplet.setVisible(functionLabel, false);
+        breite = (obereGrenze - untereGrenze) / anzahlTrapeze;
+        for (var i = 0; i < anzahlTrapeze; i++) {
+            var a = untereGrenze + (i * breite);
+
+            var b = untereGrenze + (i + 1) * breite;
+            var m = (a + b) / 2;
+
+            // Berechne die Funktionswerte
+            var fa = ggbApplet.getValue("f(" + a + ")");
+            var fm = ggbApplet.getValue("f(" + m + ")");
+            var fb = ggbApplet.getValue("f(" + b + ")");
+
+            // Berechnung der Koeffizienten A, B, C der Parabel y = Ax^2 + Bx + C
+            var Matrix = [
+                [a * a, a, 1],
+                [m * m, m, 1],
+                [b * b, b, 1]
+            ];
+
+            var Vector = [fa, fm, fb];
+
+            // Lösung des linearen Gleichungssystems
+            var invMatrix = math.inv(Matrix);
+            var result = math.multiply(invMatrix, Vector);
+            var A = result[0];
+            var B = result[1];
+            var C = result[2];
+
+
+            // Definiere die Parabel und erstelle die Kurve
+            const curveCommand = `Curve(t, ${A} * t^2 + ${B} * t + ${C}, t, ${a}, ${b})`;
+            const parabel = ggbApplet.evalCommandGetLabels(curveCommand);
+
+            console.log(a + " " + fa)
+            line1 = ggbApplet.evalCommandGetLabels(`Segment((${a}, ${fa}), (${a}, 0))`);
+            line2 = ggbApplet.evalCommandGetLabels(`Segment((${b}, ${fb}), (${b}, 0))`);
+            line3 = ggbApplet.evalCommandGetLabels(`Segment((${a}, 0),(${b}, 0))`);
+
+            ggbApplet.setColor(parabel, 167, 93, 56)
+            ggbApplet.setColor(line1, 167, 93, 56)
+            ggbApplet.setColor(line2, 167, 93, 56)
+            ggbApplet.setColor(line3, 167, 93, 56)
+            ggbApplet.setFixed(parabel, true, true);
+            ggbApplet.setFixed(line1, true, true);
+            ggbApplet.setFixed(line2, true, true);
+            ggbApplet.setFixed(line3, true, true);
+            //ggbApplet.evalCommandGetLabels('Polygon((' + a + ',g(' + a + ')), (' + a + ', f(' + a + ')), (' + b + ', f(' + b + ')), (' + b + ',g(' + b + ')))');
+
+            //var polygonLabel = ggbApplet.evalCommandGetLabels('Polygon((' + x1 + ',g(' + x1 + ')), (' + x2 + ', g(' + x2 + ')), (' + x2 + ',f(' + x2 + ')), (' + m + ',f(' + m + ')), (' + x1 + ', f(' + x1 + ')))');
+            //ggbApplet.setFixed(polygonLabel, true, false);
+        }
+    } catch (error) {
+        console.error('Fehler beim Auswerten der Funktion:', error);
+    }
+    document.getElementById('myCheckbox').style.display = "inline"
+    document.getElementById('checkboxLabel').style.display = "inline"
+    var integralBtn = document.getElementById('integralButton');
+    integralBtn.style.display = "inline"
+}
+
+});
+
+
+module.exports = {
+    ggbOnInit
+};
