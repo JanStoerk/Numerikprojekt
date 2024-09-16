@@ -1,4 +1,4 @@
-const { BranchAndBound, extractVariablesAndCoefficients, addConstraint, reset, checkInputs, getInputs, createDiagram, skipForward, playBranchAndBound, skipBackward, checkForUnboundedSolution, updateResults } = require('../LineareOptimierung/scriptOptimierung');
+const { BranchAndBound, extractVariablesAndCoefficients, addConstraint, reset, checkInputs, getInputs, createDiagram, skipForward, playBranchAndBound, skipBackward, checkForUnboundedSolution, updateResults, setBBSolver } = require('../LineareOptimierung/scriptOptimierung');
 
 
 function setupDOM() {
@@ -689,3 +689,250 @@ describe('createDiagram function', () => {
         expect(global.reset).toHaveLength(0);
     });
 });
+
+describe('skipForward', () => {
+    let playIcon;
+    let pauseIcon;
+    let mockBBSolver;
+
+    const getInputs = jest.fn();
+    const checkForUnboundedSolution = jest.fn();
+    const updateResults = jest.fn();
+    const reset = jest.fn();
+    const BranchAndBound = jest.fn(); // Mock der BranchAndBound-Klasse
+
+    global.getInputs = getInputs;
+    global.checkForUnboundedSolution = checkForUnboundedSolution;
+    global.updateResults = updateResults;
+    global.reset = reset;
+    global.BranchAndBound = BranchAndBound;
+
+    beforeEach(() => {
+        setupDOM(); // Mocke das HTML
+
+        playIcon = document.getElementById("play-icon")
+        pauseIcon = document.getElementById("pause-icon")
+        // Erstelle eine Mock-Instanz von bbSolver
+        mockBBSolver = {
+            iterate: jest.fn()
+        };
+    });
+
+    test('sollte Iteration durchführen, wenn bbSolver existiert', () => {
+        setBBSolver(mockBBSolver); // Setze den mockBBSolver
+
+        skipForward();
+
+        expect(mockBBSolver.iterate).toHaveBeenCalled();
+        expect(global.updateResults).toHaveBeenCalledTimes(0)
+        expect(playIcon.style.display).toBe('block');
+        expect(pauseIcon.style.display).toBe('none');
+    });
+
+    test('sollte reset aufrufen, wenn unbounded solution vorhanden ist', () => {
+        setBBSolver(null); // Setze den mockBBSolver auf null
+
+        skipForward();
+
+        expect(global.getInputs).toHaveBeenCalledTimes(0)
+        expect(global.checkForUnboundedSolution).toHaveBeenCalledTimes(0)
+        expect(global.reset).toHaveBeenCalledTimes(0)
+    });
+});
+
+
+describe('playBranchAndBound', () => {
+    let playIcon;
+    let pauseIcon;
+    let bbSolver;
+    let stopFunction;
+    let getInputs;
+    let checkForUnboundedSolution;
+    let reset;
+    let updateResults;
+  
+    beforeEach(() => {
+      setupDOM()
+  
+      playIcon = document.getElementById('play-icon');
+      pauseIcon = document.getElementById('pause-icon');
+  
+      // Mock external functions and variables
+      stopFunction = false;
+      getInputs = jest.fn().mockReturnValue({
+        variables: [],
+        objectiveCoefficients: [],
+        constraintCoefficients: [],
+        constraintBounds: [],
+        constraintTypes: []
+      });
+      checkForUnboundedSolution = jest.fn().mockReturnValue(false);
+      reset = jest.fn();
+      updateResults = jest.fn();
+  
+      // Mock BranchAndBound class
+      class MockBranchAndBound {
+        constructor() {
+          this.iterations = 0;
+          this.maxIterations = 1;
+        }
+        iterate() {
+          this.iterations += 1;
+          if (this.iterations === this.maxIterations) return true;
+          return "not finished";
+        }
+      }
+      bbSolver = new MockBranchAndBound();
+      global.stopFunction = stopFunction;
+      global.setBBSolver = setBBSolver;
+      global.getInputs = getInputs;
+      global.checkForUnboundedSolution = checkForUnboundedSolution;
+      global.reset = reset;
+      global.updateResults = updateResults;
+      setBBSolver(bbSolver)
+    });
+  
+    test('should toggle icons and set stopFunction to true when playIcon is hidden', async () => {
+        // Set playIcon to hidden and pauseIcon to visible
+        playIcon.style.display = 'none';
+        pauseIcon.style.display = 'block';
+        stopFunction = false; // Ensure stopFunction is initially false
+    
+        await playBranchAndBound();
+    
+        // Test if icons are updated correctly
+        expect(playIcon.style.display).toBe('block');
+        expect(pauseIcon.style.display).toBe('none');
+        expect(stopFunction).toBe(false); // stopFunction should be set to true
+      });
+
+    test('should toggle icons and set stopFunction to false when playIcon is visible', async () => {
+        // Set playIcon to visible and pauseIcon to hidden
+        playIcon.style.display = 'block';
+        pauseIcon.style.display = 'none';
+        stopFunction = true; // Ensure stopFunction is initially true
+    
+        await playBranchAndBound();
+    
+        // Test if icons are updated correctly
+        expect(playIcon.style.display).toBe('block');
+        expect(pauseIcon.style.display).toBe('none');
+        expect(stopFunction).toBe(true); // stopFunction should be set to false
+      });
+
+    test('should reset if checkForUnboundedSolution returns true', async () => {
+        setBBSolver(null)
+  
+      await playBranchAndBound();
+  
+      expect(global.reset).toHaveBeenCalledTimes(0);
+    });
+  });
+
+
+  describe('skipBackward', () => {
+    let bbSolver;
+    let updateResults;
+  
+    beforeEach(() => {
+      // Mock für bbSolver
+      bbSolver = {
+        nodes: {
+          get: jest.fn().mockReturnValue([{ id: 3 },{ id: 2 }]),
+          remove: jest.fn(),
+          update: jest.fn()
+        },
+        edges: {
+          getIds: jest.fn().mockReturnValue([10, 9, 8]),
+          remove: jest.fn()
+        },
+        network: {
+          body: {
+            data: {
+              nodes: {
+                remove: jest.fn()
+              },
+              edges: {
+                remove: jest.fn()
+              }
+            }
+          },
+          focus: jest.fn()
+        },
+        iterations: 1,
+        nodeIdCounter: 2,
+        history: [{
+          stack: [],
+          node: {},
+          bestNodeId: 1,
+          bestSolution: {},
+          bestObjectiveValue: 100,
+          lowerBound: 50,
+          globalUpperBound: 200
+        }],
+        stack: [],
+        bestNodeId: 1,
+        bestSolution: {},
+        bestObjectiveValue: 100,
+        lowerBound: 50,
+        globalUpperBound: 200
+      };
+  
+      updateResults = jest.fn();
+      global.bbSolver = bbSolver;
+      global.updateResults = updateResults;
+    });
+  
+    test('should correctly remove the last node and edge, and update bbSolver state', () => {
+    setBBSolver(bbSolver)
+      // Execute skipBackward
+      skipBackward();
+        
+      // Test if the last node and edge were removed
+      expect(bbSolver.network.body.data.nodes.remove).toHaveBeenCalledWith(2); // ID of the last node
+      expect(bbSolver.network.body.data.edges.remove).toHaveBeenCalledWith(8); // ID of the last edge
+      expect(bbSolver.nodes.remove).toHaveBeenCalledWith(2);
+      expect(bbSolver.edges.remove).toHaveBeenCalledWith(8);
+  
+      // Test if iterations and nodeIdCounter are updated
+      expect(bbSolver.iterations).toBe(0);
+      expect(bbSolver.nodeIdCounter).toBe(1);
+  
+      // Test if stack and properties are updated correctly
+      expect(bbSolver.stack).toEqual([{}]); // the stack after pop contains an empty object
+      expect(bbSolver.bestNodeId).toBe(1);
+      expect(bbSolver.bestSolution).toEqual({});
+      expect(bbSolver.bestObjectiveValue).toBe(100);
+      expect(bbSolver.lowerBound).toBe(50);
+      expect(bbSolver.globalUpperBound).toBe(200);
+  
+      // Test if network focus is called with correct parameters
+      const expectedFocusParams = {
+        scale: 1.5,
+        animation: {
+          duration: 1000,
+          easingFunction: 'easeInOutQuad'
+        }
+      };
+  
+      expect(bbSolver.network.focus).toHaveBeenCalledWith(1, expectedFocusParams); // lastNodeId - 1 = 1
+  
+      // Test if updateResults is called with bbSolver
+      expect(updateResults).toHaveBeenCalledTimes(0)
+    });
+  
+    test('should return early if the last node ID is 1', () => {
+      // Set up mock to return a last node ID of 1
+      bbSolver.nodes.get = jest.fn().mockReturnValue([{ id: 1 }]);
+        setBBSolver(bbSolver)
+      // Execute skipBackward
+      skipBackward();
+  
+      // Test that no removal or updates happened
+      expect(bbSolver.nodes.remove).not.toHaveBeenCalled();
+      expect(bbSolver.edges.remove).not.toHaveBeenCalled();
+      expect(bbSolver.network.body.data.nodes.remove).not.toHaveBeenCalled();
+      expect(bbSolver.network.body.data.edges.remove).not.toHaveBeenCalled();
+      expect(updateResults).not.toHaveBeenCalled();
+    });
+  });

@@ -597,7 +597,7 @@ function reset() {
 
     if (bbSolver != null) {
         bbSolver.resetTree();
-        bbSolver = null;
+        setBBSolver(null)
     }
     for (let i = 1; i <= nebenbedingungCount; i++) {
         const input = document.getElementById('nebenbedingung' + i);
@@ -652,7 +652,7 @@ function createDiagram() {
 
     var extractedInputs = getInputs()
     if (!checkForUnboundedSolution(extractedInputs.variables, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes)) {
-        bbSolver = new BranchAndBound(extractedInputs.variables, extractedInputs.objectiveCoefficients, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes, funktion);
+        setBBSolver(new BranchAndBound(extractedInputs.variables, extractedInputs.objectiveCoefficients, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes, funktion))
 
         bbSolver.solve();
         updateResults(bbSolver);
@@ -674,7 +674,7 @@ function skipForward() {
         var extractedInputs = getInputs();
         if (!checkForUnboundedSolution(extractedInputs.variables, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes)) {
 
-            bbSolver = new BranchAndBound(extractedInputs.variables, extractedInputs.objectiveCoefficients, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes, funktion);
+            setBBSolver=(new BranchAndBound(extractedInputs.variables, extractedInputs.objectiveCoefficients, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes, funktion))
             bbSolver.iterate();
             updateResults(bbSolver);
         } else {
@@ -700,9 +700,10 @@ async function playBranchAndBound() {
     if (!bbSolver) {
         var extractedInputs = getInputs()
         if (!checkForUnboundedSolution(extractedInputs.variables, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes)) {
-            bbSolver = new BranchAndBound(extractedInputs.variables, extractedInputs.objectiveCoefficients, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes, funktion);
+            setBBSolver = (new BranchAndBound(extractedInputs.variables, extractedInputs.objectiveCoefficients, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes, funktion))
         } else {
             reset();
+            return;
         }
     }
 
@@ -859,6 +860,10 @@ function updateResults(bbSolver) {
     prunedTrees.innerHTML = bbSolver.prunedTreeCount;
 }
 
+function setBBSolver(solver) {
+    bbSolver = solver;
+}
+
 module.exports = {
     BranchAndBound,
     extractVariablesAndCoefficients,
@@ -871,5 +876,6 @@ module.exports = {
     playBranchAndBound,
     skipBackward,
     checkForUnboundedSolution,
-    updateResults
+    updateResults,
+    setBBSolver
 }
