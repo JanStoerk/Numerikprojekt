@@ -261,10 +261,10 @@
             </div>
             <div class="radio-buttons">
                 <input class="form-check-input" type="radio" id="trapez" name="integration-method" value="Trapezregel"
-                     checked>
+                    onchange="updateHeader(this)" checked>
                 <label for="trapez">Trapezregel</label><br>
                 <input class="form-check-input" type="radio" id="simpson" name="integration-method" value="Simpsonregel"
-                    >
+                    onchange="updateHeader(this)">
                 <label for="simpson">Simpsonregel</label><br>
             </div>
         </div><br>
@@ -288,18 +288,18 @@
                     </tbody>
                 </table>
                 <br>
-                <button id="btnZeichne" disabled class="btn btn-secondary">Zeichne Funktion
+                <button id="btnZeichne" onclick="zeichneFunktion()" disabled class="btn btn-secondary">Zeichne Funktion
                     ein</button> <br><br>
                 <div class="controls">
                     <div style="margin:auto; display:flex">
-                        <button id="skip-back" disabled>
+                        <button id="skip-back" onclick="stepwiseChange(-1)" disabled>
                             <i class="fas fa-backward"></i>
                         </button>
                         <button id="play-pause" style="margin-inline: 20px;" disabled>
                             <i class="fas fa-play" id="play-icon"></i>
                             <i class="fas fa-pause" id="pause-icon" style="display: none;"></i>
                         </button>
-                        <button id="skip-forward" disabled>
+                        <button id="skip-forward" onclick="stepwiseChange(1)" disabled>
                             <i class="fas fa-forward"></i>
                         </button>
                     </div>
@@ -323,11 +323,12 @@
                     style="width: 600px; display: flex; flex-direction: column; align-items: center;">
                     <br>
                     <span id="sliderValue">Anzahl Trapeze: 5</span>
-                    <input type="range" id="punktPosition" min="1" style="width: 100%;" max="50" value="5" step="1"><br>
+                    <input type="range" id="punktPosition" min="1" style="width: 100%;" max="50" value="5" step="1"
+                        oninput="bewegePunkt(this.value)" onchange="zeichneFunktion()"><br>
                 </div>
             </div>
             <div style="flex: 1; text-align: center; margin-left:30px">
-                <button id="integralButton" class="btn btn-secondary">Berechne
+                <button id="integralButton" class="btn btn-secondary" onclick="berechneIntegral()">Berechne
                     Integral</button><br><br>
                 <table id="nachkomastellenContainer" style="display:none;" class="table table-hover">
                     <tr>
@@ -353,7 +354,7 @@
             </div>
         </div>
         <div id="diagramm" style="width:1400px;height:400px;display:none"></div>
-        <script src="./script.js"></script>
+        <script src="./scriptIntegration.js"></script>
     </div>
 </body>
 

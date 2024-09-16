@@ -33,51 +33,21 @@ var applet = new GGBApplet(params, true);
     integralBtn.style.display = "none"
 
 let playPauseButton = document.getElementById('play-pause');
-let forwardButton = document.getElementById('skip-forward');
-let backwardButton = document.getElementById('skip-back');
-let playIcon = document.getElementById('play-icon');
-let pauseIcon = document.getElementById('pause-icon');
-let zeichneFunktionButton = document.getElementById('btnZeichne');
-let slider = document.getElementById('punktPosition');
-let stopLoop = true;
-let trapez = document.getElementById('trapez');
-let simpson = document.getElementById('simpson');
 let stammfunktion = document.getElementById('myCheckbox');
-let stammFunktionInput = document.getElementById('stammfunktionContainer');
+document.getElementById('funktion').addEventListener('input', checkInputs);
+document.getElementById('untereGrenze').addEventListener('input', checkInputs);
+document.getElementById('obereGrenze').addEventListener('input', checkInputs);
+playPauseButton.addEventListener('click', playPauseHandler);
+stammfunktion.addEventListener('change', stammfunktionChangeHandler);
 
-zeichneFunktionButton.addEventListener('click', function(){
-    zeichneFunktion();
+
+
 });
+let stopLoop = true;
 
-slider.addEventListener('change', function(){
-    zeichneFunktion();
-})
-
-slider.addEventListener('input', function(){
-    bewegePunkt(slider.value);
-})
-
-integralBtn.addEventListener('click', function(){
-    berechneIntegral();
-});
-
-
-trapez.addEventListener('change', function(){
-    updateHeader(trapez);
-})
-
-simpson.addEventListener('change', function(){
-    updateHeader(simpson);
-})
-
-forwardButton.addEventListener('click', function (){
-    stepwiseChange(1)
-})
-backwardButton.addEventListener('click', function (){
-    stepwiseChange(-1)
-})
-
-playPauseButton.addEventListener('click', async () => {
+function playPauseHandler() {
+    let playIcon = document.getElementById('play-icon');
+    let pauseIcon = document.getElementById('pause-icon');
     stopLoop = !stopLoop;
     const isPlaying = playIcon.style.display === 'none';
     if (isPlaying) {
@@ -89,22 +59,60 @@ playPauseButton.addEventListener('click', async () => {
         var slider = document.getElementById('punktPosition');
         var value = Number(slider.value);
 
-        while (value < 50) {
-            if (stopLoop) {
-                console.log('Schleife abgebrochen');
-                break;
+        (async function() {
+            while (value < 50) {
+                if (stopLoop) {
+                    console.log('Schleife abgebrochen');
+                    break;
+                }
+                value += 1;
+                slider.value = value;
+                document.getElementById('sliderValue').innerText = "Anzahl Trapeze: " + slider.value;
+                zeichneFunktion();
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                console.log(slider.value)
             }
-            value += 1;
-            slider.value = value;
-            document.getElementById('sliderValue').innerText = "Anzahl Trapeze: " + slider.value;
-            zeichneFunktion();
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            console.log(slider.value)
-        }
-        playIcon.style.display = 'block';
-        pauseIcon.style.display = 'none';
+            playIcon.style.display = 'block';
+            pauseIcon.style.display = 'none';
+        })();
     }
-});
+}
+
+ function stammfunktionChangeHandler() {
+    let stammfunktion = document.getElementById('myCheckbox');
+    let stammFunktionInput = document.getElementById('stammfunktionContainer'); 
+    let integralBtn = document.getElementById('integralButton');
+    $('#stammfunktion').popover({
+        trigger: 'manual', container: 'body'
+    });
+    if (stammfunktion.checked) {
+        integralBtn.disabled = true;
+        stammFunktionInput.style.display = "inline";
+        $('#stammfunktion').popover('show');        
+        $('#stammfunktion, #funktion').on('input', validateInputs);
+    } else {
+        stammFunktionInput.style.display = "none";
+        $('#stammfunktion').popover('hide');
+        integralBtn.disabled = false;
+        document.getElementById('stammfunktion').value = null;
+    }
+}
+
+function validateInputs() {
+    let integralBtn = document.getElementById('integralButton');
+    var stammfunktionStr = $('#stammfunktion').val().replace(',', '.');
+    var funktion = $('#funktion').val().trim().replace(/\s+/g, '').replace(',', '.');
+    
+    const ableitung = math.derivative(stammfunktionStr, 'x').toString().replace(/\s+/g, '');
+    
+    if (areFunctionsEquivalent(funktion, ableitung)) {
+        $('#stammfunktion').popover('hide');
+        integralBtn.disabled = false;
+    } else {
+        $('#stammfunktion').popover('show');
+        integralBtn.disabled = true;
+    }
+}
 
 function stepwiseChange(step) {
     stopLoop = true;
@@ -115,56 +123,50 @@ function stepwiseChange(step) {
     zeichneFunktion();
 }
 
-stammfunktion.addEventListener('change', function () {
-    $('#stammfunktion').popover({
-        trigger: 'manual', container: 'body'
+function trapezRegel(fStr, a, b, n) {
 
-    });
-    if (stammfunktion.checked) {
-        integralBtn.disabled = true;
-        stammFunktionInput.style.display = "inline"
-        $('#stammfunktion').popover('show');
-        function validateInputs() {
-            var stammfunktionStr = $('#stammfunktion').val().replace(',', '.');
-            var funktion = $('#funktion').val().trim().replace(/\s+/g, '').replace(',', '.');
-            
-            const ableitung = math.derivative(stammfunktionStr, 'x').toString().replace(/\s+/g, '');
-            
-            if (areFunctionsEquivalent(funktion, ableitung)) {
-                $('#stammfunktion').popover('hide');
-                integralBtn.disabled = false;
-            } else {
-                $('#stammfunktion').popover('show');
-                integralBtn.disabled = true;
-            }
-        }
-        
-        $('#stammfunktion, #funktion').on('input', validateInputs);
-    } else {
-        stammFunktionInput.style.display = "none"
-        $('#stammfunktion').popover('hide');
-        integralBtn.disabled = false;
-        document.getElementById('stammfunktion').value = null;
+    f = math.parse(fStr);
+
+    const h = (b - a) / n;
+
+    const x = [];
+    for (let i = 0; i <= n; i++) {
+        x.push(a + i * h);
     }
 
-})
+    const y = x.map(xVal => f.evaluate({ x: xVal }));
 
-function areFunctionsEquivalent(func1, func2) {
-    try {
-      const parsedFunc1 = math.parse(func1);
-      const parsedFunc2 = math.parse(func2);
-  
-      const simplifiedFunc1 = math.simplify(parsedFunc1).toString();
-      const simplifiedFunc2 = math.simplify(parsedFunc2).toString();
-      console.log(simplifiedFunc1)
-      console.log(simplifiedFunc2)
-  
-      return simplifiedFunc1 === simplifiedFunc2;
-    } catch (e) {
-      console.error('Fehler beim Vereinfachen oder Vergleichen der Funktionen:', e);
-      return false;
+    let T = 0.5 * y[0] + 0.5 * y[n];
+    for (let i = 1; i < n; i++) {
+        T += y[i];
     }
-  }
+    T *= h;
+
+    return T;
+}
+
+function simpsonRegel(fStr, a, b, n) {
+
+    let f = math.compile(fStr);
+
+    let h = (b - a) / n;
+
+    let S = 0;
+
+    for (let i = 0; i < n; i++) {
+        let x0 = a + i * h;
+        let x1 = x0 + h;
+        let xm = (x0 + x1) / 2;
+
+        let f0 = f.evaluate({ x: x0 });
+        let f1 = f.evaluate({ x: x1 });
+        let fm = f.evaluate({ x: xm });
+
+        S += (h / 6) * (f0 + 4 * fm + f1);
+    }
+
+    return S;
+}
 
 
 function berechneIntegral() {
@@ -290,25 +292,12 @@ function berechneIntegral() {
             modeBarButtonsToAdd: [{
                 name: 'Bild als PNG herunterladen',
                 icon: Plotly.Icons.camera,
-                click: function (gd) {
-                    Plotly.downloadImage(gd, {
-                        format: 'png',
-                        filename: 'Numerische Integration Abweichungsdiagramm',
-                        height: 600,
-                        width: 1200,
-                        scale: 1
-                    });
-                }
+                click: downloadImageHandler
             },
             {
                 name: 'Achsen zurücksetzen',
                 icon: Plotly.Icons.home,
-                click: function (gd) {
-                    Plotly.relayout(gd, {
-                        'xaxis.autorange': true,
-                        'yaxis.autorange': true
-                    });
-                }
+                click: resetAxesHandler
             }]
         };
 
@@ -317,52 +306,42 @@ function berechneIntegral() {
         document.getElementById('diagramm').style.display = "inline";
     }
 
+    
+}
+function downloadImageHandler(gd) {
+    Plotly.downloadImage(gd, {
+        format: 'png',
+        filename: 'Numerische Integration Abweichungsdiagramm',
+        height: 600,
+        width: 1200,
+        scale: 1
+    });
 }
 
-function trapezRegel(fStr, a, b, n) {
-
-    f = math.parse(fStr);
-
-    const h = (b - a) / n;
-
-    const x = [];
-    for (let i = 0; i <= n; i++) {
-        x.push(a + i * h);
-    }
-
-    const y = x.map(xVal => f.evaluate({ x: xVal }));
-
-    let T = 0.5 * y[0] + 0.5 * y[n];
-    for (let i = 1; i < n; i++) {
-        T += y[i];
-    }
-    T *= h;
-
-    return T;
+function resetAxesHandler(gd) {
+    Plotly.relayout(gd, {
+        'xaxis.autorange': true,
+        'yaxis.autorange': true
+    });
 }
 
-function simpsonRegel(fStr, a, b, n) {
 
-    let f = math.compile(fStr);
-
-    let h = (b - a) / n;
-
-    let S = 0;
-
-    for (let i = 0; i < n; i++) {
-        let x0 = a + i * h;
-        let x1 = x0 + h;
-        let xm = (x0 + x1) / 2;
-
-        let f0 = f.evaluate({ x: x0 });
-        let f1 = f.evaluate({ x: x1 });
-        let fm = f.evaluate({ x: xm });
-
-        S += (h / 6) * (f0 + 4 * fm + f1);
+function areFunctionsEquivalent(func1, func2) {
+    try {
+      const parsedFunc1 = math.parse(func1);
+      const parsedFunc2 = math.parse(func2);
+  
+      const simplifiedFunc1 = math.simplify(parsedFunc1).toString();
+      const simplifiedFunc2 = math.simplify(parsedFunc2).toString();
+      console.log(simplifiedFunc1)
+      console.log(simplifiedFunc2)
+  
+      return simplifiedFunc1 === simplifiedFunc2;
+    } catch (e) {
+      console.error('Fehler beim Vereinfachen oder Vergleichen der Funktionen:', e);
+      return false;
     }
-
-    return S;
-}
+  }
 
 
 function erstelleHistogramm(abweichungen) { //Beispiel: e^x von 0 bis 4 und 5 Trapeze aufwärts
@@ -426,6 +405,7 @@ function berechneAbweichungen(fStr, stammfunktion, a, b, n) {
     return abweichungen;
 }
 
+
 function checkInputs() {
     const funktion = document.getElementById('funktion').value;
     const untereGrenze = document.getElementById('untereGrenze').value;
@@ -433,6 +413,7 @@ function checkInputs() {
     const forward = document.getElementById('skip-forward');
     const backward = document.getElementById('skip-back');
     const play = document.getElementById('play-pause');
+    const zeichneFunktionButton = document.getElementById('btnZeichne');
 
     if (funktion && untereGrenze && obereGrenze) {
         zeichneFunktionButton.disabled = false;
@@ -448,9 +429,6 @@ function checkInputs() {
         return false;
     }
 }
-document.getElementById('funktion').addEventListener('input', checkInputs);
-document.getElementById('untereGrenze').addEventListener('input', checkInputs);
-document.getElementById('obereGrenze').addEventListener('input', checkInputs);
 
 function berechneFehlerFürTrapeze(fStr, stammfunktionStr, a, b, maxTrapeze) {
     const stammfunktion = math.parse(stammfunktionStr);
@@ -660,10 +638,25 @@ function zeichneFunktionSimpson() {
     var integralBtn = document.getElementById('integralButton');
     integralBtn.style.display = "inline"
 }
-
-});
-
-
 module.exports = {
-    ggbOnInit
+    ggbOnInit,
+    zeichneFunktion,
+    zeichneFunktionTrapez,
+    zeichneFunktionSimpson,
+    updateHeader,
+    bewegePunkt,
+    checkInputs,
+    berechneFehlerFürTrapeze,
+    erstelleHistogramm,
+    berechneAbweichungen,
+    berechneIntegral,
+    areFunctionsEquivalent,
+    trapezRegel,
+    simpsonRegel,
+    stepwiseChange,
+    playPauseHandler,
+    stammfunktionChangeHandler,
+    validateInputs,
+    downloadImageHandler,
+    resetAxesHandler
 };
