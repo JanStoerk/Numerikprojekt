@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90.79% </span>
+                <span class="strong">90.82% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>375/413</span>
+                <span class='fraction'>376/414</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">73.38% </span>
+                <span class="strong">73.43% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>91/124</span>
+                <span class='fraction'>94/128</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90.97% </span>
+                <span class="strong">91% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>353/388</span>
+                <span class='fraction'>354/389</span>
             </div>
         
             
@@ -946,7 +946,8 @@
 <a name='L881'></a><a href='#L881'>881</a>
 <a name='L882'></a><a href='#L882'>882</a>
 <a name='L883'></a><a href='#L883'>883</a>
-<a name='L884'></a><a href='#L884'>884</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L884'></a><a href='#L884'>884</a>
+<a name='L885'></a><a href='#L885'>885</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-yes">16x</span>
@@ -1814,8 +1815,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -2432,7 +2434,7 @@ function reset() {
     }
     for (let i = 1; i &lt;= nebenbedingungCount; i++) {
         const input = document.getElementById('nebenbedingung' + i);
-        if(input != null)input.disabled = false;
+        if (input != null) input.disabled = false;
     }
     document.getElementById('funktion').disabled = false;
     btnZeichne.disabled = false;
@@ -2468,7 +2470,7 @@ function getInputs() {
 &nbsp;
     for (let i = 1; i &lt;= nebenbedingungCount; i++) {
         const input = document.getElementById('nebenbedingung' + i);
-        if(input != null)input.disabled = true;
+        if (input != null) input.disabled = true;
         <span class="missing-if-branch" title="if path not taken" >I</span>if (input &amp;&amp; input.value) {
 <span class="cstat-no" title="statement not covered" >            nebenbedingungen.push(input.value);</span>
         }
@@ -2517,7 +2519,7 @@ function skipForward() {
 }
 &nbsp;
 async function playBranchAndBound() {
- 
+&nbsp;
     const playIcon = document.getElementById('play-icon');
     const pauseIcon = document.getElementById('pause-icon');
     const isPlaying = playIcon.style.display === 'none';
@@ -2535,7 +2537,7 @@ async function playBranchAndBound() {
         <span class="missing-if-branch" title="if path not taken" >I</span>if (!checkForUnboundedSolution(extractedInputs.variables, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes)) {
 <span class="cstat-no" title="statement not covered" >            bbSolver = new BranchAndBound(extractedInputs.variables, extractedInputs.objectiveCoefficients, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes, funktion)</span>
 <span class="cstat-no" title="statement not covered" >            setBBSolver(bbSolver);</span>
-          } else {
+        } else {
             reset();
             return;
         }
@@ -2697,21 +2699,22 @@ function updateResults(bbSolver) {
 function setBBSolver(solver) {
     bbSolver = solver;
 }
-&nbsp;
-module.exports = {
-    BranchAndBound,
-    extractVariablesAndCoefficients,
-    addConstraint,
-    reset,
-    checkInputs,
-    getInputs,
-    createDiagram,
-    skipForward,
-    playBranchAndBound,
-    skipBackward,
-    checkForUnboundedSolution,
-    updateResults,
-    setBBSolver
+<span class="missing-if-branch" title="else path not taken" >E</span>if (typeof module !== 'undefined' &amp;&amp; module.exports) {
+    module.exports = {
+        BranchAndBound,
+        extractVariablesAndCoefficients,
+        addConstraint,
+        reset,
+        checkInputs,
+        getInputs,
+        createDiagram,
+        skipForward,
+        playBranchAndBound,
+        skipBackward,
+        checkForUnboundedSolution,
+        updateResults,
+        setBBSolver
+    }
 }</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -2719,7 +2722,7 @@ module.exports = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-09-17T19:49:21.837Z
+                at 2024-09-17T20:00:12.293Z
             </div>
         <script src="../prettify.js"></script>
         <script>

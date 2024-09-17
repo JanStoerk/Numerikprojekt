@@ -195,6 +195,7 @@ function simpsonRegel(fStr, a, b, n) {
 
 
 function berechneIntegral() {
+    zeichneFunktion()
     if (window.myChart) {
         window.myChart.destroy();
     }
@@ -494,6 +495,10 @@ function bewegePunkt(value) {
 }
 
 function updateHeader(radio) {
+    if (window.myChart) {
+        window.myChart.destroy();
+    }
+    document.getElementById('diagramm').innerHTML = "";
     if (radio.checked) {
         document.getElementById('integration-method').innerHTML = `<b>Numerische Integration: ${radio.value}</b>`;
         ggbApplet.reset()
@@ -676,6 +681,8 @@ function zeichneFunktionSimpson() {
     var integralBtn = document.getElementById('integralButton');
     integralBtn.style.display = "inline"
 }
+
+if (typeof module !== 'undefined' && module.exports) {
 module.exports = {
     ggbOnInit,
     zeichneFunktion,
@@ -697,4 +704,4 @@ module.exports = {
     validateInputs,
     downloadImageHandler,
     resetAxesHandler
-};
+}}
