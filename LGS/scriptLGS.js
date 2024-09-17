@@ -502,7 +502,7 @@ function gaussElimination(variable1, variable2, decimalPlaces) {
 function roundToDecimalPlaces(value, places) {
     return parseFloat(value.toFixed(places));
 }
-
+if (typeof module !== 'undefined' && module.exports) {
 module.exports = {
     removeRow,
     addRow,
@@ -513,4 +513,4 @@ module.exports = {
     createInputFields,
     gaussElimination,
     roundToDecimalPlaces
-}
+}}

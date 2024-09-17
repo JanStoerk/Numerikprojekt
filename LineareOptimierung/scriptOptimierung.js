@@ -601,7 +601,7 @@ function reset() {
     }
     for (let i = 1; i <= nebenbedingungCount; i++) {
         const input = document.getElementById('nebenbedingung' + i);
-        if(input != null)input.disabled = false;
+        if (input != null) input.disabled = false;
     }
     document.getElementById('funktion').disabled = false;
     btnZeichne.disabled = false;
@@ -637,7 +637,7 @@ function getInputs() {
 
     for (let i = 1; i <= nebenbedingungCount; i++) {
         const input = document.getElementById('nebenbedingung' + i);
-        if(input != null)input.disabled = true;
+        if (input != null) input.disabled = true;
         if (input && input.value) {
             nebenbedingungen.push(input.value);
         }
@@ -686,7 +686,7 @@ function skipForward() {
 }
 
 async function playBranchAndBound() {
- 
+
     const playIcon = document.getElementById('play-icon');
     const pauseIcon = document.getElementById('pause-icon');
     const isPlaying = playIcon.style.display === 'none';
@@ -704,7 +704,7 @@ async function playBranchAndBound() {
         if (!checkForUnboundedSolution(extractedInputs.variables, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes)) {
             bbSolver = new BranchAndBound(extractedInputs.variables, extractedInputs.objectiveCoefficients, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes, funktion)
             setBBSolver(bbSolver);
-          } else {
+        } else {
             reset();
             return;
         }
@@ -866,19 +866,20 @@ function updateResults(bbSolver) {
 function setBBSolver(solver) {
     bbSolver = solver;
 }
-
-module.exports = {
-    BranchAndBound,
-    extractVariablesAndCoefficients,
-    addConstraint,
-    reset,
-    checkInputs,
-    getInputs,
-    createDiagram,
-    skipForward,
-    playBranchAndBound,
-    skipBackward,
-    checkForUnboundedSolution,
-    updateResults,
-    setBBSolver
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        BranchAndBound,
+        extractVariablesAndCoefficients,
+        addConstraint,
+        reset,
+        checkInputs,
+        getInputs,
+        createDiagram,
+        skipForward,
+        playBranchAndBound,
+        skipBackward,
+        checkForUnboundedSolution,
+        updateResults,
+        setBBSolver
+    }
 }
