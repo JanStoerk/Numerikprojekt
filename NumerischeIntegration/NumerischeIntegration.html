@@ -2,27 +2,32 @@
 <html>
 
 <head>
-    <link rel="stylesheet" href="../LandingPage/style.css">
     <title>Numerische Integration</title>
     <meta charset="utf-8" />
-    <script src="./geogebra.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.4.4/math.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <!-- CSS Dateien -->
+    <link rel="stylesheet" href="../LandingPage/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"
-        async></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         table td {
             vertical-align: middle;
         }
     </style>
+
+    <!-- JavaScript Dateien -->
+    <script src="./geogebra.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.4.4/math.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"
+        async></script>
+
 </head>
 
 <body>
@@ -37,11 +42,12 @@
             <img src="../pictures/guide.png" style="width:30px" alt="Guide">
             <h4>Guide</h4>
         </button>
-        
+
         <!-- Bootstrap Modal -->
-        <div class="modal fade" id="guideModal" tabindex="-1" role="dialog" aria-labelledby="guideModalLabel" aria-hidden="true">
+        <div class="modal fade" id="guideModal" tabindex="-1" role="dialog" aria-labelledby="guideModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog modal-xl" style="margin-top:50px; height:600px;">
-                <div class="modal-content"style="margin-top:50px; height:600px;">
+                <div class="modal-content" style="margin-top:50px; height:600px;">
                     <div class="modal-header">
                         <h5 class="modal-title" id="guideModalLabel">Guide</h5>
                         <button type="button" class="btn btn-light" data-dismiss="modal" aria-label="Close">
@@ -50,7 +56,7 @@
                     </div>
                     <div class="modal-body">
                         <!-- Inhalt des Modals hier einfügen -->
-                       Anleitung zur Verwendung der App
+                        Anleitung zur Verwendung der App
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button>
@@ -59,10 +65,10 @@
             </div>
         </div>
 
-        <div class="modal fade bd-example-modal-lg" id="myModal" tabindex="-1"aria-labelledby="exampleModalLabel"
+        <div class="modal fade bd-example-modal-lg" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel"
             aria-hidden="true">
             <div class="modal-dialog modal-xl" style="margin-top:50px; height:600px;">
-                <div class="modal-content"style="margin-top:50px; height:600px;">
+                <div class="modal-content" style="margin-top:50px; height:600px;">
                     <div class="modal-header">
                         <h3 class="modal-title" id="exampleModalLabel">Numerische Integration: Trapezregel</h3>
                         <button type="button" class="btn btn-light" data-dismiss="modal" aria-label="Close">
@@ -71,53 +77,67 @@
                     </div>
                     <div class="modal-body">
                         <div class="container mt-4">
-                            <style>
-                                /* Ersteres Level (erste Ebene des Inhaltsverzeichnisses) */
-                                .nav > .nav-item {
-                                  margin-bottom: 3px; /* Reduziert den Abstand zwischen den Hauptelementen */
-                                }
-                              
-                                /* Zweites Level (Unterpunkte) */
-                                .nav .nav > .nav-item {
-                                  margin-bottom: 0px; /* Weniger Abstand zwischen den Unterpunkten */
-                                }
-                              
-                                /* Optional: Reduziere den Abstand des Links innerhalb eines Listenelements */
-                                .nav-link {
-                                  padding: 0.2rem 0; /* Reduziert den Abstand um den Textlink herum */
-                                }
-                              </style>
-                            <nav class="mb-4">
+                            <nav id="inhaltsverzeichnisTrapez" class="mb-4">
                                 <h4>Inhaltsverzeichnis</h4>
                                 <ul class="nav flex-column">
                                     <li class="nav-item">
                                         <a class="nav-link" href="#beschreibung">1. Beschreibung</a>
-                                            <ul class="nav flex-column ms-3"> <!-- Zweite Ebene -->
-                                                <li class="nav-item">
-                                                    <a class="nav-link" href="#fehler">1.1 Fehlerschätzung</a>
-                                                </li>
-                                               
-                                                    <li class="nav-item">
-                                                        <a class="nav-link" href="#usecases">1.2 Anwendungsmöglichkeiten</a>
-                                                    </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link" href="#limits">1.3 Einschränkungen</a>
-                                                        </li>
-                                                </li>
-                                            </ul>
+                                        <ul class="nav flex-column ms-3"> <!-- Zweite Ebene -->
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="#fehler">1.1 Fehlerschätzung</a>
+                                            </li>
+
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="#usecases">1.2 Anwendungsmöglichkeiten</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="#limits">1.3 Einschränkungen</a>
+                                            </li>
                                     </li>
+                                </ul>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#bedienungsanleitung">2. Bedienungsanleitung</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#handlungsempfehlungen">3. Handlungsempfehlungen</a>
+                                </li>
+                                </ul>
+                            </nav>
+                            <nav id="inhaltsverzeichnisSimpson" style="display: none;" class="mb-4">
+                                <h4>Inhaltsverzeichnis</h4>
+                                <ul class="nav flex-column">
                                     <li class="nav-item">
-                                        <a class="nav-link" href="#bedienungsanleitung">2. Bedienungsanleitung</a>
+                                        <a class="nav-link" href="#beschreibungSimpson">1. Beschreibung</a>
+                                        <ul class="nav flex-column ms-3"> <!-- Zweite Ebene -->
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="#fehlerSimpson">1.1 Fehlerschätzung</a>
+                                            </li>
+
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="#usecasesSimpson">1.2
+                                                    Anwendungsmöglichkeiten</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="#limitsSimpson">1.3 Einschränkungen</a>
+                                            </li>
                                     </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="#handlungsempfehlungen">3. Handlungsempfehlungen</a>
-                                    </li>
+                                </ul>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#bedienungsanleitungSimpson">2. Bedienungsanleitung</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#handlungsempfehlungenSimpson">3.
+                                        Handlungsempfehlungen</a>
+                                </li>
                                 </ul>
                             </nav>
 
-                            <main>
-                                <section id="beschreibung" class="mb-4">
-                                    <h4>1. Beschreibung</h4>
+                            <main id="dokumentation">
+                                <div id="TrapezDoku">
+                                    <section id="beschreibung" class="mb-4"></section>
+                                    <h4>1. Beschreibung</h4><br>
                                     <p>Die numerische Integration ist ein wesentlicher Bestandteil der numerischen
                                         Mathematik und wird verwendet, um Integrale von Funktionen zu approximieren, die
                                         schwer oder gar nicht analytisch lösbar sind. Eines der bekanntesten Verfahren
@@ -136,120 +156,637 @@
                                     <p>wobei \(\Delta x = \frac{b-a}{n}\) die Breite der Intervalle und \(x_i\) die
                                         diskreten Stützpunkte sind. Durch Erhöhung der Anzahl der Trapeze \(n\) (bzw.
                                         Verkleinerung von \(\Delta x\)) lässt sich die Genauigkeit der Approximation
-                                        steigern. Mathematisch ausgedrückt, nähert sich die Approximation also dem exakten Integral im Bereich \([a, b]\) an, wenn 
-                                        \(n → ∞\). Es gibt verschiedene Ansätze, um die Fläche unter einer Kurve durch Trapeze zu approximieren. Eine Möglichkeit besteht darin, die Kurve durch eine gerade Linie zwischen den Funktionswerten an den Endpunkten des Intervalls 
-                                        \([a,b]\) zu ersetzen. Diese Methode wird als <b>Sehnentrapezformel</b> bezeichnet und berechnet die Fläche der Trapeze, die durch die Sehne und die x-Achse begrenzt werden. Diese Varainte wird auch innerhalb dieser App zur Approximation verwendet.
-                                        Eine bekannte Alternative dazu bildet die Mittelpunktsregel, die darauf basiert, im Mittel des Intervalls eine Tangente an die Kurve zu legen Diese Methode nutzt die Tangente an der Stelle 
+                                        steigern. Mathematisch ausgedrückt, nähert sich die Approximation also dem
+                                        exakten Integral im Bereich \([a, b]\) an, wenn
+                                        \(n → ∞\). Es gibt verschiedene Ansätze, um die Fläche unter einer Kurve durch
+                                        Trapeze zu approximieren. Eine Möglichkeit besteht darin, die Kurve durch eine
+                                        gerade Linie zwischen den Funktionswerten an den Endpunkten des Intervalls
+                                        \([a,b]\) zu ersetzen. Diese Methode wird als <b>Sehnentrapezformel</b>
+                                        bezeichnet und berechnet die Fläche der Trapeze, die durch die Sehne und die
+                                        x-Achse begrenzt werden. Diese Varainte wird auch innerhalb dieser App zur
+                                        Approximation verwendet.
+                                        Eine bekannte Alternative dazu bildet die Mittelpunktsregel, die darauf basiert,
+                                        im Mittel des Intervalls eine Tangente an die Kurve zu legen Diese Methode nutzt
+                                        die Tangente an der Stelle
                                         \(\frac{a+b}{2}\)
-                                          und berechnet die Fläche der Trapeze, die durch diese Tangente und die x-Achse begrenzt werden.</p>
-                                          <section id="fehler" class="mb-4"></section>
-                                          <h5>1.1 Fehlerschätzung</h5>
-                                          <p> Der Fehler der Trapezregel hängt von der zweiten Ableitung der approximierten Funktion ab. Konkret wird der Fehler 
-                                            \(E\) der Trapezregel für eine Funktion 
-                                            \(f\), die auf dem Intervall 
-                                           
-                                            \([a,b]\) integriert wird, durch die folgende Fehlerformel abgeschätzt:
-                                            
-                                            \[E = -\frac{(b-a)^3}{12n^2} \cdot f''(\xi)\]
-                                            Dabei ist \(f''(\xi)\)
-                                            die zweite Ableitung der Funktion an einer unbekannten Stelle 
-                                           \(\xi∈[a,b]\). Der Fehler ist also proportional zu \(\frac{1}{n^2}\).
-                                            Das bedeutet, je kleiner die zweite Ableitung ist und je mehr Trapeze verwendet werden, desto kleiner wird der Fehler.
-                                            Um die Größe der zweiten Ableitung besser zu kontrollieren, wird in der Praxis häufig die Funktion vorab geglättet oder eine spezielle Transformationen angewandt, um Funktionen zu erhalten, deren Ableitungen kleiner sind. 
-                                            Hierfür können beispielsweise <b>Splines</b> zur Interpolation verwendet werden, was insbesondere bei stark schwankenden oder diskreten Daten den Integrationsfehler minimiert. Eine weitere gängige Technik zur Verbesserung der Genauigkeit ist die <b>Richardson-Extrapolation</b>, bei der durch geschicktes Kombinieren von Integralen mit unterschiedlichen Schrittweiten der Fehler systematisch reduziert wird.</p>
-                                            <section id="usecases" class="mb-4">
-                                    <h5>1.2 Anwendungsmöglichkeiten</h5>
-                                    <p>Die Trapezregel stellt eine flexible und schnelle Methode zur näherungsweisen Berechnung von
-                                        Integralen dar. Sie ist einfach zu implementieren und kann auf eine Vielzahl von Funktionen angewendet werden, ohne dass spezielle Anpassungen erforderlich sind. Besonders in Fällen, in denen die Funktion keine extremen Variationen aufweist, liefert die Trapezregel brauchbare Ergebnisse. Daher eignet sie sich gut für viele praktische
-                                        Anwendungen, insbesondere dann, wenn eine grobe Annäherung des
-                                        Integrals ausreicht.  Da die Berechnung der Fläche unter jedem Trapez unabhängig von den anderen ist, kann die Trapezregel außerdem leicht parallelisiert werden. Dies ermöglicht eine effiziente Nutzung von Mehrkernprozessoren und kann die Berechnungszeit erheblich verkürzen, insbesondere bei sehr großen Intervallen oder hoher Trapezanzahl.</p>
-                                        Die Methode kann auch als Grundlage für genauere Verfahren
-                                        wie die Simpsonregel oder höhere Newton-Cotes-Formeln verwendet werden. Die Ergebnisse der Trapezregel können auch zur Verbesserung und Validierung anderer numerischer Integrationsmethoden verwendet werden.
-                                             </section> 
-                                             <section id="limits" class="mb-4"></section>
-                                             <h5>1.3 Einschränkungen</h5>
-                                     <p> Aufgrund seiner Einfachheit weist das Trapezverfahren einige Einschränkungen auf, die seine Genauigkeit beeinträchtigen können. Eine wesentliche Einschränkung ist, dass es besonders bei stark gekrümmten Funktionen zu Ungenauigkeiten kommt. 
-                                        Dies liegt daran, dass die lineare Verbindung der Funktionswerte an den Intervallgrenzen die tatsächliche Krümmung der Funktion nicht gut erfasst. Das Fehlerformel für das Trapezverfahren (siehe <a href="#fehler">1.1 Fehlerschätzung</a>) macht deutlich, dass das Trapezverfahren besonders ungenau ist, wenn die Funktion eine starke Krümmung hat, da 
-                                      
-                                        \(f''(x)\) in diesen Fällen groß wird. Für lineare Funktionen, bei denen 
-                                        
-                                        die zweite Ableitung null ist, liefert das Trapezverfahren jedoch exakte Ergebnisse.
-                                       Zudem kann das Trapezverfahren bei Funktionen mit diskontinuierlichen Ableitungen oder Sprüngen in der Funktion selbst ungenau sein, da diese Sprünge nicht korrekt berücksichtigt werden können. 
-                                         Zusätzlich hängt die Genauigkeit des Verfahrens stark von der Wahl der Anzahl der verwendeten Trapeze ab: Bei einer groben Unterteilung des Intervalls, also wenigen Trapezen, ist die Fehleranfälligkeit größer. Auch wenn die Genauigkeit durch eine Erhöhung der Anzahl der Teilintervalle verbessert werden kann, kann dies den Rechenaufwand erheblich erhöhen. Daher ist das Trapezverfahren vor allem für glatte Funktionen oder für Fälle geeignet, in denen nur eine grobe Schätzung der Fläche erforderlich ist.
-                                       </p>  <p>Abgesehen von der Genauigkeit erreicht die
-                                         Trapezregel außerdem nur eine lineare Konvergenz. Das bedeutet, dass die Fehlerreduktion mit der Verdopplung der Anzahl der Trapeze \(n\) relativ langsam erfolgt, da sich der Fehler nur um einen konstanten Faktor verringert, im Gegensatz zu schnelleren Verfahren wie der Simpsonregel, die quadratische Konvergenz aufweist.</p>
-                                        
-                                <section id="bedienungsanleitung" class="mb-4">
-                                    <h4>2. Bedienungsanleitung</h4>
-                                    <ol>
-                                        <li><b>Funktion eingeben</b>: Im Feld „Funktion \(f(x)\)“ kann der Benutzer die
-                                            zu integrierende Funktion eingeben. Diese Funktion wird dann im
-                                            Koordinatensystem dargestellt.</li>
-                                        <li><b>Grenzen festlegen</b>: Untere und obere Grenzen der Integration werden in
-                                            die entsprechenden Felder eingegeben. Diese Grenzen bestimmen das Intervall
-                                            \([a, b]\), über das das Integral berechnet wird.</li>
-                                        <li><b>Anzahl der Trapeze einstellen</b>: Über einen Schieberegler kann die
-                                            Anzahl der Trapeze festgelegt werden, die zur Approximation verwendet
-                                            werden. Je mehr Trapeze verwendet werden, desto genauer wird die
-                                            Approximation des Integrals.</li>
-                                        <li><b>Berechnung starten</b>: Durch Klick auf den Button „Berechne Integral“
-                                            wird die numerische Integration gestartet. Das Ergebnis wird angezeigt und
-                                            im Koordinatensystem visualisiert.</li>
-                                        <li><b>Vergleich mit Stammfunktion</b>: Der Benutzer hat die Möglichkeit, eine
-                                            Stammfunktion \(F(x)\) manuell einzugeben. Die App verwendet diese
-                                            Stammfunktion, um den genauen Wert des bestimmten Integrals zu berechnen.
-                                            Die Stammfunktion selbst wird jedoch nicht im Koordinatensystem
-                                            visualisiert. Stattdessen vergleicht die App das Ergebnis der Trapezregel
-                                            mit dem analytischen Wert, der aus der Stammfunktion berechnet wurde, und
-                                            zeigt die Abweichung in einem separaten Feld an.</li>
-                                        <li><b>Ergebnisdarstellung und Abweichungsdiagramm</b>: Die App zeigt sowohl das
-                                            numerische Ergebnis der Trapezregel als auch das exakte Ergebnis, basierend
-                                            auf der eingegebenen Stammfunktion. Ein Abweichungsdiagramm visualisiert die
-                                            Differenz zwischen den beiden Ergebnissen über die Anzahl der Trapeze, um
-                                            die Genauigkeit der numerischen Methode darzustellen.</li>
-                                        <li><b>Anpassung der Nachkommastellen</b>: Die Anzahl der Nachkommastellen, die
-                                            im Ergebnis angezeigt werden, kann angepasst werden, um die Präzision der
-                                            Anzeige zu kontrollieren.</li>
-                                    </ol>
-                                </section>
+                                        und berechnet die Fläche der Trapeze, die durch diese Tangente und die x-Achse
+                                        begrenzt werden.</p>
+                                    <section id="fehler" class="mb-4"></section>
+                                    <h5>1.1 Fehlerschätzung</h5><br>
+                                    <p> Der Fehler der Trapezregel hängt von der zweiten Ableitung der approximierten
+                                        Funktion ab. Konkret wird der Fehler
+                                        \(E\) der Trapezregel für eine Funktion
+                                        \(f\), die auf dem Intervall
 
-                                <section id="handlungsempfehlungen" class="mb-4">
-                                    <h4>3. Handlungsempfehlungen</h4>
-                                    <ul>
-                                        <li><b>Verwendung von glatten Funktionen</b>: Die Trapezregel eignet sich
-                                            besonders gut für Funktionen, die relativ glatt und kontinuierlich sind. Für
-                                            Funktionen mit scharfen Spitzen, Unstetigkeiten oder sehr hohen Gradienten
-                                            sollte die Anzahl der Trapeze erhöht werden, um eine akzeptable Genauigkeit
-                                            zu erzielen.</li>
-                                        <li><b>Anpassung der Trapezanzahl</b>: Um eine Balance zwischen Rechenaufwand
-                                            und Genauigkeit zu finden, sollte die Anzahl der Trapeze an die Komplexität
-                                            der Funktion angepasst werden. Eine hohe Anzahl von Trapezen kann zwar die
-                                            Genauigkeit erhöhen, jedoch auch die Berechnungszeit verlängern.</li>
-                                        <li><b>Eingabe der Stammfunktion</b>: Um die Genauigkeit der numerischen
-                                            Integration zu überprüfen, sollte, wenn möglich, die Stammfunktion \(F(x)\)
-                                            eingegeben werden. Die Anwendung berechnet dann sowohl das Ergebnis der
-                                            numerischen Integration als auch den exakten Wert des Integrals und zeigt
-                                            die Abweichung an. Dieser Vergleich ist besonders hilfreich, um das
-                                            Verständnis der Genauigkeit und Effizienz der Trapezregel zu fördern.</li>
-                                        <li><b>Vergleich mit analytischen Lösungen</b>: Wann immer möglich, sollte das
-                                            Ergebnis der numerischen Integration mit einer bekannten analytischen Lösung
-                                            verglichen werden, um die Genauigkeit der numerischen Methode zu überprüfen.
-                                        </li>
-                                        <li><b>Verwendung der Simpsonregel</b>: Für Funktionen, bei denen die
-                                            Trapezregel ungenaue Ergebnisse liefert, kann die Simpsonregel als
-                                            Alternative gewählt werden, da sie in der Regel eine bessere Approximation
-                                            bietet, insbesondere bei Funktionen, die durch Parabeln besser beschrieben
-                                            werden.</li>
-                                    </ul>
-                                </section>
+                                        \([a,b]\) integriert wird, durch die folgende Fehlerformel abgeschätzt:
+
+                                        \[E = -\frac{(b-a)^3}{12n^2} \cdot f''(\xi)\]
+                                        Dabei ist \(f''(\xi)\)
+                                        die zweite Ableitung der Funktion an einer unbekannten Stelle
+                                        \(\xi∈[a,b]\). Der Fehler ist also proportional zu \(\frac{1}{n^2}\).
+                                        Das bedeutet, je kleiner die zweite Ableitung ist und je mehr Trapeze verwendet
+                                        werden, desto kleiner wird der Fehler.
+                                        Um die Größe der zweiten Ableitung besser zu kontrollieren, wird in der Praxis
+                                        häufig die Funktion vorab geglättet oder eine spezielle Transformationen
+                                        angewandt, um Funktionen zu erhalten, deren Ableitungen kleiner sind.
+                                        Hierfür können beispielsweise <b>Splines</b> zur Interpolation verwendet werden,
+                                        was insbesondere bei stark schwankenden oder diskreten Daten den
+                                        Integrationsfehler minimiert. Eine weitere gängige Technik zur Verbesserung der
+                                        Genauigkeit ist die <b>Richardson-Extrapolation</b>, bei der durch geschicktes
+                                        Kombinieren von Integralen mit unterschiedlichen Schrittweiten der Fehler
+                                        systematisch reduziert wird.</p>
+                                    <section id="usecases" class="mb-4">
+                                        <h5>1.2 Anwendungsmöglichkeiten</h5><br>
+                                        <p>Die Trapezregel stellt eine flexible und schnelle Methode zur näherungsweisen
+                                            Berechnung von
+                                            Integralen dar. Sie ist einfach zu implementieren und kann auf eine Vielzahl
+                                            von Funktionen angewendet werden, ohne dass spezielle Anpassungen
+                                            erforderlich sind. Besonders in Fällen, in denen die Funktion keine extremen
+                                            Variationen aufweist, liefert die Trapezregel brauchbare Ergebnisse. Daher
+                                            eignet sie sich gut für viele praktische
+                                            Anwendungen, insbesondere dann, wenn eine grobe Annäherung des
+                                            Integrals ausreicht. Da die Berechnung der Fläche unter jedem Trapez
+                                            unabhängig von den anderen ist, kann die Trapezregel außerdem leicht
+                                            parallelisiert werden. Dies ermöglicht eine effiziente Nutzung von
+                                            Mehrkernprozessoren und kann die Berechnungszeit erheblich verkürzen,
+                                            insbesondere bei sehr großen Intervallen oder hoher Trapezanzahl.</p>
+                                        Die Methode kann auch als Grundlage für genauere Verfahren
+                                        wie die Simpsonregel oder höhere Newton-Cotes-Formeln verwendet werden. Die
+                                        Ergebnisse der Trapezregel können auch zur Verbesserung und Validierung anderer
+                                        numerischer Integrationsmethoden verwendet werden.
+                                    </section>
+                                    <section id="limits" class="mb-4"></section>
+                                    <h5>1.3 Einschränkungen</h5><br>
+                                    <p> Aufgrund seiner Einfachheit weist das Trapezverfahren einige Einschränkungen
+                                        auf, die seine Genauigkeit beeinträchtigen können. Eine wesentliche
+                                        Einschränkung ist, dass es besonders bei stark gekrümmten Funktionen zu
+                                        Ungenauigkeiten kommt.
+                                        Dies liegt daran, dass die lineare Verbindung der Funktionswerte an den
+                                        Intervallgrenzen die tatsächliche Krümmung der Funktion nicht gut erfasst. Das
+                                        Fehlerformel für das Trapezverfahren (siehe <a href="#fehler">1.1
+                                            Fehlerschätzung</a>) macht deutlich, dass das Trapezverfahren besonders
+                                        ungenau ist, wenn die Funktion eine starke Krümmung hat, da
+
+                                        \(f''(x)\) in diesen Fällen groß wird. Für lineare Funktionen, bei denen
+
+                                        die zweite Ableitung null ist, liefert das Trapezverfahren jedoch exakte
+                                        Ergebnisse.
+                                        Zudem kann das Trapezverfahren bei Funktionen mit diskontinuierlichen
+                                        Ableitungen oder Sprüngen in der Funktion selbst ungenau sein, da diese Sprünge
+                                        nicht korrekt berücksichtigt werden können.
+                                        Zusätzlich hängt die Genauigkeit des Verfahrens stark von der Wahl der Anzahl
+                                        der verwendeten Trapeze ab: Bei einer groben Unterteilung des Intervalls, also
+                                        wenigen Trapezen, ist die Fehleranfälligkeit größer. Auch wenn die Genauigkeit
+                                        durch eine Erhöhung der Anzahl der Teilintervalle verbessert werden kann, kann
+                                        dies den Rechenaufwand erheblich erhöhen. Daher ist das Trapezverfahren vor
+                                        allem für glatte Funktionen oder für Fälle geeignet, in denen nur eine grobe
+                                        Schätzung der Fläche erforderlich ist.
+                                    </p>
+                                    <p>Abgesehen von der Genauigkeit erreicht die
+                                        Trapezregel außerdem nur eine lineare Konvergenz. Das bedeutet, dass die
+                                        Fehlerreduktion mit der Verdopplung der Anzahl der Trapeze \(n\) relativ langsam
+                                        erfolgt, da sich der Fehler nur um einen konstanten Faktor verringert, im
+                                        Gegensatz zu schnelleren Verfahren wie der Simpsonregel, die quadratische
+                                        Konvergenz aufweist.</p>
+
+                                    <section id="bedienungsanleitung" class="mb-4">
+                                        <h4>2. Bedienungsanleitung</h4><br>
+                                        <ol>
+                                            <li><b>Funktion eingeben</b>: Im Feld „Funktion \(f(x)\)“ kann der Benutzer
+                                                die
+                                                zu integrierende Funktion eingeben. Diese Funktion wird dann im
+                                                Koordinatensystem dargestellt, sobald der "Zeichne Funktion" Knopf
+                                                gedrückt wird. Dabei muss es sich um eine gültige Funktion handeln,
+                                                welche die Variable \(x\) verwendet, andere Variablen sind nicht
+                                                zulässig. Wird eine fehlerhafte Funktion eingegeben wird ein Fehler
+                                                angezeigt.</li>
+                                            <li><b>Grenzen festlegen</b>: Die untere und obere Grenzen der Integration
+                                                können in
+                                                die entsprechenden Felder eingegeben werden. Diese Grenzen bestimmen das
+                                                Intervall
+                                                \([a, b]\), über das das Integral berechnet wird. Die untere Grenze muss
+                                                dabei kleiner sein als die obere Grenze. Je größer der zu integrierende
+                                                Bereich gewählt wird, desto ungenauer wird in der Regel die
+                                                Approximation.</li>
+                                            <li><b>Anzahl der Trapeze einstellen</b>: Über den Schieberegler unterhalb
+                                                des Koordinatensystems kann die
+                                                Anzahl der Trapeze festgelegt werden (maximal 100), die zur
+                                                Approximation verwendet
+                                                werden. Je mehr Trapeze verwendet werden, desto genauer wird die
+                                                Approximation des Integrals. Die standardmäßige Anzahl liegt bei 5
+                                                Trapezen, wird der Schieberegler verändert während bereits eine Funktion
+                                                eingezeichnet ist so verändert sich die Anzahl der Trapeze welche die
+                                                Funktion im ausgewählten Integral approximieren analog im
+                                                Koordinatensystem.</li>
+                                            <li><b>Koordinatensystem</b>: Das Koordinatensystem kann verwendet
+                                                werden um
+                                                die angegebene Funktion sowie die Annäherung durch die Trapeze
+                                                visuell
+                                                zu betrachten. Das Koordinatensystem unterstützt beliebig große und
+                                                kleine Zahlen und kann durch Zoomen mit dem Mausrad oder die dafür
+                                                vorgesehenen Knöpfe verkleinert und vergrößert werden, wobei sich
+                                                auch
+                                                die Achsenbeschriftungen entsprechend anpassen. Außerdem kann per
+                                                Drag&Drop innerhalb des Koordinatensystems in alle Richtungen navigiert
+                                                werden.
+                                                Mit dem Home Knopf
+                                                kann
+                                                außerdem der Fokus des Koordinatensystems wieder auf den
+                                                anfänglichen
+                                                Zustand zurückgesezt werden.</li>
+                                            <li><b>Vergleich mit Stammfunktion</b>: Der Benutzer hat die Möglichkeit,
+                                                eine
+                                                Stammfunktion \(F(x)\) manuell einzugeben. Die App verwendet diese
+                                                Stammfunktion, um den genauen Wert des angegebenen Integrals zu
+                                                berechnen.
+                                                Die Stammfunktion selbst wird nicht im Koordinatensystem
+                                                visualisiert. Stattdessen vergleicht die App das Ergebnis der
+                                                Trapezregel
+                                                mit dem analytischen Wert, der aus der Stammfunktion berechnet wurde,
+                                                und
+                                                zeigt die Ergebnisse sowie die Abweichung beim Drücken des "Berechne
+                                                Integral" Knopfes an.
+                                                Sollte eine flasche Stammfunktion eingegeben werden, zeigt die Anwendung
+                                                mithilfe eines Popups an, dass die Stammfunktion ungültig ist. Dies wird
+                                                umgesetzt, indem die Stammfunktion von der Anwendung abgeleitet und in
+                                                normalisierter Form mit der eingegebenen Funktion verglichen wird.</li>
+                                            <li><b>Berechnung starten</b>: Nachdem eine Funktion im Koordinatensystem
+                                                eingezeichnet wurde, erscheint der Knocpf "Berechne Integral". Durch
+                                                Klicken auf diesen Knopf wird die numerische Integration gestartet und
+                                                das zugehörige
+                                                Integral basierend auf der eingestellten Trapezanzahl berechnet. Das
+                                                Ergebnis wird auf der rechten Seite angezeigt. Falls eine gültige
+                                                Stammfunktion angegeben wurde, wird zusätzlich die exakte Lösung mit
+                                                Stammfunktion sowie die absolute Abweichung in
+                                                Flächeneinheiten angegeben. Außerdem wird in diesem Fall ein Histogramm
+                                                der einzelnen
+                                                Trapezfehler erstellt, welches visualisiert wie sich die Abweichung
+                                                zusammensetzt.
+                                            </li>
+                                            <li><b>Abweichungsdiagramm</b>: Die App zeigt bei Verwendung einer
+                                                Stammfunktion sowohl
+                                                das
+                                                numerische Ergebnis der Trapezregel als auch das exakte Ergebnis,
+                                                basierend
+                                                auf der eingegebenen Stammfunktion an. Ein Abweichungsdiagramm
+                                                visualisiert
+                                                die
+                                                Differenz zwischen den beiden Ergebnissen über die Anzahl der Trapeze
+                                                hinweg (1-100),
+                                                um
+                                                die Genauigkeit der numerischen Methode darzustellen. Indem die Maus
+                                                über die einzelnen Punkte des Abweichungsdiagramms bewegt wird, können
+                                                die genauen Abweichungen an der jeweiligen Stelle betrachtet werden.
+                                            </li>
+                                            <li><b>Animiertes hinzufügen von Trapezen</b>: Neben dem Schieberegler
+                                                können auch der Play/Pause Knopf sowie die Knöpfe für das schrittweise
+                                                vor- und zurückspulen verwendet werden, um mithilfe einer Animation
+                                                einzelne Trapeze im Koordinatensytsem hinzuzufügen bzw. zu entfernen.
+                                                Während der Vorwärts- und Rückwärts-Knopf jeweils die Trapezanzahl um
+                                                eins erhöht oder verringert, ermöglicht der Play/Pause Button eine
+                                                Animation zu starten welche jede Sekunde die Trapezanzahl um eins
+                                                erhöht, bis die maximale Anzahl von 100 erreicht wurde oder der Pause
+                                                Knopf betätigt wird. Dies dient der Veranschaulichung der Approximation
+                                                der Kurve durch unterschiedliche Trapezanzahlen. </li>
+                                            <li><b>Anpassung der Nachkommastellen</b>: Die Anzahl der Nachkommastellen,
+                                                die
+                                                im Ergebnis angezeigt werden, kann manuell angepasst werden, um die
+                                                Präzision
+                                                der
+                                                Berechnung zu kontrollieren.</li>
+                                            <li><b>Wechsel zur Simpsonregel</b>: Über den Regler in der rechten oberen
+                                                Ecke kann von der Trapezregel zur Simpsonregel gewechselt werden.
+                                                Dadurch wird die Kurve anstelle von Trapezen mit einzelnen parabeln
+                                                approximiert. Außerdem wird die Dokumentation entsprechend angepasst.
+                                            </li>
+                                        </ol>
+                                    </section>
+
+                                    <section id="handlungsempfehlungen" class="mb-4">
+                                        <h4>3. Handlungsempfehlungen</h4><br>
+                                        <ul>
+                                            <li><b>Anpassung der Trapezanzahl</b>: Um die Genauigkeit der Lösung zu
+                                                verbessern, sollte die Anzahl der Trapeze an die
+                                                Komplexität
+                                                der Funktion angepasst werden. Je mehr Trapeze verwendet werden desto
+                                                genauer wird der Integralbereich durch die Trapeze approximiert.
+                                                Die Anzahl der Trapeze ist dabei innerhalb der Anwendung auf 100
+                                                beschränkt, da die Anzahl der Trapeze zwar
+                                                die
+                                                Genauigkeit erhöhen kann, jedoch auch die Berechnungszeit (je nach
+                                                Rechnerhardware) verlängert, sodass es bei der Darstellung im
+                                                Koordinatensystem (sowie bei der Animation) zu einer kurzen Verzögerung
+                                                kommen kann.</li>
+                                            <li><b>Einschränkung des Integralbereichs</b>: Je größer der verwendete
+                                                Integralbereich desto ungenauer ist die Approximation der Kurve durch
+                                                die einzelnen Trapeze. Da die maximale Anzahl an Trapezen auf 100
+                                                beschränkt ist, sollte sichergestellt werden, dass das
+                                                Integral nicht zu groß ist um eine hohe Genauigkeit der Annäherung zu
+                                                gewährleisten. Eine Aufteilung eines sehr großen Integralbereichs in
+                                                mehrere kleine Bereiche kann ebenfalls sinnvoll sein, um diese einzeln
+                                                zu approximieren und dann die Ergebnisse zu summieren um eine höhere
+                                                Genuigkeit zu erhalten. </li>
+                                            <li><b>Eingabe der Stammfunktion</b>: Um die Genauigkeit der numerischen
+                                                Integration zu überprüfen, sollte, wenn bekannt, die Stammfunktion
+                                                \(F(x)\)
+                                                eingegeben werden. Die Anwendung berechnet dann sowohl das Ergebnis der
+                                                numerischen Integration als auch den exakten Wert des Integrals mithilfe
+                                                der Stammfunktion und
+                                                zeigt
+                                                die Abweichung des Ergebnisses an. Dieser Vergleich ist besonders
+                                                hilfreich, um das
+                                                Verständnis der Genauigkeit und Effizienz der Trapezregel zu fördern und
+                                                festzustellen, ob die aktuelle Anzahl Trapeze geeignet ist um die Kurve
+                                                ausreichend zu approximieren.
+                                            </li>
+                                            <li><b>Analyse des Abweichungsdiagramms</b>: Das Abweichungsdiagramm,
+                                                welches bei Angabe einer Stammfunktion erstellt wird
+                                                gibt wertvolle Hinweise darauf, wie sich die Genauigkeit der
+                                                Approximation über die
+                                                Anzahl der Trapeze hinweg entwickelt. Das Abweichungsdiagramm zeigt in
+                                                der Regel wie sich die Annäherung mit steigender Anzahl an Trapezen an
+                                                die optimale Lösung annähert.
+                                                Hierdurch kann eine Einschätzung darüber getroffen werden, ab wievielen
+                                                Trapezen die
+                                                Genauigkeit des Verfahrens ausreichend hoch ist. Der grüne Punkt im
+                                                Abweihungsdiagramm symbolisiert dabei die Genauigkeit bei der aktuell
+                                                ausgewählten Anzahl an Trapezen und bewegt sich analog zum zugehörigen
+                                                Schieberegler. Das
+                                                Abweichungsdiagramm kann auch mithilfe des zugehörigen Knopfes als
+                                                PNG-Datei heruntergeladen werden, um die Ergebnisse zu sichern.
+                                            </li>
+                                            <li><b>Analyse der einzelnen Trapezabweichungen</b>:
+                                                Neben dem Abweichungsdiagramm bietet die Anwendung bei Vergleich mit der
+                                                Stammfunktion außerdem ein Histogramm, welches die Fehler der einzelnen
+                                                Trapeze angibt. Hierfür wird für jedes einzelne Trapez die approximierte
+                                                Fläche mit der tatsächlcihen Fläche in diesem Bereich verglichen um zu
+                                                bestimmen, wie groß die Differenz der einzelnen Trapeze zum
+                                                Flächeninhalt unter der Kurve ist. Dies ermöglicht eine Einschätzung an
+                                                welchen Stellen die Funktion glatter verläuft (in der Regel höhere
+                                                Genauigkeit durch Trapeze) und in welchen bereichen die Funktion starke
+                                                Krümmungen aufweist (in der Regel geringere Genauigkeit der Trapeze).
+                                            </li>
+                                            <li><b>Verwendung der Simpsonregel</b>:
+                                                Die Trapezregel eignet sich
+                                                besonders gut für Funktionen, die relativ glatt und kontinuierlich sind.
+                                                Für
+                                                Funktionen mit scharfen Spitzen, Unstetigkeiten oder sehr hohen
+                                                Gradienten
+                                                sollte die Anzahl der Trapeze erhöht werden, um eine höhere
+                                                Genauigkeit
+                                                zu erzielen. Für Funktionen, bei denen die
+                                                Trapezregel dennoch ungenaue Ergebnisse liefert, kann die Simpsonregel
+                                                als
+                                                Alternative gewählt werden, da sie in der Regel eine bessere
+                                                Approximation
+                                                bietet, insbesondere bei Funktionen, die starke Krümmungen aufweisen, da
+                                                die Simpsonregel die Kurve mithilfe einer Parabel annähert und dadurch
+                                                Krümmungen häufig besser abbilden kann.</li>
+                                        </ul>
+                                    </section>
+                                </div>
+                                <div id="SimpsonDoku" style="display: none;">
+                                    <section id="beschreibungSimpson" class="mb-4">
+                                        <h4>1. Beschreibung</h4><br>
+                                        <p>Die numerische Integration ist ein wesentlicher Bestandteil der numerischen
+                                            Mathematik und wird verwendet, um Integrale von Funktionen zu approximieren,
+                                            die schwer oder gar nicht analytisch lösbar sind. Ein präziseres Verfahren
+                                            als die Trapezregel ist die \(\textbf{Simpsonregel}\). Die Grundidee der
+                                            Simpsonregel besteht darin, den Bereich unter einer Kurve durch Parabeln zu
+                                            approximieren, anstatt durch Trapeze oder andere geometrische Figuren.
+
+                                            Mathematisch wird dies erreicht, indem der Integrationsbereich \([a, b]\) in
+                                            \(n\) gleich große Intervalle unterteilt wird. Für
+                                            jedes Intervall wird eine Parabel durch die Funktionswerte an den Endpunkten
+                                            und dem mittleren Punkt des Intervalls \(m=\frac{a+b}{2}\) gelegt. Die
+                                            Simpsonregel summiert
+                                            diese einzelnen Parabeln, um die Fläche unter der Kurve zu berechnen.
+                                            Dieses Vorgehen wird auch als zusammengesetzte Simpsonregel bezeichnet, da
+                                            das eigentliche Integral in mehrere Teilintervalle unterteilt und jedes
+                                            teilintervall für sich approximiert wird.
+                                            Für eine Funktion \(f(x)\), die auf dem Intervall \([a, b]\) integriert
+                                            wird,
+                                            lautet die Simpsonregel:
+
+                                            \[
+                                            \int_a^b f(x) \, dx \approx \frac{\Delta x}{3} \left( f(x_0) + 4
+                                            \sum_{i=1,3,5,...} f(x_i) + 2 \sum_{i=2,4,6,...} f(x_i) + f(x_n)
+                                            \right)
+                                            \]
+
+                                            wobei \(\Delta x = \frac{b - a}{n}\) die Breite der Intervalle ist und
+                                            \(x_0,
+                                            x_1, \dots, x_n\) die Stützpunkte sind. Der Vorteil der Simpsonregel besteht
+                                            darin, dass sie in der Regel eine höhere Genauigkeit bietet
+                                            als
+                                            die Trapezregel, da sie Krümmungen der Funktion besser annähert.
+
+                                            Durch Erhöhung der Anzahl der verwendeten Parabeln (bzw. die Verkleinerung
+                                            von \(\Delta x\)) lässt sich die Genauigkeit der Approximation steigern.
+                                            Mathematisch
+                                            ausgedrückt, nähert sich die Approximation also dem exakten Integral im
+                                            Bereich \([a, b]\) an, wenn \(n → ∞\).
+                                        <section id="fehlerSimpson" class="mb-4"></section>
+                                        <h5>1.1 Fehlerschätzung</h5><br>
+                                        <p> Der Fehler der Simpsonregel hängt von der vierten Ableitung der zu
+                                            integrierenden Funktion ab. Konkret wird der Fehler \(E\) der Simpsonregel
+                                            für
+                                            eine Funktion \(f(x)\), die auf dem Intervall \([a, b]\) integriert wird,
+                                            durch
+                                            die folgende Fehlerformel abgeschätzt:
+
+                                            \[
+                                            E = -\frac{(b - a)^5}{180 n^4} f^{(4)}(\xi)
+                                            \]
+
+                                            wobei \(\xi\) eine unbekannte Stelle im Intervall \([a, b]\) ist und
+                                            \(f^{(4)}(\xi)\) die vierte Ableitung der Funktion an dieser Stelle. Der
+                                            Fehler ist also proportional zu \(\frac{1}{n^4}\), was bedeutet, dass die
+                                            Genauigkeit mit zunehmender Anzahl von Stützpunkten (größeres \(n\)) schnell
+                                            zunimmt. Dies führt zu einer quadratischen Konvergenz, was die Simpsonregel
+                                            effizienter macht als die Trapezregel, insbesondere bei glatten Funktionen.
+                                            Um den Fehler weiter zu reduzieren, kann die Anzahl der Unterteilungen
+                                            erhöht werden oder es können Techniken wie die Richardson-Extrapolation
+                                            (ähnlich wie bei der Trapezregel)
+                                            angewendet werden.</p>
+                                        <section id="usecasesSimpson" class="mb-4">
+                                            <h5>1.2 Anwendungsmöglichkeiten</h5><br>
+                                            <p>Die Simpsonregel ist eine hochpräzise Methode zur Berechnung von
+                                                Integralen und erweist sich insbesondere bei Funktionen als vorteilhaft,
+                                                die glatt und kontinuierlich sind. Im Vergleich zur Trapezregel bietet
+                                                die Simpsonregel eine bessere Genauigkeit, da sie die Krümmung der
+                                                Funktion durch Parabeln approximiert. Dies ist besonders nützlich, wenn
+                                                die Funktion eine stetige zweite oder vierte Ableitung aufweist,
+                                                da die Simpsonregel in solchen Fällen äußerst präzise Ergebnisse
+                                                liefert.
+
+                                                Ein weiterer Vorteil der Simpsonregel liegt in ihrer praktischen
+                                                Anwendbarkeit, insbesondere bei Integrationsbereichen, die nicht zu groß
+                                                sind. Sie stellt ein bewährtes Standardverfahren in der numerischen
+                                                Integration dar, da sie eine gute Balance zwischen Genauigkeit und
+                                                Rechenaufwand bietet. Darüber hinaus bildet die Simpsonregel die
+                                                Grundlage für noch genauere Integrationsmethoden, wie etwa adaptive
+                                                Simpsonverfahren. Bei diesen Verfahren wird die Anzahl der Stützpunkte
+                                                dynamisch angepasst, abhängig von der Krümmung der Funktion, um die
+                                                Genauigkeit weiter zu verbessern und gleichzeitig den Rechenaufwand zu
+                                                optimieren.</p>
+
+                                        </section>
+                                        <section id="limitsSimpson" class="mb-4"></section>
+                                        <h5>1.3 Einschränkungen</h5><br>
+                                        <p> Obwohl die Simpsonregel im Vergleich zur Trapezregel eine deutlich höhere
+                                            Genauigkeit bietet, weist sie dennoch einige Einschränkungen auf.
+                                            Insbesondere bei Funktionen mit Unstetigkeiten oder Sprüngen in der ersten
+                                            oder zweiten Ableitung kann die Simpsonregel ungenaue Ergebnisse liefern, da
+                                            diese Sprünge die Glätte der Parabeln stören. Zudem funktioniert die
+                                            Simpsonregel nur bei einer geraden Anzahl von Unterteilungen des Intervalls,
+                                            was die Flexibilität des Verfahrens einschränkt. Bei Funktionen mit sehr
+                                            starker Krümmung kann es außerdem erforderlich sein, die Anzahl der
+                                            Unterteilungen erheblich zu erhöhen, was den Rechenaufwand steigert.
+
+                                            Ein weiteres Problem ergibt sich bei stark oszillierenden Funktionen, wo die
+                                            Simpsonregel die Oszillationen möglicherweise nicht gut abbildet. Auch bei
+                                            Funktionen, die unendliche Bereiche aufweisen oder an den Intervallgrenzen
+                                            gegen unendlich divergieren, ist die Anwendung der Simpsonregel
+                                            problematisch.
+
+                                        <section id="bedienungsanleitungSimpson" class="mb-4">
+                                            <h4>2. Bedienungsanleitung</h4><br>
+                                            <ol>
+                                                <li><b>Funktion eingeben</b>: Im Feld „Funktion \(f(x)\)“ kann der
+                                                    Benutzer
+                                                    die
+                                                    zu integrierende Funktion eingeben. Diese Funktion wird dann im
+                                                    Koordinatensystem dargestellt, sobald der "Zeichne Funktion" Knopf
+                                                    gedrückt wird. Dabei muss es sich um eine gültige Funktion handeln,
+                                                    welche die Variable \(x\) verwendet, andere Variablen sind nicht
+                                                    zulässig. Wird eine fehlerhafte Funktion eingegeben wird ein Fehler
+                                                    angezeigt.</li>
+                                                <li><b>Grenzen festlegen</b>: Die untere und obere Grenzen der
+                                                    Integration
+                                                    können in
+                                                    die entsprechenden Felder eingegeben werden. Diese Grenzen bestimmen
+                                                    das
+                                                    Intervall
+                                                    \([a, b]\), über das das Integral berechnet wird. Die untere Grenze
+                                                    muss
+                                                    dabei kleiner sein als die obere Grenze. Je größer der zu
+                                                    integrierende
+                                                    Bereich gewählt wird, desto ungenauer wird in der Regel die
+                                                    Approximation.</li>
+                                                <li><b>Anzahl der Parabeln einstellen</b>: Über den Schieberegler
+                                                    unterhalb
+                                                    des Koordinatensystems kann die
+                                                    Anzahl der Parabeln festgelegt werden (maximal 100), die zur
+                                                    Approximation verwendet
+                                                    werden. Je mehr Parabeln verwendet werden, desto genauer wird die
+                                                    Approximation des Integrals. Die standardmäßige Anzahl liegt bei 5
+                                                    Parabeln, wird der Schieberegler verändert während bereits eine
+                                                    Funktion
+                                                    eingezeichnet ist so verändert sich die Anzahl der Parabeln welche
+                                                    die
+                                                    Funktion im ausgewählten Integral approximieren analog im
+                                                    Koordinatensystem.</li>
+                                                <li><b>Koordinatensystem</b>: Das Koordinatensystem kann verwendet
+                                                    werden um
+                                                    die angegebene Funktion sowie die Annäherung durch die Trapeze
+                                                    visuell
+                                                    zu betrachten. Das Koordinatensystem unterstützt beliebig große und
+                                                    kleine Zahlen und kann durch Zoomen mit dem Mausrad oder die dafür
+                                                    vorgesehenen Knöpfe verkleinert und vergrößert werden, wobei sich
+                                                    auch
+                                                    die Achsenbeschriftungen entsprechend anpassen. Außerdem kann per
+                                                    Drag&Drop innerhalb des Koordinatensystems in alle Richtungen
+                                                    navigiert werden.
+                                                    Mit dem Home Knopf
+                                                    kann
+                                                    außerdem der Fokus des Koordinatensystems wieder auf den
+                                                    anfänglichen
+                                                    Zustand zurückgesezt werden.</li>
+                                                <li><b>Vergleich mit Stammfunktion</b>: Der Benutzer hat die
+                                                    Möglichkeit,
+                                                    eine
+                                                    Stammfunktion \(F(x)\) manuell einzugeben. Die App verwendet diese
+                                                    Stammfunktion, um den genauen Wert des angegebenen Integrals zu
+                                                    berechnen.
+                                                    Die Stammfunktion selbst wird nicht im Koordinatensystem
+                                                    visualisiert. Stattdessen vergleicht die App das Ergebnis der
+                                                    Simpsonregel
+                                                    mit dem analytischen Wert, der aus der Stammfunktion berechnet
+                                                    wurde,
+                                                    und
+                                                    zeigt die Ergebnisse sowie die Abweichung beim Drücken des "Berechne
+                                                    Integral" Knopfes an.
+                                                    Sollte eine flasche Stammfunktion eingegeben werden, zeigt die
+                                                    Anwendung
+                                                    mithilfe eines Popups an, dass die Stammfunktion ungültig ist. Dies
+                                                    wird
+                                                    umgesetzt, indem die Stammfunktion von der Anwendung abgeleitet und
+                                                    in
+                                                    normalisierter Form mit der eingegebenen Funktion verglichen wird.
+                                                </li>
+                                                <li><b>Berechnung starten</b>: Nachdem eine Funktion im
+                                                    Koordinatensystem
+                                                    eingezeichnet wurde, erscheint der Knocpf "Berechne Integral". Durch
+                                                    Klicken auf diesen Knopf wird die numerische Integration gestartet
+                                                    und
+                                                    das zugehörige
+                                                    Integral basierend auf der eingestellten Parabelanzahl berechnet.
+                                                    Das
+                                                    Ergebnis wird auf der rechten Seite angezeigt. Falls eine gültige
+                                                    Stammfunktion angegeben wurde, wird zusätzlich die exakte Lösung mit
+                                                    Stammfunktion sowie die absolute Abweichung in
+                                                    Flächeneinheiten angegeben. Außerdem wird in diesem Fall ein
+                                                    Histogramm
+                                                    der einzelnen
+                                                    Parabelfehler erstellt, welches visualisiert wie sich die Abweichung
+                                                    zusammensetzt.
+                                                </li>
+                                                <li><b>Abweichungsdiagramm</b>: Die App zeigt bei Verwendung einer
+                                                    Stammfunktion sowohl
+                                                    das
+                                                    numerische Ergebnis der Simpsonregel als auch das exakte Ergebnis,
+                                                    basierend
+                                                    auf der eingegebenen Stammfunktion an. Ein Abweichungsdiagramm
+                                                    visualisiert
+                                                    die
+                                                    Differenz zwischen den beiden Ergebnissen über die Anzahl der
+                                                    Parabeln
+                                                    hinweg (1-100),
+                                                    um
+                                                    die Genauigkeit der numerischen Methode darzustellen. Indem die Maus
+                                                    über die einzelnen Punkte des Abweichungsdiagramms bewegt wird,
+                                                    können
+                                                    die genauen Abweichungen an der jeweiligen Stelle betrachtet werden.
+                                                </li>
+                                                <li><b>Animiertes hinzufügen von Parabeln</b>: Neben dem Schieberegler
+                                                    können auch der Play/Pause Knopf sowie die Knöpfe für das
+                                                    schrittweise
+                                                    vor- und zurückspulen verwendet werden, um mithilfe einer Animation
+                                                    einzelne Parabeln im Koordinatensytsem hinzuzufügen bzw. zu
+                                                    entfernen.
+                                                    Während der Vorwärts- und Rückwärts-Knopf jeweils die Parabelanzahl
+                                                    um
+                                                    eins erhöht oder verringert, ermöglicht der Play/Pause Button eine
+                                                    Animation zu starten welche jede Sekunde die Parabelanzahl um eins
+                                                    erhöht, bis die maximale Anzahl von 100 erreicht wurde oder der
+                                                    Pause
+                                                    Knopf betätigt wird. Dies dient der Veranschaulichung der
+                                                    Approximation
+                                                    der Kurve durch unterschiedliche Parabelanzahlen. </li>
+                                                <li><b>Anpassung der Nachkommastellen</b>: Die Anzahl der
+                                                    Nachkommastellen,
+                                                    die
+                                                    im Ergebnis angezeigt werden, kann manuell angepasst werden, um die
+                                                    Präzision
+                                                    der
+                                                    Berechnung zu kontrollieren.</li>
+                                                <li><b>Wechsel zur Simpsonregel</b>: Über den Regler in der rechten
+                                                    oberen
+                                                    Ecke kann von der Simpsonregel zur Trapezregel gewechselt werden.
+                                                    Dadurch wird die Kurve anstelle von Parabeln mit einzelnen Trapezen
+                                                    approximiert. Außerdem wird die Dokumentation entsprechend
+                                                    angepasst.
+                                                </li>
+                                            </ol>
+                                        </section>
+
+                                        <section id="handlungsempfehlungenSimpson" class="mb-4">
+                                            <h4>3. Handlungsempfehlungen</h4><br>
+                                            <ul>
+                                                <li><b>Anpassung der Parabelanzahl</b>: Um die Genauigkeit der Lösung zu
+                                                    verbessern, sollte die Anzahl der Parabeln an die
+                                                    Komplexität
+                                                    der Funktion angepasst werden. Je mehr Parabeln verwendet werden
+                                                    desto
+                                                    genauer wird der Integralbereich durch die Parabeln approximiert.
+                                                    Die Anzahl der Parabeln ist dabei innerhalb der Anwendung auf 100
+                                                    beschränkt, da die Anzahl der Parabeln zwar
+                                                    die
+                                                    Genauigkeit erhöhen kann, jedoch auch die Berechnungszeit (je nach
+                                                    Rechnerhardware) verlängert, sodass es bei der Darstellung im
+                                                    Koordinatensystem (sowie bei der Animation) zu einer kurzen
+                                                    Verzögerung
+                                                    kommen kann.</li>
+                                                <li><b>Einschränkung des Integralbereichs</b>: Je größer der verwendete
+                                                    Integralbereich desto ungenauer ist die Approximation der Kurve
+                                                    durch
+                                                    die einzelnen Parabeln. Da die maximale Anzahl an Parabeln auf 100
+                                                    beschränkt ist, sollte sichergestellt werden, dass das
+                                                    Integral nicht zu groß ist um eine hohe Genauigkeit der Annäherung
+                                                    zu
+                                                    gewährleisten. Eine Aufteilung eines sehr großen Integralbereichs in
+                                                    mehrere kleine Bereiche kann ebenfalls sinnvoll sein, um diese
+                                                    einzeln
+                                                    zu approximieren und dann die Ergebnisse zu summieren um eine höhere
+                                                    Genuigkeit zu erhalten. </li>
+                                                <li><b>Eingabe der Stammfunktion</b>: Um die Genauigkeit der numerischen
+                                                    Integration zu überprüfen, sollte, wenn bekannt, die Stammfunktion
+                                                    \(F(x)\)
+                                                    eingegeben werden. Die Anwendung berechnet dann sowohl das Ergebnis
+                                                    der
+                                                    numerischen Integration als auch den exakten Wert des Integrals
+                                                    mithilfe
+                                                    der Stammfunktion und
+                                                    zeigt
+                                                    die Abweichung des Ergebnisses an. Dieser Vergleich ist besonders
+                                                    hilfreich, um das
+                                                    Verständnis der Genauigkeit und Effizienz der Simpsonregel zu
+                                                    fördern
+                                                    und
+                                                    festzustellen, ob die aktuelle Anzahl Parabeln geeignet ist um die
+                                                    Kurve
+                                                    ausreichend zu approximieren.
+                                                </li>
+                                                <li><b>Analyse des Abweichungsdiagramms</b>: Das Abweichungsdiagramm,
+                                                    welches bei Angabe einer Stammfunktion erstellt wird
+                                                    gibt wertvolle Hinweise darauf, wie sich die Genauigkeit der
+                                                    Approximation über die
+                                                    Anzahl der Parabeln hinweg entwickelt. Das Abweichungsdiagramm zeigt
+                                                    in
+                                                    der Regel wie sich die Annäherung mit steigender Anzahl an Parabeln
+                                                    an
+                                                    die optimale Lösung annähert.
+                                                    Hierdurch kann eine Einschätzung darüber getroffen werden, ab
+                                                    wievielen
+                                                    Parabeln die
+                                                    Genauigkeit des Verfahrens ausreichend hoch ist. Der grüne Punkt im
+                                                    Abweihungsdiagramm symbolisiert dabei die Genauigkeit bei der
+                                                    aktuell
+                                                    ausgewählten Anzahl an Parabeln und bewegt sich analog zum
+                                                    zugehörigen
+                                                    Schieberegler. Das
+                                                    Abweichungsdiagramm kann auch mithilfe des zugehörigen Knopfes als
+                                                    PNG-Datei heruntergeladen werden, um die Ergebnisse zu sichern.
+                                                </li>
+                                                <li><b>Analyse der einzelnen Parabelabweichungen</b>:
+                                                    Neben dem Abweichungsdiagramm bietet die Anwendung bei Vergleich mit
+                                                    der
+                                                    Stammfunktion außerdem ein Histogramm, welches die Fehler der
+                                                    einzelnen
+                                                    Parabeln angibt. Hierfür wird für jede einzelne Parabel die
+                                                    approximierte
+                                                    Fläche mit der tatsächlcihen Fläche in diesem Bereich verglichen um
+                                                    zu
+                                                    bestimmen, wie groß die Differenz der einzelnen Parabeln zum
+                                                    Flächeninhalt unter der Kurve ist. Dies ermöglicht eine Einschätzung
+                                                    an
+                                                    welchen Stellen die Funktion glatter verläuft (in der Regel höhere
+                                                    Genauigkeit durch Parabeln) und in welchen bereichen die Funktion
+                                                    starke
+                                                    Krümmungen aufweist (in der Regel geringere Genauigkeit der
+                                                    Parabeln).
+                                                </li>
+                                            </ul>
+                                        </section>
+                                </div>
                             </main>
                         </div>
                     </div>
                 </div>
-                
+
             </div>
         </div>
-
     </header>
     <div class="content">
         <div class="containerIntegration">
@@ -269,37 +806,6 @@
             </div>
         </div><br>
 
-        <script>
-            function updateHeader(radio) {
-                if (radio.checked) {
-                    document.getElementById('integration-method').innerHTML = `<b>Numerische Integration: ${radio.value}</b>`;
-                    ggbApplet.reset()
-                    if (checkInputs()) {
-                        zeichneFunktion()
-                    } else {
-                        var button = document.getElementById('integralButton');
-                        button.style.display = "none"
-                        const nachkommastellen = document.getElementById('nachkomastellenContainer').style.display = "none";
-                        document.getElementById('btnZeichne').disabled = true;
-                        var checkbox = document.getElementById('myCheckbox')
-                        checkbox.checked = false;
-                        checkbox.style.display = "none"
-                        document.getElementById('checkboxLabel').style.display = "none"
-                        document.getElementById('stammfunktionContainer').style.display = "none";
-                    }
-                    const resultContainer = document.getElementById('resultContainer').innerHTML = "";
-                    const histogramm = document.getElementById('abweichungsHistogramm').innerHTML = "";
-                    if (radio.value == "Simpsonregel") {
-                        document.getElementById('sliderValue').innerText = "Anzahl Parabeln: " + document.getElementById('punktPosition').value;
-
-                    } else {
-                        document.getElementById('sliderValue').innerText = "Anzahl Trapeze: " + document.getElementById('punktPosition').value;
-
-                    }
-
-                }
-            }
-        </script>
         <div style="display: flex; justify-content: space-around; align-items: center;">
             <div style="flex: 1; text-align: center;">
                 <table style="margin: auto;" class="table table-hover">
@@ -354,7 +860,7 @@
                     style="width: 600px; display: flex; flex-direction: column; align-items: center;">
                     <br>
                     <span id="sliderValue">Anzahl Trapeze: 5</span>
-                    <input type="range" id="punktPosition" min="1" style="width: 100%;" max="50" value="5" step="1"
+                    <input type="range" id="punktPosition" min="1" style="width: 100%;" max="100" value="5" step="1"
                         oninput="bewegePunkt(this.value)" onchange="zeichneFunktion()"><br>
                 </div>
             </div>
@@ -385,7 +891,7 @@
             </div>
         </div>
         <div id="diagramm" style="width:1400px;height:400px;display:none"></div>
-        <script src="./script.js"></script>
+        <script src="./scriptIntegration.js"></script>
     </div>
 </body>
 

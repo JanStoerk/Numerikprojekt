@@ -313,3 +313,17 @@ body::-webkit-scrollbar-button,
 overflow-y:auto;
 }
 
+/* Ersteres Level (erste Ebene des Inhaltsverzeichnisses) */
+.nav > .nav-item {
+  margin-bottom: 3px; /* Reduziert den Abstand zwischen den Hauptelementen */
+}
+
+/* Zweites Level (Unterpunkte) */
+.nav .nav > .nav-item {
+  margin-bottom: 0px; /* Weniger Abstand zwischen den Unterpunkten */
+}
+
+/* Optional: Reduziere den Abstand des Links innerhalb eines Listenelements */
+.nav-link {
+  padding: 0.2rem 0; /* Reduziert den Abstand um den Textlink herum */
+}

@@ -2,13 +2,18 @@
 <html>
 
 <head>
+    <title>Lösung linearer Gleichungssysteme</title>
+    <meta charset="UTF-8">
+
+     <!-- CSS Dateien -->
     <link rel="stylesheet" href="../LandingPage/style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+     <!-- JavaScript Dateien -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <meta charset="UTF-8">
 </head>
 
 <body>
@@ -19,189 +24,312 @@
                 <h1>Numerik</h1>
             </a>
         </div>
-        <button class="guide" onclick="showGuide()">
-            <img src="../pictures/guide.png" style="width:30px" alt="Guide">
-            <h4>Guide</h4>
-        </button>
-        <div id="myModal" class="modal">
-            <div class="modal-content">
-                <span class="close" onclick="closePopup()">&times;</span>
-                <p>Zur Anwendung des Jacobi-Verfahrens muss die Matrix symmetrisch sein. Das Jacobi-Verfahren wird
-                    verwendet, um eine symmetrische Matrix in eine Diagonalmatrix zu transformieren, indem sukzessive
-                    Rotationen um verschiedene Achsen durchgeführt werden. Diese Rotationen können nur korrekt
-                    angewendet werden, wenn die Matrix symmetrisch ist.
-                    Ja, wenn die Diagonalmatrix
-                    𝐷
-                    D in einem Gleichungssystem
-                    𝐴
-                    𝑥
-                    =
-                    𝑏
-                    Ax=b nicht invertierbar ist, dann ist das Jacobi-Verfahren nicht anwendbar. Das Jacobi-Verfahren
-                    basiert auf der Iterationsvorschrift:
+       <button class="guide" data-toggle="modal" data-target="#guideModal">
+      <img src="../pictures/guide.png" style="width:30px" alt="Guide">
+      <h4>Guide</h4>
+  </button>
+    <div class="modal fade" id="guideModal" tabindex="-1" role="dialog" aria-labelledby="guideModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-xl" style="margin-top:50px; height:600px;">
+                <div class="modal-content" style="margin-top:50px; height:600px;">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="guideModalLabel">Guide</h5>
+                        <button type="button" class="btn btn-light" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Inhalt des Modals hier einfügen -->
+                        Anleitung zur Verwendung der App
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade bd-example-modal-lg" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-xl" style="margin-top:50px; height:600px;">
+                <div class="modal-content" style="margin-top:50px; height:600px;">
+                    <div class="modal-header">
+                        <h3 class="modal-title" id="exampleModalLabel">Lösung linearer Gleichungssysteme: Jacobi
+                            Verfahren</h3>
+                        <button type="button" class="btn btn-light" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true"><b>&times;</b></span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container mt-4">
+                            <nav class="mb-4">
+                                <h4>Inhaltsverzeichnis</h4>
+                                <ul class="nav flex-column">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#beschreibung">1. Beschreibung</a>
+                                        <ul class="nav flex-column ms-3"> <!-- Zweite Ebene -->
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="#fehler">1.1 Fehlerschätzung</a>
+                                            </li>
 
-                    𝑥
-                    (
-                    𝑘
-                    +
-                    1
-                    )
-                    =
-                    𝐷
-                    −
-                    1
-                    (
-                    𝑏
-                    −
-                    (
-                    𝐿
-                    +
-                    𝑈
-                    )
-                    𝑥
-                    (
-                    𝑘
-                    )
-                    )
-                    x
-                    (k+1)
-                    =D
-                    −1
-                    (b−(L+U)x
-                    (k)
-                    )
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="#usecases">1.2 Anwendungsmöglichkeiten</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="#limits">1.3 Einschränkungen</a>
+                                            </li>
+                                    </li>
+                                </ul>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#bedienungsanleitung">2. Bedienungsanleitung</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#handlungsempfehlungen">3. Handlungsempfehlungen</a>
+                                </li>
+                                </ul>
+                            </nav>
 
-                    Hierbei ist
-                    𝐷
-                    D die Diagonalmatrix, die die Diagonalelemente von
-                    𝐴
-                    A enthält,
-                    𝐿
-                    L ist die strikte untere Dreiecksmatrix und
-                    𝑈
-                    U ist die strikte obere Dreiecksmatrix.
+                            <main>
+                                <section id="beschreibung" class="mb-4">
+                                    <h4>1. Beschreibung</h4><br>
+                                    <p>Die numerische Lösung von linearen Gleichungssystemen ist ein wichtiger
+                                        Bestandteil der numerischen Mathematik, da viele Probleme in der
+                                        Naturwissenschaft und Technik auf die Lösung von Gleichungssystemen
+                                        zurückgeführt werden können. Eines der gebräuchlichsten Verfahren hierfür ist
+                                        das \(\textbf{Jacobi-Verfahren}\). Dieses iterative Verfahren eignet sich
+                                        besonders gut zur Lösung von linearen Gleichungssystemen der Form:
 
-                    Wenn
-                    𝐷
-                    D nicht invertierbar ist, bedeutet das, dass mindestens ein Diagonalelement von
-                    𝐴
-                    A gleich null ist. Das führt dazu, dass die Inverse von
-                    𝐷
-                    D nicht existiert, und somit kann die Iterationsvorschrift nicht angewendet werden, da
-                    𝐷
-                    −
-                    1
-                    D
-                    −1
-                    in der Berechnung benötigt wird.
+                                        \[
+                                        A \mathbf{x} = \mathbf{b}
+                                        \]
 
-                    In einem solchen Fall ist das Jacobi-Verfahren nicht geeignet, um das Gleichungssystem zu lösen. Es
-                    gibt jedoch alternative Methoden, die angewendet werden können, wie beispielsweise das
-                    Gauss-Seidel-Verfahren oder iterative Methoden wie die konjugierte Gradientenmethode, welche
-                    möglicherweise besser mit solchen Fällen umgehen können, abhängig von der Struktur der Matrix
-                    𝐴
-                    A.
-                    Hier sind die Schritte, die für jede Iteration durchgeführt werden:
+                                        wobei \(A\) eine \(n \times n\) Matrix ist, \(x\) der zu berechnende
+                                        Lösungsvektor und \(b\) der bekannte rechte Seitenvektor. Das Jacobi-Verfahren
+                                        basiert darauf, die Gleichungen des Systems so umzuschreiben, dass jede
+                                        Gleichung eine einzelne Unbekannte isoliert, die dann in Bezug auf die anderen
+                                        Unbekannten iterativ verbessert wird. Die Iterationsformel für das
+                                        Jacobi-Verfahren lautet:
 
-                    Berechne
-                    𝐿
-                    +
-                    𝑈
-                    L+U.
-                    Multipliziere
-                    𝐿
-                    +
-                    𝑈
-                    L+U mit
-                    𝑥
-                    (
-                    0
-                    )
-                    x
-                    (0)
-                    (Matrix-Vektor-Multiplikation).
-                    Subtrahiere das Ergebnis von
-                    𝑏
-                    b.
-                    Multipliziere das Ergebnis mit
-                    𝐷
-                    −
-                    1
-                    D
-                    −1
-                    .
-                    Das Jacobi-Verfahren ist ein iteratives Verfahren zur Lösung linearer Gleichungssysteme (LGS) der
-                    Form
-                    𝐴
-                    𝑥
-                    =
-                    𝑏
-                    Ax=b. Wenn das LGS nicht lösbar ist, gibt es einige Schritte, die du unternehmen kannst, um das
-                    Problem zu identifizieren und mögliche Lösungen zu finden:
+                                        \[
+                                        x_i^{(k+1)} = \frac{1}{a_{ii}} \left( b_i - \sum_{j \neq i} a_{ij} x_j^{(k)}
+                                        \right)
+                                        \]
 
-                    Überprüfung der Konsistenz des Systems:
+                                        wobei \(x_i^{(k)}\) der Wert der \(i\)-ten Unbekannten in der \(k\)-ten
+                                        Iteration ist, und \(a_{ii}\) die Diagonalelemente der Matrix \(A\) sind.
+                                        Die Iterationsformel stellt sicher, dass jede Unbekannte in jedem Schritt der
+                                        Iteration unabhängig von den anderen berechnet wird. Dies bedeutet, dass die
+                                        Aktualisierung der Schätzungen für jede Unbekannte auf den Werten der vorherigen
+                                        Iteration basiert. Die Methode beginnt typischerweise mit einer Anfangsschätzung
+                                        für alle
+                                        Unbekannten (Startvektor), und diese Schätzungen werden in den nachfolgenden
+                                        Iterationen
+                                        kontinuierlich verfeinert.
+                                    </p>
+                                    <section id="fehler" class="mb-4"></section>
+                                    <h5>1.1 Fehlerschätzung</h5><br>
+                                    <p>Ein zentraler Aspekt bei der Anwendung des Jacobi-Verfahrens ist die Bewertung
+                                        des Fehlers, der während des iterativen Prozesses entsteht. Da das Verfahren auf
+                                        Schätzungen basiert, kann der Fehler, der zwischen der tatsächlichen Lösung und
+                                        der durch das Verfahren errechneten Lösung entsteht, von Iteration zu Iteration
+                                        variieren. Es gibt verschiedene Methoden, um diesen Fehler abzuschätzen und die
+                                        Konvergenz des Verfahrens zu überprüfen.
 
-                    Prüfe, ob das System überhaupt lösbar ist. Ein System
-                    𝐴
-                    𝑥
-                    =
-                    𝑏
-                    Ax=b ist lösbar, wenn die Rang-Bedingung erfüllt ist, d.h., wenn der Rang der Matrix
-                    𝐴
-                    A gleich dem Rang der erweiterten Matrix
-                    [
-                    𝐴
-                    ∣
-                    𝑏
-                    ]
-                    [A∣b] ist.
-                    Überprüfung der Diagonaldominanz:
+                                        Eine weit verbreitete Methode zur Fehlerschätzung ist die Residuumschätzung.
+                                        Dabei wird das sogenannte Residuum berechnet, also der Unterschied zwischen dem
+                                        rechten Seitenvektor
+                                        \(b\) und dem Produkt der Matrix
 
-                    Für das Jacobi-Verfahren ist es wichtig, dass die Matrix
-                    𝐴
-                    A diagonaldominant ist oder zumindest eine strikte Diagonaldominanz aufweist. Das bedeutet, dass für
-                    jede Zeile
-                    𝑖
-                    i der Betrag des Diagonalelements
-                    𝑎
-                    𝑖
-                    𝑖
-                    a
-                    ii
-                    ​
-                    größer sein sollte als die Summe der Beträge der anderen Elemente der Zeile:
-                    ∣
-                    𝑎
-                    𝑖
-                    𝑖
-                    ∣
-                    >
-                    ∑
-                    𝑗
-                    ≠
-                    𝑖
-                    ∣
-                    𝑎
-                    𝑖
-                    𝑗
-                    ∣
-                    ∣a
-                    ii
-                    ​
-                    ∣>∑
-                    j
-                    
-                    =i
-                    ​
-                    ∣a
-                    ij
-                    ​
-                    ∣. Wenn dies nicht der Fall ist, kann das Jacobi-Verfahren divergieren oder keine Lösung finden.
-                    Alternativen prüfen:
+                                        \(A\) mit dem aktuellen Lösungsvektor
+                                        \(x^{(k)}\):
+                                        \[r^{(k)} = b - Ax^{(k)}\]
+                                        Wenn die Norm des Residuums \(|r^{(k)}|\)klein ist, deutet dies darauf hin, dass
+                                        die aktuelle Schätzung \(x^{(k)}\)
+                                        nahe an der tatsächlichen Lösung liegt. Diese Methode erlaubt es, in jeder
+                                        Iteration eine Aussage über die Genauigkeit der momentanen Lösung zu treffen.
+                                        Eine weitere Möglichkeit besteht darin, den relativen Fehler zwischen zwei
+                                        aufeinanderfolgenden Iterationen zu betrachten. Dieser wird als die Differenz
+                                        der beiden Lösungsvektoren normiert auf die aktuelle Lösung definiert:
+                                        \[Relativer Fehler = \frac{|x^{(k)}-x^{(k-1)}|}{|x^{(k)}|}\]
+                                        Ist der relative Fehler klein, nähert sich das Verfahren der exakten Lösung an,
+                                        und die Iterationen können beendet werden.
+                                    <section id="usecases" class="mb-4">
+                                        <h5>1.2 Anwendungsmöglichkeiten</h5><br>
+                                        <p>Das Jacobi-Verfahren zeichnet sich durch seine Einfachheit und Flexibilität
+                                            aus, was es in vielen praktischen Situationen zu einer nützlichen Methode
+                                            macht. Besonders hervorzuheben ist, dass das Verfahren leicht zu
+                                            implementieren ist und sich hervorragend für parallelisierbare Berechnungen
+                                            eignet. Die iterative Natur des Verfahrens ermöglicht es, die Berechnungen
+                                            für jede Unbekannte unabhängig durchzuführen, was eine effektive Nutzung
+                                            moderner Parallelrechner und Multikernprozessoren ermöglicht.
 
-                    Gaußsches Eliminationsverfahren: Ein direkteres Verfahren, das nicht auf Iterationen beruht und dir
-                    mehr Informationen über die Lösbarkeit des Systems geben kann.
-                </p>
+                                            Ein weiteres bedeutendes Merkmal des Jacobi-Verfahrens ist seine geringe
+                                            Speichernutzung im Vergleich zu direkten Methoden wie dem Gaußschen
+                                            Eliminationsverfahren. Während direkte Methoden oft zusätzliche
+                                            Speicherressourcen für die Speicherung von Zwischenwerten oder Pivots
+                                            benötigen, beschränkt sich das Jacobi-Verfahren auf die Speicherung der
+                                            aktuellen Schätzwerte für die Lösung. Dies reduziert den Speicherbedarf
+                                            erheblich und macht das Verfahren besonders attraktiv für große
+                                            Gleichungssysteme, bei denen der Speicherverbrauch ein kritischer Faktor
+                                            ist.
+                                        </p>
+                                        <p>Darüber hinaus sind in vielen praktischen Anwendungen die zu lösenden
+                                            Matrizen dünn besetzt, d.h., die meisten Einträge sind Null. Das
+                                            Jacobi-Verfahren kann diese Eigenschaft effektiv nutzen, da es die
+                                            Null-Einträge der Matrix ignoriert und somit Rechenzeit und Speicher spart.
+                                            Gerade bei sehr großen, dünn besetzten Matrizen führt dies zu erheblichen
+                                            Vorteilen gegenüber direkten Methoden, die auch mit den Null-Einträgen
+                                            arbeiten müssen.
+                                        <section id="limits" class="mb-4"></section>
+                                        <h5>1.3 Einschränkungen</h5><br>
+                                        <p>
+                                            Das Jacobi-Verfahren hat bestimmte Einschränkungen, insbesondere
+                                            hinsichtlich der Konvergenz, da diese nicht in jedem Fall garantiert ist.
+                                            Sie hängt insbesondere davon ab, ob die Matrix
+                                            \(A\) diagonaldominant ist. Das bedeutet, dass in jeder Zeile der Betrag des
+                                            Diagonalelements
+                                            \(a_{ii}\) größer sein muss als die Summe der Beträge der restlichen
+                                            Elemente dieser Zeile, also
+                                            \(|a_{ii}| > \sum_{j \neq i} |a_{ij}|\)
+                                            In Fällen, in denen diese Bedingung nicht erfüllt ist, kann das Verfahren
+                                            entweder sehr langsam konvergieren oder sogar divergieren, was die
+                                            Berechnungen ineffektiv macht.
+                                            In der Praxis kann es notwendig sein, die Reihenfolge der Gleichungen im
+                                            System zu ändern, um diese Diagonaldominanz herzustellen.</p>
+                                        <p>
+                                            Eine weitere Einschränkung des Jacobi-Verfahrens ist die mögliche
+                                            Langsamkeit der
+                                            Konvergenz. Selbst wenn die Matrix
+                                            \(A\) diagonaldominant ist, kann das Verfahren je nach
+                                            Struktur der Matrix sehr lange benötigen, um eine ausreichende
+                                            Genauigkeit zu erreichen. Dies liegt an der iterativen Natur des Verfahrens,
+                                            bei der in jeder Iteration die Schätzwerte für die Lösung aktualisiert
+                                            werden, bis die Konvergenzbedingung erfüllt ist. Ein weiterer wichtiger
+                                            Faktor, der
+                                            die Konvergenzgeschwindigkeit beeinflussen kann, ist der Startvektor. Die
+                                            Wahl der Anfangswerte für die Iterationen hat direkten Einfluss darauf, wie
+                                            schnell das Verfahren die Lösung näherungsweise erreicht. Ein ungünstiger
+                                            Startvektor kann zu einer langsamen Konvergenz führen, da die Iterationen
+                                            möglicherweise weit von der tatsächlichen Lösung entfernt starten und
+                                            entsprechend viele Schritte benötigen, um sich zu verbessern. Daher ist es
+                                            oft erforderlich, den Startvektor mit Bedacht zu wählen und möglicherweise
+                                            eine Vorverarbeitung oder Vorkonditionierung vorzunehmen, um die Effizienz
+                                            des Verfahrens zu verbessern.
+                                        </p>
+
+                                        <section id="bedienungsanleitung" class="mb-4">
+                                            <h4>2. Bedienungsanleitung</h4><br>
+                                            Die App zur Lösung von linearen Gleichungssystemen bietet eine einfache
+                                            Möglichkeit, Gleichungssysteme numerisch mit dem Jacobi-Verfahren zu lösen
+                                            und die Schritte der Iteration zu verfolgen. Hier sind die Schritte zur
+                                            Bedienung der App:
+
+                                            <ol>
+                                                <li><b>Gleichungssystem eingeben</b>: Die Koeffizienten des
+                                                    Gleichungssystems lassen sich in die entsprechenden Felder der
+                                                    Matrix
+                                                    eingeben. Jede Zeile entspricht dabei einer Gleichung des Systems,
+                                                    und jede Spalte einer Variable. Die Anzahl der Zeilen und Spalten
+                                                    kann mithilfe der Knöpfe "Zeile hinzufügen" und "Zeile entfernen"
+                                                    verändert werden, wobei die maximale Anzahl an Zeilen bei 10 liegt.
+                                                    Es ist wichtig sicherzustellen,
+                                                    dass die Diagonalelemente von links oben nach rechts unten
+                                                    dominant sind, d. h. das Diagonalelement einer jeden Zeile
+                                                    muss größer sein als die Summe der Beträge der übrigen Elemente in
+                                                    derselben Zeile. Dies ist notwendig, damit das Jacobi-Verfahren
+                                                    konvergiert.</li>
+                                                <li><b>Startvektor festlegen</b>: Ein Startvektor <i>x<sup>(0)</sup></i>
+                                                    für das Jacobi-Verfahren kann optional eingegeben werden. Falls kein
+                                                    Startvektor eingegeben wird, verwendet die App standardmäßig den
+                                                    Nullvektor.</li>
+                                                <li><b>Anzahl der Iterationen und Genauigkeit festlegen</b>: Die
+                                                    maximale Anzahl der Iterationen kann festgelegt werden, ebenso wie
+                                                    die Anzahl der Nachkommastellen (0-10), welche während der
+                                                    Berechnungen
+                                                    sowie in den Ergebnissen angezeigt
+                                                    werden sollen. Die Anzahl der Iterationen ist dabei auf maximal 100
+                                                    Iterationen beschränkt, konvergiert dass Verfahren bis dahin nicht,
+                                                    wird das Ergebnis der 100sten Iteration ausgegeben.</li>
+                                                <li><b>Standardbeispiel verwenden</b>: Dieser Knopf ermöglicht ein
+                                                    einfaches Standardbeispiel in das Gleichungssystem einzutragen,
+                                                    welches eine dominierende Diagnoalmatrix aufweist und
+                                                    dementsprechend sicher konvergiert und zur Veranschaulichung eines
+                                                    Beispiels genutzt werden kann.</li>
+                                                <li><b>Lösen des Gleichungssystems</b>: Mit einem Klick auf „Lösen“
+                                                    beginnt die iterative Lösung des Gleichungssystems mittels des
+                                                    Jacobi-Verfahrens. Die App stellt zunächst die Uwandlung des
+                                                    eingegenen Gleichungssystems in die zugehörige Matrixform dar (1.
+                                                    Schritt), und nimmt dann die Diagonalisierung der Matrixform vor (2.
+                                                    Schritt).
+                                                    Daraufhin gibt die App die konkreten Rechneschritte in jeder
+                                                    Iteration
+                                                    an und berechnet die jeweilige Lösung (3. Schritt). Das Verfahren
+                                                    wird beendet, sobald Konvergenz erreicht wurde und sich die
+                                                    Ergebnisse in Bezug auf die festgelegte Anzahl an Nachkommastellen
+                                                    nicht mehr verändern.</li>
+                                                <li><b>Vergleich mit dem Gaußschen Eliminationsverfahren</b>: Die App
+                                                    bietet zusätzlich die Möglichkeit, die Lösung mit dem Ergebnis des
+                                                    Gaußschen Eliminationsverfahrens zu vergleichen, um zu überprüfen,
+                                                    wie stark sich die Lösungen des iterativen Jacobi Verfahrens vom
+                                                    Ergebnis des Gauß-Verfahrens unterscheiden, welches meist durch
+                                                    Rundungsfehler verfälscht wird. Die App bietet hierzu eine Angabe
+                                                    der Abweichung der beiden Ergebnisvektoren in Prozent.
+                                                </li>
+                                                <li><b>Ergebnisse visualisieren</b>: Die App zeigt eine detaillierte
+                                                    Aufstellung der einzelnen Iterationen an und ermöglicht eine
+                                                    grafische
+                                                    Visualisierung der Konvergenz. Auf diese Weise lässt sich verfolgen,
+                                                    wie die Lösung mit jeder Iteration verfeinert wird. Die
+                                                    Visualisierung lässt sich jedoch auch einklappen, um
+                                                    Übersichtlichkeit zu gewährleisten und direkt die Ergebnsse im
+                                                    Vergleich mit dem Gaußschen Eliminationsverfahren zu betrachten.
+                                                </li>
+                                            </ol>
+
+
+                                        </section>
+
+                                        <section id="handlungsempfehlungen" class="mb-4">
+                                            <h4>3. Handlungsempfehlungen</h4><br>
+                                            <ul>
+                                                <li><b>Auswahl eines geeigneten Startvektors</b>: Obwohl der
+                                                    Startvektor <i>x<sup>(0)</sup> = 0</i> oft eine gute Wahl
+                                                    darstellt, kann es hilfreich sein, einen Startvektor zu wählen, der
+                                                    näher
+                                                    an der erwarteten Lösung liegt, um die Konvergenz zu beschleunigen.
+                                                </li>
+                                                <li><b>Überprüfung der Diagonaldominanz der Matrix</b>: Um
+                                                    sicherzustellen, dass das Jacobi-Verfahren konvergiert, sollte
+                                                    überprüft werden, ob die Matrix <i>A</i> diagonal dominant ist.
+                                                    Falls dies nicht der Fall ist, könnte das Verfahren sehr langsam
+                                                    konvergieren oder im extremfall sogar divergieren und keine sinvolle
+                                                    Lösung bieten.</li>
+                                                <li><b>Iterationen optimieren</b>: Die Anzahl der Iterationen sollte
+                                                    sorgfältig überwacht und bei Bedarf angepasst werden. Falls die
+                                                    Lösung nach der vorgegebenen
+                                                    Anzahl von Iterationen noch nicht hinreichend genau ist, kann die
+                                                    maximale Iterationsanzahl erhöht werden (maximal 100 Iterationen).
+                                                </li>
+                                                <li><b>Nachkomastellen anpassen</b>: Die Anzahl der Nachkommastellen
+                                                    sollte so gewählt werden, dass eine ausreichend hohe Genauigkeit
+                                                    innerhalb der einzelnen Rechenschritte sichergestellt wird. Je höher
+                                                    die Anzahl der NAchkommastellen, desto geringer ist in der Regel die
+                                                    Abweichung zum Ergebnis des Gauß-Verfahrens.</li>
+                                                <li><b>Vergleich mit dem Gaußschen Eliminationsverfahren</b>: Um die
+                                                    Genauigkeit des Jacobi-Verfahrens zu überprüfen bzw. zu vergleichen,
+                                                    empfiehlt es sich,
+                                                    das Ergebnis mit der Lösung des Gaußschen Eliminationsverfahrens zu
+                                                    vergleichen und die prozentuale Abweichung zu betrachten. Ist diese
+                                                    zu hoch empfiehlt sich die Erhöhung der Anzahl der NAchkommastellen
+                                                    oder der Anzahl der Iterationen (vorausgesetzt, dass das Verfahren
+                                                    konvergiert).</li>
+                                            </ul>
+                                        </section>
+                            </main>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </header>
@@ -225,9 +353,10 @@
         }
     </script>
     <div class="content">
-        <h4><b>Lösung linearer Gleichungssysteme: Jacobi Verfahren</b><button class="fa fa-info-circle"
-                onclick="showGuide()"
-                style="font-size:24px; margin-left: 10px; color:grey; border:0; background-color: transparent;"></button>
+        <h4><b>Lösung linearer Gleichungssysteme: Jacobi Verfahren</b>
+            <button class="fa fa-info-circle"
+                style="font-size:24px; margin-left: 10px; color:grey; border:0; background-color: transparent;"
+                data-toggle="modal" data-target="#myModal"></button>
         </h4>
         <div style="display: flex;">
             <table id="Gleichungssystem">
@@ -247,7 +376,7 @@
         <label for="funktion">Maximale Anzahl Iterationen</label>
         <input id="AnzahlIterationen" type="number" placeholder="3" style="width:50px">
         Anzahl Nachkommastellen
-        <select id="nachkomastellen" >
+        <select id="nachkomastellen">
             <option>1</option>
             <option selected>2</option>
             <option>3</option>
@@ -305,7 +434,7 @@
                 </div>
             </div>
         </div>
-        <script src="./script.js">
+        <script src="./scriptLGS.js">
         </script>
         <script>
             /*
