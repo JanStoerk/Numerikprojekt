@@ -2,23 +2,24 @@
 <html>
 
 <head>
+    <title>Lineare Optimierung</title>
+    <meta charset="UTF-8">
+
     <!-- CSS Dateien -->
     <link rel="stylesheet" href="../LandingPage/style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" />
 
     <!-- JavaScript Dateien -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.4.4/math.min.js"></script>
     <script src="https://cdn.plot.ly/plotly-2.12.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/algebrite@1.4.0/dist/algebrite.bundle-for-browser.min.js"></script>
-
-
-    <meta charset="UTF-8">
 </head>
 
 <body>
@@ -29,118 +30,384 @@
                 <h1>Numerik</h1>
             </a>
         </div>
-        <button class="guide" onclick="showGuide()">
+        <button class="guide" data-toggle="modal" data-target="#guideModal">
             <img src="../pictures/guide.png" style="width:30px" alt="Guide">
             <h4>Guide</h4>
         </button>
-        <div id="myModal" class="modal">
-            <div class="modal-content">
-                <span class="close" onclick="closePopup()">&times;</span>
-                <p>das Branch-and-Bound-Verfahren kann sehr schnell zu einer großen Anzahl von Knoten und damit zu einem
-                    großen Baum führen, insbesondere wenn die Dimension des Problems oder die Anzahl der Variablen
-                    steigt. Dies liegt an der Natur des Verfahrens, das darauf basiert, den Lösungsraum rekursiv in
-                    kleinere Teilräume (Teilprobleme) zu unterteilen und zu prüfen.
-                    Warum wächst der Baum so schnell?
-                    Exponentielles Wachstum:
+          <div class="modal fade" id="guideModal" tabindex="-1" role="dialog" aria-labelledby="guideModalLabel"
+                  aria-hidden="true">
+                  <div class="modal-dialog modal-xl" style="margin-top:50px; height:600px;">
+                      <div class="modal-content" style="margin-top:50px; height:600px;">
+                          <div class="modal-header">
+                              <h5 class="modal-title" id="guideModalLabel">Guide</h5>
+                              <button type="button" class="btn btn-light" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                              </button>
+                          </div>
+                          <div class="modal-body">
+                              <!-- Inhalt des Modals hier einfügen -->
+                              Anleitung zur Verwendung der App
+                          </div>
+                          <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+        <div class="modal fade bd-example-modal-lg" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-xl" style="margin-top:50px; height:600px;">
+                <div class="modal-content" style="margin-top:50px; height:600px;">
+                    <div class="modal-header">
+                        <h3 class="modal-title" id="exampleModalLabel">Lineare Optimierung: Branch & Bound Verfahren
+                        </h3>
+                        <button type="button" class="btn btn-light" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true"><b>&times;</b></span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container mt-4">
+                            <nav class="mb-4">
+                                <h4>Inhaltsverzeichnis</h4>
+                                <ul class="nav flex-column">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#beschreibung">1. Beschreibung</a>
+                                        <ul class="nav flex-column ms-3"> <!-- Zweite Ebene -->
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="#fehler">1.1 Fehlerschätzung</a>
+                                            </li>
 
-                    Bei jedem Schritt wird der Lösungsraum in zwei oder mehr Teilräume unterteilt. Bei
-                    𝑛
-                    n Variablen und
-                    𝑏
-                    b möglichen Grenzen pro Variable können im schlimmsten Fall bis zu
-                    𝑏
-                    𝑛
-                    b
-                    n
-                    Knoten im Baum entstehen. Das bedeutet, dass die Anzahl der Knoten exponentiell mit der Anzahl der
-                    Variablen und den möglichen Grenzen ansteigt.
-                    Verzweigung in jede Richtung:
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="#usecases">1.2 Anwendungsmöglichkeiten</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="#limits">1.3 Einschränkungen</a>
+                                            </li>
+                                    </li>
+                                </ul>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#bedienungsanleitung">2. Bedienungsanleitung</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#handlungsempfehlungen">3. Handlungsempfehlungen</a>
+                                </li>
+                                </ul>
+                            </nav>
 
-                    Für jede Variable wird in beide Richtungen (kleinere und größere Werte) verzweigt, um alle möglichen
-                    Lösungen zu erkunden. Dies führt dazu, dass der Baum schnell sehr breit und tief wird.
-                    Zahlreiche Begrenzungen und Einschränkungen:
+                            <main>
+                                <section id="beschreibung" class="mb-4">
+                                    <h4>1. Beschreibung</h4><br>
+                                    <p>Die lineare Optimierung ist ein wesentlicher Bereich der mathematischen
+                                        Optimierung und zielt darauf ab, eine optimale Lösung für Probleme zu finden,
+                                        bei denen die Zielgröße (z. B. Kosten oder Gewinn) durch lineare Gleichungen
+                                        oder Ungleichungen beschränkt ist.
+                                        Das <b>Branch & Bound Verfahren</b> ist ein algorithmischer Ansatz zur Lösung
+                                        von ganzzahligen linearen Optimierungsproblemen, insbesondere
+                                        Maximierungsproblemen, auf welche sich diese Anwendung fokussiert.
+                                        Das Verfahren basiert darauf, den Lösungsraum in kleinere Teilräume aufzuteilen
+                                        (Branch)
+                                        und bestimmte Teilräume, die keine besseren Lösungen enthalten können,
+                                        frühzeitig auszuschließen (Bound). Dies wird durch die Verwendung von Schranken
+                                        und die systematische Exploration von Teilräumen erreicht.
 
-                    Wenn das Problem viele Einschränkungen hat, könnte das Verfahren viele Möglichkeiten erkunden, bevor
-                    es die optimalen Werte findet. Dies erhöht ebenfalls die Anzahl der Knoten.</p>
-                    <p>
-                        . Verständnis des Verfahrens: Baumstruktur und Iteration
-Du arbeitest mit einem iterativen Verfahren, das einen Baum aufbaut. Jeder Knoten im Baum repräsentiert eine potenzielle Lösung.
-Die Knoten werden durch das Teilen des Suchraums erzeugt. Der ursprüngliche Suchraum (die Wurzel) wird in Unterräume aufgeteilt, und die Mitte jedes Teilraums wird als potenzielle Lösung getestet.
-Jeder Knoten hat eine Eltern-Knoten und kann mehrere Kind-Knoten haben, die jeweils einen weiteren Unterraum repräsentieren.
-2. Wie werden Lösungen ausgewählt und getestet?
-In jedem Schritt wird ein Knoten aus einem Stapel (stack) genommen. Dieser Stapel enthält alle noch zu untersuchenden Teilräume.
-Der ausgewählte Knoten repräsentiert einen Bereich im Suchraum mit bestimmten Grenzen (bounds).
-Die Methode wählt dann die Mitte des Teilraums als potenzielle Lösung (das sogenannte "Midpoint-Verfahren"). Diese Mitte wird getestet, um festzustellen, ob sie eine bessere Lösung als die bisherige beste Lösung ist.
-Welche Lösung als erstes getestet wird, hängt also davon ab, welcher Knoten als erstes vom Stapel genommen wird, und das wird wiederum durch die Reihenfolge der Knoten bestimmt, die durch die rekursive Aufteilung des Suchraums entstehen.
-3. Können Lösungen mehrfach erzeugt werden?
-Ja, mehrfache Erzeugung gleicher Lösungen ist möglich. Dies kann in folgenden Szenarien auftreten:
+                                        Das Maximierungsproblem hat die allgemeine Form:
 
-Unterschiedliche Teilbäume könnten ähnliche oder sogar identische Lösungen erzeugen, wenn sie Teilräume überlappen. Stell dir das vor wie zwei Äste eines Baumes, die sich in unterschiedlichen Teilen der Iteration verzweigen, aber schließlich den gleichen Bereich des Suchraums repräsentieren.
-Bei jeder Iteration wird die Mitte des aktuellen Teilraums als neue Lösung getestet. Wenn mehrere Teilbäume Bereiche erzeugen, deren Mittelpunkte identisch sind, wird diese Lösung mehrfach als Knoten erzeugt.
-Beispiel:
+                                        \[
+                                        \text{Max} \ Z = c_1 x_1 + c_2 x_2 + \dots + c_n x_n
+                                        \]
 
-Nehmen wir an, der Suchraum reicht von 
-[
-0
-,
-100
-]
-[0,100] und du teilst ihn in zwei Hälften: 
-[
-0
-,
-50
-]
-[0,50] und 
-[
-51
-,
-100
-]
-[51,100]. Die Mitte von 
-[
-0
-,
-50
-]
-[0,50] ist 
-25
-25, und die Mitte von 
-[
-51
-,
-100
-]
-[51,100] ist 
-75
-75.
-Wenn du weiter unterteilst, könnten Teilräume wie 
-[
-0
-,
-25
-]
-[0,25] und 
-[
-26
-,
-50
-]
-[26,50] den gleichen Wert 
-12
-12 oder 
-38
-38 als Mitte haben. Wenn zwei verschiedene Äste diese gleichen Mittelpunkte erzeugen, werden die Knoten doppelt erzeugt, obwohl sie dieselbe Lösung darstellen.
-4. Wie wird festgelegt, welche Lösung getestet wird?
-Priorität des Stapels (Stack): Der Stapel bestimmt, in welcher Reihenfolge Teilräume untersucht werden. Normalerweise funktioniert der Stapel wie eine Last-In-First-Out (LIFO)-Struktur, was bedeutet, dass der zuletzt hinzugefügte Teilraum als nächstes untersucht wird.
-Das bedeutet: Welche Lösung getestet wird, hängt von der Reihenfolge ab, in der die Teilräume in den Stapel gelegt werden.
-                    </p>
+                                        \[
+                                        \text{unter den Nebenbedingungen} \ Ax \leq b \ \text{und} \
+                                        x_i \in \mathbb{N_0}
+                                        \]
+
+                                        wobei \(Z\) die Zielfunktion ist, die maximiert werden soll, \(x_1, x_2, \dots,
+                                        x_n\) die Variablen und \(c_1, c_2, \dots, c_n\) die Koeffizienten der
+                                        Zielfunktion sind. Die Nebenbedingungen \(Ax \leq b\) bilden lineare
+                                        Ungleichungen, welche die zulässigen Werte für die Entscheidungsvariablen
+                                        \(x\) einschränken. Die Bedingung \(x_i \in \mathbb{N_0}\) sorgt dafür, dass
+                                        alle Variablen nicht negativ sind (\(\geq 0\)). Diese Bedingung ist vor allem
+                                        entscheidend
+                                        für reale Probleme, bei denen nur ganze Einheiten von Ressourcen, Produkten oder
+                                        anderen Entitäten berücksichtigt werden dürfen.
+                                        Das Branch & Bound Verfahren teilt den Lösungsraum
+                                        schrittweise auf, indem es an jeder Verzweigung entweder die obere Schranke oder
+                                        eine ganzzahlige Lösung ermittelt. Das Verfahren erstellt einen Suchbaum, bei
+                                        dem jeder Knoten eine mögliche Kombination von Entscheidungen darstellt.
+                                        Jeder Knoten des Baumes wird bewertet und farblich gekennzeichnet, um den
+                                        Fortschritt der Lösung darzustellen:
+                                    <ul>
+                                        <li><span style="color: #198754;"><b>Grün (Beste Lösung)</b></span>: Dieser
+                                            Knoten repräsentiert die aktuell beste Lösung.</li>
+                                        <li><span style="color: #2b7ce9;"><b>Blau (Gültige Lösung)</b></span>: Ein
+                                            gültiger Knoten, der eine zulässige Lösung darstellt, aber nicht die aktuell
+                                            beste Lösung bietet.</li>
+                                        <li><span style="color: #ff0000;"><b>Rot (Ungültige Lösung)</b></span>: Dieser
+                                            Knoten stellt eine ungültige Lösung dar, die nicht die angegebenen
+                                            Nebenbedingungen erfüllt.</li>
+                                        <li><span style="color: #000000;"><b>Schwarz (Verworfener Teilbaum)</b></span>:
+                                            Teilbäume, die keine besseren Lösungen enthalten können, werden verworfen
+                                            und nicht weiter untersucht.</li>
+                                    </ul>
+                                    </p>
+                                    <section id="fehler" class="mb-4"></section>
+                                    <h5>1.1 Fehlerschätzung</h5><br>
+                                    <p>Im Branch & Bound Verfahren ist die Fehlerschätzung ein wichtiger Aspekt zur
+                                        Bewertung der Genauigkeit der gefundenen Lösung. Die Methode verwendet zwei
+                                        Hauptgrößen zur Schätzung: die Obergrenze (UB) und die Untergrenze (LB). Die
+                                        Obergrenze wird durch die beste bisher gefundene zulässige Lösung definiert und
+                                        stellt die beste bekannte Lösung dar, die oft durch die Relaxation des Problems
+                                        ermittelt wird. Die Untergrenze hingegen repräsentiert die beste Schätzung der
+                                        optimalen Lösung
+                                        innerhalb eines Teilraums, und wird durch die Relaxation des Problems in diesem
+                                        Teilraum bestimmt
+
+                                        Der Unterschied zwischen der Obergrenze und der Untergrenze, auch als
+                                        Fehlerschätzung bezeichnet, zeigt auf, wie nah die aktuelle Lösung der optimalen
+                                        Lösung ist und wird berechnet durch
+                                        \[Fehler = UB - LB\]. Ein kleiner Fehlerwert weist auf eine höhere
+                                        Genauigkeit hin. Die
+                                        relative Fehlerschätzung, die die Genauigkeit in Prozent angibt, kann durch die
+                                        Formel \[Relativer \, Fehler = \frac{UB-LB}{UB}*100%\]
+                                        bestimmt werden.
+
+                                        Teilräume, deren untere Schranke
+                                        \(LB\)
+                                        nicht besser als die Obergrenze
+                                        \(UB\)
+                                        sein kann, werden verworfen. Diese Entscheidung basiert auf dem Kriterium:
+                                        Wenn \(LB \geq UB\), dann wird der Teilraum verworfen (auch als "Pruning"
+                                        bezeichnet). Durch diese systematische
+                                        Fehlerschätzung und Pruning-Strategie kann das Branch & Bound Verfahren
+                                        effizient arbeiten, indem es sich auf die vielversprechendsten Teilräume
+                                        konzentriert und weniger vielversprechende frühzeitig ausschließt.</p>
+                                    <section id="usecases" class="mb-4">
+                                        <h5>1.2 Anwendungsmöglichkeiten</h5><br>
+                                        <p>Das Branch & Bound Verfahren ist besonders gut geeignet für Probleme, die
+                                            durch lineare Ungleichungen und ganzzahlige Variablen beschrieben werden. Es
+                                            findet besonders dann Anwendung, wenn eine exakte Lösung für ein
+                                            Optimierungsproblem gefordert ist und der Lösungsraum durch eine Vielzahl
+                                            von möglichen Kombinationen komplex und groß ist. Das Verfahren ist
+                                            effektiv, wenn das Problem eine diskrete Struktur aufweist, bei der die
+                                            Variablen nur bestimmte Werte annehmen können, wie zum Beispiel bei der
+                                            ganzzahligen Programmierung oder der kombiniatorischen Optimierung.
+
+
+                                        </p>
+                                        <p>Besonders vorteilhaft ist das Branch & Bound Verfahren bei Problemen, bei
+                                            denen geschickte Strategien zum Ausschluss unbrauchbarer Teilräume
+                                            angewendet werden können. Dies ermöglicht eine signifikante Reduktion der
+                                            Anzahl der erforderlichen Berechnungen, indem es nur die
+                                            vielversprechendsten Teilräume weiter untersucht und weniger aussichtsreiche
+                                            Bereiche frühzeitig ausschließt. Die grafische Darstellung der Baumstruktur,
+                                            die den Lösungsprozess veranschaulicht, hilft dabei, die Struktur der
+                                            Problemlösung zu verstehen und zu überprüfen, welche Teilräume bereits
+                                            untersucht wurden und welche noch offen sind. In Szenarien, in denen die
+                                            Anzahl der möglichen Lösungen sehr groß ist, aber durch strukturelle
+                                            Merkmale oder Schranken erheblich eingeschränkt werden kann, bietet Branch &
+                                            Bound eine systematische und effiziente Methode zur Findung der optimalen
+                                            Lösung.
+                                        <section id="limits" class="mb-4"></section>
+                                        <h5>1.3 Einschränkungen</h5><br>
+                                        <p>
+                                            Das Branch & Bound Verfahren, obwohl leistungsfähig bei der Lösung von
+                                            Problemen mit diskreten Variablen, stößt bei großen und komplexen Problemen
+                                            mit vielen Variablen und Nebenbedingungen an seine Grenzen. Eine wesentliche
+                                            Einschränkung des Verfahrens ist das exponentielle Wachstum des Suchbaums,
+                                            das bei großen Problemen zu einem erheblichen Anstieg der Rechenzeit führt.
+                                            Dieser exponentielle Anstieg kann die Effizienz stark beeinträchtigen, da
+                                            der Algorithmus eine riesige Anzahl von Teilräumen untersuchen muss, um die
+                                            optimale Lösung zu finden. Besonders bei Problemen mit vielen Variablen und
+                                            komplexen Nebenbedingungen wird der Suchbaum schnell unüberschaubar, was zu
+                                            einer hohen Speicher- und Zeitkomplexität führt. Zusätzlich können die
+                                            Berechnungen zur Bestimmung der Schranken, insbesondere bei sehr großen
+                                            Problemen, ebenfalls sehr aufwendig sein. In solchen Fällen kann das Branch
+                                            & Bound Verfahren nicht in akzeptabler Zeit zu einer optimalen Lösung
+                                            gelangen, was die praktische Anwendbarkeit bei sehr großen oder komplexen
+                                            Problemen einschränkt. Daher werden oft Heuristiken oder
+                                            Approximationsmethoden verwendet, um die Suche in solchen Szenarien zu
+                                            beschleunigen und die Belastung durch den exponentiellen Suchraum zu
+                                            reduzieren.
+
+                                        </p>
+                                        <p>
+                                            Eine weitere bedeutende Einschränkung des Branch & Bound Verfahrens tritt
+                                            auf, wenn unbeschränkte Variablen in der Zielfunktion vorkommen,
+                                            insbesondere bei positiven Koeffizienten. In solchen Fällen besteht die
+                                            Gefahr, dass die Lösung unbeschränkt wird, das heißt, sie kann immer größer
+                                            werden, ohne eine obere Grenze zu erreichen. Dies passiert, weil die
+                                            Zielfunktion durch die unbeschränkten Variablen beliebig groß werden kann,
+                                            wenn deren Koeffizienten positiv sind und die Nebenbedingungen keine
+                                            ausreichende Begrenzung bieten. Das Branch & Bound Verfahren, das darauf
+                                            abzielt, den Suchraum einzuschränken und die beste Lösung zu finden, hat
+                                            Schwierigkeiten, in solchen Szenarien eine sinnvolle Lösung zu ermitteln, da
+                                            es keine endliche optimale Lösung finden kann. Daher überprüft die Anwendung
+                                            bei der EIngabe der Zielfunktion und der Nebenbedingungen, ob zumindest eine
+                                            obere Schranke für jede Variable angegeben wurde, ansonsten kann das Branch
+                                            & Bound Verfahren nicht gestratet werden.
+
+                                        </p>
+
+                                        <section id="bedienungsanleitung" class="mb-4">
+                                            <h4>2. Bedienungsanleitung</h4><br>
+                                            Die App zur Lösung von linearen Optimierungsproblemen mittels des Branch &
+                                            Bound Verfahrens bietet eine benutzerfreundliche Oberfläche, die es
+                                            ermöglicht, schnell und effektiv Optimierungsprobleme zu formulieren und zu
+                                            lösen. Hier sind die Schritte zur Bedienung der App:
+
+                                            <ol>
+                                                <li><b>Maximierungsproblem eingeben</b>: In das Feld
+                                                    „Maximierungsproblem“ wird die Zielfunktion eingetragen, die
+                                                    maximiert werden soll. Diese Funktion hat die allgemeine Form <i>Z =
+                                                        c_1 x_1 + c_2 x_2 + ... + c_n x_n</i>, wobei <i>c_i</i> die
+                                                    Koeffizienten der Zielfunktion sind. Dabei spielt keine Rolle wlehce
+                                                    Bezeichnungen für die Vaiablen gewählt werden (z.B. x, y oder a, b),
+                                                    jedoch dürfen die einzelnen Variablen nur einem Zeichen entsprechen
+                                                    (z.B. wäre x1 nicht zulässig).</li>
+                                                <li><b>Nebenbedingungen festlegen</b>: Unter der Zielfunktion befinden
+                                                    sich standardmäßig zwei Nebenebedingungen, mithilfe des Knopfes
+                                                    "Nebenbedingung hinzufügen" können jedoch bis zu 10 Nebenbedingungen
+                                                    für ein optimierungsproblem verwendet werden. Diese
+                                                    haben die Form linearer Ungleichungen, die die Werte der Variablen
+                                                    einschränken (z. B. <i>x &le; 5</i> oder <i>a+b &le; 6</i>). Die
+                                                    Nebenbedingungen unterstützen dabei auch andere Vergleichsoperatoren
+                                                    wie \(\geq, \gt, \lt\), wobei Nebenbedingungen mit den Operatoren
+                                                    \(\geq, \gt\) nur berücksichtigt werden wenn diese scih auf den
+                                                    positiven Zahlenbereich beschränken, da die Anwendung nur \(x_i \in
+                                                    \mathbb{N_0}\) unterstützt.</li>
+                                                <li><b>Baumstruktur erzeugen</b>: Zur erzeugung der Baumstruktur und zur
+                                                    iterativen Lösung des Optimierungsproblems mithilfe des Branch &
+                                                    Bound Verfahrens können der Start Knopf sowie der Knopf zum
+                                                    schrittweisen Vorwärtsspulen verwendet werden. Während der
+                                                    schrittweise Knopf jeweils eine Iteration des Branch & Bound
+                                                    Verfahrens durchführt und der jeweilige Knoten zur Baumstruktur
+                                                    hinzufügt,
+                                                    beginnt der Start Knopf das Branch & Bound Verfahren iterativ
+                                                    durchzuführen, bis alle Teilbäume untersucht wurden, oder die
+                                                    maximale Anzahl an iterationen erreicht ist (200). Dabei wird pro
+                                                    Sekunde eine Iteration durchgeführt und der Baum entsprechend
+                                                    erweitert, wobei der Fokus des Baumes während der Animation jeweils
+                                                    auf den neu angelegten Knoten gelenkt wird.
+                                                    Jeder Knoten im Baum repräsentiert eine untersuchte Lösung oder
+                                                    einen
+                                                    Teilbereich des Lösungsraums.</li>
+                                                <li><b>Knoten farblich markiert</b>: Die Knoten im Baum werden farblich
+                                                    markiert, um den Status der Lösungen zu kennzeichnen. Eine gültige,
+                                                    aber nicht optimale Lösung wird in Blau angezeigt, die aktuell beste
+                                                    Lösung in Grün. Ungültige Lösungen werden in Rot dargestellt, und
+                                                    verworfene Teilräume sind schwarz markiert.</li>
+                                                <li><b>Ergebnisse analysieren</b>: Auf der rechten Seite zeigt die App
+                                                    wichtige Parameter wie die obere und untere Schranke, die momentan
+                                                    beste Lösung und die Anzahl der weiteren möglichen Lösungen, sowie
+                                                    die bis zu diesem Zeitpunkt verworfene Anzahl an Teilbäumen an.
+                                                    Diese Daten helfen bei der Einschätzung des Fortschritts der
+                                                    Berechnung und werden mit jeder Iteration aktualisiert.</li>
+                                                <li><b>Abweichungsdiagramm erstellen</b>: Nach dem Abschluss der
+                                                    Berechnung kann ein Abweichungsdiagramm erstellt werden, dass den
+                                                    Fehler in jeder Iteration grafisch in Bezug zur otimalen Lösung
+                                                    darstellt. Dies zeigt die
+                                                    Entwicklung der Lösung im Laufe der Iterationen. Sollte dieser Knopf
+                                                    verwendet werden, bevor das Branch & Bound Verfahren
+                                                    abgeschlossen wurde, so wird das Verfahren auf einen
+                                                    Schlag bis zum Ende durchgeführt (alle Teilbäume untersucht oder
+                                                    maximale Anzahl an Iterationen erreicht). Dadurch bietet der Knopf
+                                                    auch die Möglichkeit bei Bedarf die Animation zu überspringen,
+                                                    jedoch kann bei umfangreichen Bäumen und je nach verwendeter
+                                                    Rechnerhardware diese Berechnung und Erstellung des Baumes einige
+                                                    Sekunden andauern. </li>
+                                                <li><b>Animation zurückspulen</b>: Der Knopf zum schrittweisen
+                                                    Zurückspulen ermöglicht, in der Animation zurückzugehen und auch die
+                                                    entsprechenden Ergebnisse auf der rechten Seite auf den jeweiligen
+                                                    Stand der Baumstruktur zurückzusetzen. Dies ermöglicht eine
+                                                    detaillierte und umfassende Betrachtung der einzelnen
+                                                    Iterationsschritte und verbessert das Verständnis der Vorgehensweise
+                                                    des Branch & Bound Verfahrens. </li>
+                                                <li><b>Baum zurücksetzen</b>: Um zu verhindern dass während der
+                                                    Iteration des Branch & Bound Verfahrens die Zeilfunktion oder
+                                                    Nebenbedingungen angepasst werden, werden die Eingabefelder für den
+                                                    Nutzer deaktiviert. Um die Engaben zu verändern und ein anderes
+                                                    Optimierungsproblem zu untersuchen kann daher der Knopf "Baum
+                                                    zurücksetzen" verwendet werden.</li>
+                                            </ol>
+
+
+
+                                        </section>
+
+                                        <section id="handlungsempfehlungen" class="mb-4">
+                                            <h4>3. Handlungsempfehlungen</h4><br>
+                                            Um die besten Ergebnisse mit der App zur Lösung von linearen
+                                            Optimierungsproblemen zu erzielen, sollten die folgenden Empfehlungen
+                                            beachtet werden:
+
+                                            <ul>
+                                                <li><b>Klare Zielfunktion definieren</b>: Die Zielfunktion sollte
+                                                    präzise formuliert werden, um sicherzustellen, dass das
+                                                    Problem richtig gelöst wird. Dabei ist wichtig, dass alle jeweiligen
+                                                    Koeffizienten korrekt vor den zugehörigen Variablen stehen (wobei es
+                                                    unerheblich ist ob diese mit * oder
+                                                    ohne mit den Variablen verbunden werden) und dass die Variablen aus
+                                                    einzelnen Ziffern bestehen (z.B. a
+                                                    oder x). Das Maximierungsproblem sollte dabei stets der Form \(
+                                                    c_1 x_1 + c_2 x_2 + \dots + c_n x_n
+                                                    \) entsprechen.</li>
+                                                <li><b>Nebenbedingungen präzise formulieren</b>: Um eine genaue Lösung
+                                                    zu erhalten, sollten die Nebenbedingungen sorgfältig formuliert
+                                                    werden. Falsche oder unvollständige Nebenbedingungen werden von der
+                                                    Anwendung erkannt und führen dazu dass das Branch & Bound Verfahren
+                                                    nicht durchgeführt wird.</li>
+                                                <li><b>Vermeidung von unbeschränkten Variablen</b>: Die Nebenbedingungen
+                                                    sollten für jede Variable zumindest eine obere Schranke angeben, um
+                                                    unbeschränkte Variablen zu vermeiden, da diese dazu führen können,
+                                                    dass der Suchraum unendlich groß wird, was die Lösung des Problems
+                                                    extrem erschwert oder unmöglich macht. Die Anwendung zeigt in
+                                                    solchen Fällen mithilfe eines Popups an, welche Variablen aktuell
+                                                    noch unbeschränkt sind. </li>
+                                                <li><b>Überwachen der Baumgröße</b>: Bei großen Problemen, insbesondere
+                                                    wenn viele Variablen verwendet werden und diese mit sehr weiten
+                                                    Schranken eingeschränkt werden kann der
+                                                    Suchbaum sehr schnell anwachsen und die maximale Anzahl an
+                                                    Iterationen erreichen (200). Dies führt dazu dass das Branch & Bound
+                                                    Verfahren unter Umständen nicht das optimale Ergebniss für das
+                                                    Maximierungsproblem ermitteln kann und die Erstellung des Baumes
+                                                    lange dauern kann. Es kann hilfreich sein, die
+                                                    Nebenbedingungen anzupassen, sodass die Variablen durch engere
+                                                    Schranken beschränkt werden oder das Problem zu vereinfachen, um den
+                                                    Lösungsprozess zu beschleunigen.</li>
+                                                <li><b>Regelmäßige Überprüfung der Schranken</b>: Die gesetzten
+                                                    Schranken sollten bei sehr großen optimierungsproblemen regelmäßig
+                                                    überprüft und gegebenenfalls angepasst werden um bessere Ergebnisse
+                                                    zu erlangen. So könnte beispielsweise das Verfahren mit sehr weiten
+                                                    Schranken gestartet werden und nach einer bestimmten Anzahl an
+                                                    Iterationen (maximal 200) neue Schranken basierend auf dem
+                                                    erstellten baum identifiziert werden. Durch den Knopf Baum
+                                                    zurücksetzen können die Schranken dann angepasst und ein neuer
+                                                    Suchbaum erstellt werden.</li>
+                                                <li><b>Analyse des Abweichungsdiagramms</b>: Das Abweichungsdiagramm
+                                                    gibt wertvolle Hinweise darauf, wie sich die Lösung über die
+                                                    Iterationen hinweg entwickelt. Eine fallende Abweichung zeigt, dass
+                                                    die
+                                                    Lösung sich der optimalen Lösung annähert. Hierdurch kann eine
+                                                    Schätzung darüber getroffen werden, ab welcher Iteration die
+                                                    Genauigkeit des Verfahrens ausreichend hoch ist. Das
+                                                    Abweichungsdiagramm kann auch mithilfe des zugehörigen Knopfes als
+                                                    PNG-Datei heruntergeladen werden, um die Ergebnisse zu sichern.</li>
+                                            </ul>
+
+                                        </section>
+                            </main>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </header>
     <div class="content">
-        <h4><b>Lineare Optimierung: Branch & Bound Verfahren</b><button class="fa fa-info-circle" onclick="showGuide()"
-                style="font-size:24px; margin-left: 10px; color:grey; border:0; background-color: transparent;"></button>
+        <h4><b>Lineare Optimierung: Branch & Bound Verfahren</b><button class="fa fa-info-circle"
+                style="font-size:24px; margin-left: 10px; color:grey; border:0; background-color: transparent;"
+                data-toggle="modal" data-target="#myModal"></button>
         </h4><br>
         <div style="display: flex; justify-content: space-around; align-items: center;">
             <div style="flex: 1; text-align: center;">
@@ -195,7 +462,7 @@ Das bedeutet: Welche Lösung getestet wird, hängt von der Reihenfolge ab, in de
                 <br>
             </div>
             <div style="flex: 1; text-align: center; margin-left:30px">
-                <button id="branchButton" class="btn btn-secondary" disabled>Abweichungsdiagramm     
+                <button id="branchButton" class="btn btn-secondary" disabled>Abweichungsdiagramm
                     erstellen</button><br><br>
                 <table style="margin: auto;" class="table table-hover" id="nebenbedingungen">
                     <tbody>

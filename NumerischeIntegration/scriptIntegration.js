@@ -477,7 +477,7 @@ function updateHeader(radio) {
         } else {
             var integralBtn = document.getElementById('integralButton');
             integralBtn.style.display = "none"
-            const nachkommastellen = document.getElementById('nachkomastellenContainer').style.display = "none";
+            document.getElementById('nachkomastellenContainer').style.display = "none";
             document.getElementById('btnZeichne').disabled = true;
             var checkbox = document.getElementById('myCheckbox')
             checkbox.checked = false;
@@ -485,14 +485,23 @@ function updateHeader(radio) {
             document.getElementById('checkboxLabel').style.display = "none"
             document.getElementById('stammfunktionContainer').style.display = "none";
         }
-        const resultContainer = document.getElementById('resultContainer').innerHTML = "";
-        const histogramm = document.getElementById('abweichungsHistogramm').innerHTML = "";
+         document.getElementById('resultContainer').innerHTML = "";
+        document.getElementById('abweichungsHistogramm').innerHTML = "";
         if (radio.value == "Simpsonregel") {
             document.getElementById('sliderValue').innerText = "Anzahl Parabeln: " + document.getElementById('punktPosition').value;
+            document.getElementById('exampleModalLabel').innerHTML = "Numerische Integration: Simpsonregel";
+            document.getElementById('TrapezDoku').style.display = "none";
+            document.getElementById('SimpsonDoku').style.display = "block";
+            document.getElementById('inhaltsverzeichnisTrapez').style.display = "none";
+            document.getElementById('inhaltsverzeichnisSimpson').style.display = "block";
 
         } else {
             document.getElementById('sliderValue').innerText = "Anzahl Trapeze: " + document.getElementById('punktPosition').value;
-
+            document.getElementById('exampleModalLabel').innerHTML = "Numerische Integration: Trapezregel";
+            document.getElementById('TrapezDoku').style.display = "block";
+            document.getElementById('SimpsonDoku').style.display = "none";
+            document.getElementById('inhaltsverzeichnisTrapez').style.display = "block";
+            document.getElementById('inhaltsverzeichnisSimpson').style.display = "none";
         }
 
     }

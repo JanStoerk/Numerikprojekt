@@ -312,7 +312,7 @@ async function calculateSolution(){
                 break
             }
             startVector = x1;
-            if (i == 50) {
+            if (i == 100) {
                 calculation.innerHTML += `<b>Konvergenz wurde nach ${i} Iterationen noch nicht erreicht</b>`
                 break;
             }

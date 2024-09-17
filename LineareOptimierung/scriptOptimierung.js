@@ -652,8 +652,8 @@ function createDiagram() {
 
     var extractedInputs = getInputs()
     if (!checkForUnboundedSolution(extractedInputs.variables, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes)) {
-        setBBSolver(new BranchAndBound(extractedInputs.variables, extractedInputs.objectiveCoefficients, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes, funktion))
-
+        bbSolver = new BranchAndBound(extractedInputs.variables, extractedInputs.objectiveCoefficients, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes, funktion)
+        setBBSolver(bbSolver);
         bbSolver.solve();
         updateResults(bbSolver);
     } else {
@@ -671,10 +671,12 @@ function skipForward() {
         playIcon.style.display = 'block';
         pauseIcon.style.display = 'none';
     } else {
+        console.log(bbSolver)
         var extractedInputs = getInputs();
         if (!checkForUnboundedSolution(extractedInputs.variables, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes)) {
 
-            setBBSolver=(new BranchAndBound(extractedInputs.variables, extractedInputs.objectiveCoefficients, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes, funktion))
+            bbSolver = new BranchAndBound(extractedInputs.variables, extractedInputs.objectiveCoefficients, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes, funktion)
+            setBBSolver(bbSolver);
             bbSolver.iterate();
             updateResults(bbSolver);
         } else {
@@ -700,8 +702,9 @@ async function playBranchAndBound() {
     if (!bbSolver) {
         var extractedInputs = getInputs()
         if (!checkForUnboundedSolution(extractedInputs.variables, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes)) {
-            setBBSolver = (new BranchAndBound(extractedInputs.variables, extractedInputs.objectiveCoefficients, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes, funktion))
-        } else {
+            bbSolver = new BranchAndBound(extractedInputs.variables, extractedInputs.objectiveCoefficients, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes, funktion)
+            setBBSolver(bbSolver);
+          } else {
             reset();
             return;
         }
