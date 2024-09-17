@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">84.14% </span>
+                <span class="strong">83.19% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>292/347</span>
+                <span class='fraction'>297/357</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.58% </span>
+                <span class="strong">82.6% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>280/335</span>
+                <span class='fraction'>285/345</span>
             </div>
         
             
@@ -724,7 +724,16 @@
 <a name='L659'></a><a href='#L659'>659</a>
 <a name='L660'></a><a href='#L660'>660</a>
 <a name='L661'></a><a href='#L661'>661</a>
-<a name='L662'></a><a href='#L662'>662</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L662'></a><a href='#L662'>662</a>
+<a name='L663'></a><a href='#L663'>663</a>
+<a name='L664'></a><a href='#L664'>664</a>
+<a name='L665'></a><a href='#L665'>665</a>
+<a name='L666'></a><a href='#L666'>666</a>
+<a name='L667'></a><a href='#L667'>667</a>
+<a name='L668'></a><a href='#L668'>668</a>
+<a name='L669'></a><a href='#L669'>669</a>
+<a name='L670'></a><a href='#L670'>670</a>
+<a name='L671'></a><a href='#L671'>671</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
@@ -1215,10 +1224,19 @@
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1864,7 +1882,7 @@ function updateHeader(radio) {
         } else <span class="missing-if-branch" title="else path not taken" >E</span>{
             var integralBtn = <span class="cstat-no" title="statement not covered" >document.getElementById('integralButton');</span>
 <span class="cstat-no" title="statement not covered" >            integralBtn.style.display = "none"</span>
-            const nachkommastellen = <span class="cstat-no" title="statement not covered" >document.getElementById('nachkomastellenContainer').style.display = "none";</span>
+<span class="cstat-no" title="statement not covered" >            document.getElementById('nachkomastellenContainer').style.display = "none";</span>
 <span class="cstat-no" title="statement not covered" >            document.getElementById('btnZeichne').disabled = true;</span>
             var checkbox = <span class="cstat-no" title="statement not covered" >document.getElementById('myCheckbox')</span>
 <span class="cstat-no" title="statement not covered" >            checkbox.checked = false;</span>
@@ -1872,14 +1890,23 @@ function updateHeader(radio) {
 <span class="cstat-no" title="statement not covered" >            document.getElementById('checkboxLabel').style.display = "none"</span>
 <span class="cstat-no" title="statement not covered" >            document.getElementById('stammfunktionContainer').style.display = "none";</span>
         }
-        const resultContainer = document.getElementById('resultContainer').innerHTML = "";
-        const histogramm = document.getElementById('abweichungsHistogramm').innerHTML = "";
+         document.getElementById('resultContainer').innerHTML = "";
+        document.getElementById('abweichungsHistogramm').innerHTML = "";
         if (radio.value == "Simpsonregel") {
             document.getElementById('sliderValue').innerText = "Anzahl Parabeln: " + document.getElementById('punktPosition').value;
+            document.getElementById('exampleModalLabel').innerHTML = "Numerische Integration: Simpsonregel";
+            document.getElementById('TrapezDoku').style.display = "none";
+            document.getElementById('SimpsonDoku').style.display = "block";
+            document.getElementById('inhaltsverzeichnisTrapez').style.display = "none";
+            document.getElementById('inhaltsverzeichnisSimpson').style.display = "block";
 &nbsp;
         } else <span class="missing-if-branch" title="else path not taken" >E</span>{
 <span class="cstat-no" title="statement not covered" >            document.getElementById('sliderValue').innerText = "Anzahl Trapeze: " + document.getElementById('punktPosition').value;</span>
-&nbsp;
+<span class="cstat-no" title="statement not covered" >            document.getElementById('exampleModalLabel').innerHTML = "Numerische Integration: Trapezregel";</span>
+<span class="cstat-no" title="statement not covered" >            document.getElementById('TrapezDoku').style.display = "block";</span>
+<span class="cstat-no" title="statement not covered" >            document.getElementById('SimpsonDoku').style.display = "none";</span>
+<span class="cstat-no" title="statement not covered" >            document.getElementById('inhaltsverzeichnisTrapez').style.display = "block";</span>
+<span class="cstat-no" title="statement not covered" >            document.getElementById('inhaltsverzeichnisSimpson').style.display = "none";</span>
         }
 &nbsp;
     }
@@ -2053,7 +2080,7 @@ module.exports = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-09-16T12:07:26.741Z
+                at 2024-09-17T14:25:57.905Z
             </div>
         <script src="../prettify.js"></script>
         <script>
