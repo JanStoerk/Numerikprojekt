@@ -52,6 +52,11 @@ function setupDOM() {
         <option>9</option>
         <option>10</option>
         </select>
+        <p id="exampleModalLabel"></p>
+        <p id="inhaltsverzeichnisTrapez"></p>
+        <p id="inhaltsverzeichnisSimpson"></p>
+        <p id="SimpsonDoku"></p>
+        <p id="TrapezDoku"></p>
     `;
 
     let stopLoop = true;
