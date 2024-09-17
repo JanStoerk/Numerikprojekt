@@ -211,7 +211,7 @@ describe('playPauseHandler', () => {
 
         // Überprüfe, ob der Sliderwert erhöht wurde
         expect(Number(slider.value)).toBeGreaterThan(0);
-        expect(sliderValue.innerText).toContain('Anzahl Trapeze: ');
+        expect(sliderValue.innerText).toContain('Anzahl Parabeln: 2');
 
         // Überprüfe, ob zeichneFunktion aufgerufen wurde
         expect(global.zeichneFunktion).toHaveLength(0);
@@ -741,7 +741,7 @@ describe('stepwiseChange', () => {
         const sliderValue = document.getElementById('sliderValue');
 
         expect(Number(slider.value)).toBe(8); // Startwert 5 + Schritt 3 = 8
-        expect(sliderValue.innerText).toBe("Anzahl Trapeze: 8");
+        expect(sliderValue.innerText).toBe("Anzahl Parabeln: 8");
 
         // Überprüfe, ob zeichneFunktion aufgerufen wurde
         expect(global.zeichneFunktion).toHaveLength(0);
