@@ -16,29 +16,29 @@ function ggbOnInit() {
 document.addEventListener('DOMContentLoaded', function () {
     let fehlerWerte = [];
     var params = {
-    "appName": "classic",
-    "width": 600,
-    "height": 600,
-    "enableRightClick": false,
-    "showZoomButtons": true,
-    "showToolbar": false,
-    "showMenuBar": false,
-    "showAlgebraInput": false,
-    "useBrowserForJS": true,
-    "algebraView": false
-}
-var applet = new GGBApplet(params, true);
+        "appName": "classic",
+        "width": 600,
+        "height": 600,
+        "enableRightClick": false,
+        "showZoomButtons": true,
+        "showToolbar": false,
+        "showMenuBar": false,
+        "showAlgebraInput": false,
+        "useBrowserForJS": true,
+        "algebraView": false
+    }
+    var applet = new GGBApplet(params, true);
     applet.inject('ggb-element');
     let integralBtn = document.getElementById('integralButton');
     integralBtn.style.display = "none"
 
-let playPauseButton = document.getElementById('play-pause');
-let stammfunktion = document.getElementById('myCheckbox');
-document.getElementById('funktion').addEventListener('input', checkInputs);
-document.getElementById('untereGrenze').addEventListener('input', checkInputs);
-document.getElementById('obereGrenze').addEventListener('input', checkInputs);
-playPauseButton.addEventListener('click', playPauseHandler);
-stammfunktion.addEventListener('change', stammfunktionChangeHandler);
+    let playPauseButton = document.getElementById('play-pause');
+    let stammfunktion = document.getElementById('myCheckbox');
+    document.getElementById('funktion').addEventListener('input', checkInputs);
+    document.getElementById('untereGrenze').addEventListener('input', checkInputs);
+    document.getElementById('obereGrenze').addEventListener('input', checkInputs);
+    playPauseButton.addEventListener('click', playPauseHandler);
+    stammfunktion.addEventListener('change', stammfunktionChangeHandler);
 
 
 
@@ -59,16 +59,28 @@ function playPauseHandler() {
         var slider = document.getElementById('punktPosition');
         var value = Number(slider.value);
 
-        (async function() {
-            while (value < 50) {
+        (async function () {
+            while (value < 100) {
                 if (stopLoop) {
                     console.log('Schleife abgebrochen');
                     break;
                 }
                 value += 1;
                 slider.value = value;
-                document.getElementById('sliderValue').innerText = "Anzahl Trapeze: " + slider.value;
+                var regel;
+                if (document.getElementById("trapez").checked == true) {
+                    regel = "Trapeze"
+                } else {
+                    regel = "Parabeln"
+                }
+                document.getElementById('sliderValue').innerText = "Anzahl " + regel + ": " + slider.value;
                 zeichneFunktion();
+                if (diagramm.data) {
+                    const punktX = [parseInt(slider.value)];
+                    const punktY = [fehlerWerte[punktX - 1]];
+
+                    Plotly.restyle(diagramm, { x: [punktX], y: [punktY] }, 1);
+                }
                 await new Promise(resolve => setTimeout(resolve, 1000));
                 console.log(slider.value)
             }
@@ -78,9 +90,9 @@ function playPauseHandler() {
     }
 }
 
- function stammfunktionChangeHandler() {
+function stammfunktionChangeHandler() {
     let stammfunktion = document.getElementById('myCheckbox');
-    let stammFunktionInput = document.getElementById('stammfunktionContainer'); 
+    let stammFunktionInput = document.getElementById('stammfunktionContainer');
     let integralBtn = document.getElementById('integralButton');
     $('#stammfunktion').popover({
         trigger: 'manual', container: 'body'
@@ -88,7 +100,7 @@ function playPauseHandler() {
     if (stammfunktion.checked) {
         integralBtn.disabled = true;
         stammFunktionInput.style.display = "inline";
-        $('#stammfunktion').popover('show');        
+        $('#stammfunktion').popover('show');
         $('#stammfunktion, #funktion').on('input', validateInputs);
     } else {
         stammFunktionInput.style.display = "none";
@@ -102,9 +114,9 @@ function validateInputs() {
     let integralBtn = document.getElementById('integralButton');
     var stammfunktionStr = $('#stammfunktion').val().replace(',', '.');
     var funktion = $('#funktion').val().trim().replace(/\s+/g, '').replace(',', '.');
-    
+
     const ableitung = math.derivative(stammfunktionStr, 'x').toString().replace(/\s+/g, '');
-    
+
     if (areFunctionsEquivalent(funktion, ableitung)) {
         $('#stammfunktion').popover('hide');
         integralBtn.disabled = false;
@@ -117,10 +129,22 @@ function validateInputs() {
 function stepwiseChange(step) {
     stopLoop = true;
     var slider = document.getElementById('punktPosition');
-    var value = Number(slider.value)+ step;
+    var value = Number(slider.value) + step;
     slider.value = value;
-    document.getElementById('sliderValue').innerText = "Anzahl Trapeze: " + slider.value;
+    var regel;
+    if (document.getElementById("trapez").checked == true) {
+        regel = "Trapeze"
+    } else {
+        regel = "Parabeln"
+    }
+    document.getElementById('sliderValue').innerText = "Anzahl " + regel + ": " + slider.value;
     zeichneFunktion();
+    if (diagramm.data) {
+        const punktX = [parseInt(slider.value)];
+        const punktY = [fehlerWerte[punktX - 1]];
+
+        Plotly.restyle(diagramm, { x: [punktX], y: [punktY] }, 1);
+    }
 }
 
 function trapezRegel(fStr, a, b, n) {
@@ -163,6 +187,7 @@ function simpsonRegel(fStr, a, b, n) {
         let fm = f.evaluate({ x: xm });
 
         S += (h / 6) * (f0 + 4 * fm + f1);
+        console.log("S ist am Ende: " + S)
     }
 
     return S;
@@ -179,7 +204,7 @@ function berechneIntegral() {
     const obereGrenze = parseFloat(document.getElementById('obereGrenze').value);
     const stammfunktion = math.parse(stammfunktionStr);
     var funktion = document.getElementById('funktion').value.trim().replace(/\s+/g, '');
-    funktion = funktion.replace(',','.')
+    funktion = funktion.replace(',', '.')
     var anzahlTrapeze = document.getElementById('punktPosition').value;
     var integral = null;
     var selectElement = document.getElementById('nachkomastellen');
@@ -239,7 +264,7 @@ function berechneIntegral() {
         var abweichungen = berechneAbweichungen(funktion, stammfunktion, untereGrenze, obereGrenze, anzahlTrapeze);
 
         erstelleHistogramm(abweichungen);
-        fehlerWerte = berechneFehlerFürTrapeze(funktion, stammfunktionStr, untereGrenze, obereGrenze, 50);
+        fehlerWerte = berechneFehlerFürTrapeze(funktion, stammfunktionStr, untereGrenze, obereGrenze, 100);
         var regel = "";
         if (document.getElementById("trapez").checked == true) {
             regel = "Trapeze"
@@ -247,7 +272,7 @@ function berechneIntegral() {
             regel = "Parabeln"
         }
         const trace = {
-            x: Array.from({ length: 50 }, (_, i) => i + 1),
+            x: Array.from({ length: 100 }, (_, i) => i + 1),
             y: fehlerWerte,
             type: 'scatter',
             mode: 'lines+markers',
@@ -306,7 +331,7 @@ function berechneIntegral() {
         document.getElementById('diagramm').style.display = "inline";
     }
 
-    
+
 }
 function downloadImageHandler(gd) {
     Plotly.downloadImage(gd, {
@@ -328,20 +353,20 @@ function resetAxesHandler(gd) {
 
 function areFunctionsEquivalent(func1, func2) {
     try {
-      const parsedFunc1 = math.parse(func1);
-      const parsedFunc2 = math.parse(func2);
-  
-      const simplifiedFunc1 = math.simplify(parsedFunc1).toString();
-      const simplifiedFunc2 = math.simplify(parsedFunc2).toString();
-      console.log(simplifiedFunc1)
-      console.log(simplifiedFunc2)
-  
-      return simplifiedFunc1 === simplifiedFunc2;
+        const parsedFunc1 = math.parse(func1);
+        const parsedFunc2 = math.parse(func2);
+
+        const simplifiedFunc1 = math.simplify(parsedFunc1).toString();
+        const simplifiedFunc2 = math.simplify(parsedFunc2).toString();
+        console.log(simplifiedFunc1)
+        console.log(simplifiedFunc2)
+
+        return simplifiedFunc1 === simplifiedFunc2;
     } catch (e) {
-      console.error('Fehler beim Vereinfachen oder Vergleichen der Funktionen:', e);
-      return false;
+        console.error('Fehler beim Vereinfachen oder Vergleichen der Funktionen:', e);
+        return false;
     }
-  }
+}
 
 
 function erstelleHistogramm(abweichungen) { //Beispiel: e^x von 0 bis 4 und 5 Trapeze aufwärts
@@ -415,7 +440,7 @@ function checkInputs() {
     const play = document.getElementById('play-pause');
     const zeichneFunktionButton = document.getElementById('btnZeichne');
 
-    if (funktion && untereGrenze && obereGrenze) {
+    if (funktion && untereGrenze && obereGrenze && untereGrenze < obereGrenze) {
         zeichneFunktionButton.disabled = false;
         play.disabled = false;
         forward.disabled = false;
@@ -485,7 +510,7 @@ function updateHeader(radio) {
             document.getElementById('checkboxLabel').style.display = "none"
             document.getElementById('stammfunktionContainer').style.display = "none";
         }
-         document.getElementById('resultContainer').innerHTML = "";
+        document.getElementById('resultContainer').innerHTML = "";
         document.getElementById('abweichungsHistogramm').innerHTML = "";
         if (radio.value == "Simpsonregel") {
             document.getElementById('sliderValue').innerText = "Anzahl Parabeln: " + document.getElementById('punktPosition').value;
@@ -596,9 +621,11 @@ function zeichneFunktionSimpson() {
             var m = (a + b) / 2;
 
             // Berechne die Funktionswerte
-            var fa = ggbApplet.getValue("f(" + a + ")");
-            var fm = ggbApplet.getValue("f(" + m + ")");
-            var fb = ggbApplet.getValue("f(" + b + ")");
+            var fa = ggbApplet.getValue("f(" + a + ")")
+            var fm = ggbApplet.getValue("f(" + m + ")")
+            var fb = ggbApplet.getValue("f(" + b + ")")
+
+
 
             // Berechnung der Koeffizienten A, B, C der Parabel y = Ax^2 + Bx + C
             var Matrix = [
@@ -615,7 +642,9 @@ function zeichneFunktionSimpson() {
             var A = result[0];
             var B = result[1];
             var C = result[2];
-
+            if (Math.abs(B) < 1e-10) {
+                B = 0;
+            }
 
             // Definiere die Parabel und erstelle die Kurve
             const curveCommand = `Curve(t, ${A} * t^2 + ${B} * t + ${C}, t, ${a}, ${b})`;
