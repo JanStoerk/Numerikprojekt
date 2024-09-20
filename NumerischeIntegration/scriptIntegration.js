@@ -193,9 +193,8 @@ function simpsonRegel(fStr, a, b, n) {
     return S;
 }
 
-
 function berechneIntegral() {
-    zeichneFunktion()
+
     if (window.myChart) {
         window.myChart.destroy();
     }
@@ -331,7 +330,6 @@ function berechneIntegral() {
 
         document.getElementById('diagramm').style.display = "inline";
     }
-
 
 }
 function downloadImageHandler(gd) {
@@ -539,13 +537,20 @@ function updateHeader(radio) {
 
 
 function zeichneFunktion() {
-    if (trapez.checked) {
-        console.log("Trapez")
-        zeichneFunktionTrapez();
-    } else {
-        console.log("Simpson")
-        zeichneFunktionSimpson();
-    }
+    // Lade-Animation einblenden (siehe Performance Testergebnisse)
+    document.getElementById('loader').style.display = 'block'; // Loader anzeigen
+
+    // Asynchrone Berechnungen ausführen, um den UI-Thread nicht zu blockieren
+    setTimeout(() => {
+        if (trapez.checked) {
+            console.log("Trapez")
+            zeichneFunktionTrapez();
+        } else {
+            console.log("Simpson")
+            zeichneFunktionSimpson();
+        }
+        document.getElementById('loader').style.display = 'none';
+    }, 50); // setTimeout, um sicherzustellen, dass der Loader angezeigt wird, bevor die Berechnungen starten
 }
 function zeichneFunktionTrapez() {
     ggbApplet.reset()
