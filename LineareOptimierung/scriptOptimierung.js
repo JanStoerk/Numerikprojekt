@@ -476,19 +476,19 @@ function extractVariablesAndCoefficients(objectiveFunction, constraints) {
     }
 
     function extractFromExpression(expression) {
-        // Regulärer Ausdruck, der sowohl Koeffizienten mit als auch ohne vorangestellten Multiplikationsoperator verarbeitet
-        const regex = /([+-]?\d*\.?\d+|[+-])?\*?([a-zA-Z]+)/g;
+        const regex = /([+-]?\d*\.?\d+\/\d+|[+-]?\d*\.?\d+|[+-])?\*?([a-zA-Z]+)/g;
         let match;
         const variableMap = new Map();
-
+    
         while ((match = regex.exec(expression)) !== null) {
-            const coefficient = parseCoefficient((match[1] || '').replace(/\s+/g, '')); // Entferne Leerzeichen aus dem Koeffizienten
-            console.log("Coefficent is: " + coefficient)
+            const coefficientStr = match[1] ? match[1].replace(/\s+/g, '') : ''; // Entferne Leerzeichen aus dem Koeffizienten
+            const coefficient = parseCoefficient(coefficientStr);
             const variable = match[2];
             variableMap.set(variable, coefficient);
         }
         return variableMap;
     }
+    
 
     // Sammle alle Variablennamen
     const allKeys = new Set();

@@ -34,6 +34,7 @@ function setupDOM() {
                 </div>
         <div id="Rechnung"></div>
         <div id="Ergebnis"></div>
+        <div id="loader"></div>
     `;
 
 }

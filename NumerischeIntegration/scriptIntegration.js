@@ -205,8 +205,8 @@ function berechneIntegral() {
     const stammfunktion = math.parse(stammfunktionStr);
     var funktion = document.getElementById('funktion').value.trim().replace(/\s+/g, '');
     funktion = funktion.replace(',', '.')
-    var anzahlTrapeze = document.getElementById('punktPosition').value;
     var integral = null;
+    var anzahlTrapeze = document.getElementById('punktPosition').value;
     var selectElement = document.getElementById('nachkomastellen');
 
     var selectedOption = selectElement.options[selectElement.selectedIndex];
