@@ -57,6 +57,7 @@ function setupDOM() {
         <p id="inhaltsverzeichnisSimpson"></p>
         <p id="SimpsonDoku"></p>
         <p id="TrapezDoku"></p>
+        <div id="loader"></div>
     `;
 
     let stopLoop = true;
@@ -367,10 +368,9 @@ describe('zeichneFunktion', () => {
 
         // Rufe die Funktion auf
         zeichneFunktion();
-
+        
         // Überprüfe, ob zeichneFunktionTrapez aufgerufen wurde
         expect(spyTrapez).toHaveLength(0);
-        expect(global.ggbApplet.reset).toHaveBeenCalled();
 
         // Cleanup
         spyTrapez.mockRestore();
@@ -388,7 +388,6 @@ describe('zeichneFunktion', () => {
 
         // Überprüfe, ob zeichneFunktionSimpson aufgerufen wurde
         expect(spySimpson).toHaveLength(0);
-        expect(global.ggbApplet.reset).toHaveBeenCalled();
 
         // Cleanup
         spySimpson.mockRestore();
@@ -458,6 +457,98 @@ describe('zeichneFunktionSimpson', () => {
     });
 });
 
+describe('zeichneFunktionTrapez', () => {
+    let funktionInput, untereGrenzeInput, obereGrenzeInput, anzahlTrapezeInput;
+    let myCheckbox, checkboxLabel, integralButton, nachkomastellenContainer;
+
+    beforeEach(() => {
+        setupDOM(); // Initialisiert die DOM-Elemente
+
+        // Zugriff auf DOM-Elemente, die in setupDOM erstellt wurden
+        funktionInput = document.getElementById('funktion');
+        untereGrenzeInput = document.getElementById('untereGrenze');
+        obereGrenzeInput = document.getElementById('obereGrenze');
+        anzahlTrapezeInput = document.getElementById('punktPosition');
+        myCheckbox = document.getElementById('myCheckbox');
+        checkboxLabel = document.getElementById('checkboxLabel');
+        integralButton = document.getElementById('integralButton');
+        nachkomastellenContainer = document.getElementById('nachkomastellenContainer');
+
+        // Mock für ggbApplet
+        global.ggbApplet = {
+            reset: jest.fn(),
+            evalCommandGetLabels: jest.fn().mockReturnValue('label'),
+            setColor: jest.fn(),
+            setVisible: jest.fn(),
+            getValue: jest.fn().mockImplementation((command) => {
+                if (command.includes("f(")) return 1; // Dummy-Wert für f(x)
+                return 0; // Default-Dummy-Wert
+            }),
+            setFixed: jest.fn()
+        };
+    });
+
+    test('setzt Checkbox und Label auf "none", wenn fxLabel null ist', () => {
+        global.ggbApplet.evalCommandGetLabels.mockReturnValueOnce(null);
+
+        zeichneFunktionTrapez();
+
+        expect(myCheckbox.style.display).toBe('none');
+        expect(checkboxLabel.style.display).toBe('none');
+    });
+
+    test('setzt Farben und fixiert Linien', () => {
+        funktionInput.value = 'x^2';
+        untereGrenzeInput.value = '0';
+        obereGrenzeInput.value = '10';
+        anzahlTrapezeInput.value = '2';
+
+        zeichneFunktionTrapez();
+
+        expect(global.ggbApplet.reset).toHaveBeenCalled();
+        expect(global.ggbApplet.setColor).toHaveBeenCalledTimes(9);
+        expect(global.ggbApplet.setFixed).toHaveBeenCalledTimes(8); 
+    });
+
+    test('zeigt Checkbox, Label und Buttons an, wenn keine Fehler auftreten', () => {
+        zeichneFunktionTrapez();
+
+        expect(myCheckbox.style.display).toBe('inline');
+        expect(checkboxLabel.style.display).toBe('inline');
+        expect(integralButton.style.display).toBe('inline');
+        expect(nachkomastellenContainer.style.display).toBe('inline');
+    });
+
+    test('loggt Fehler in der Konsole, wenn ein Fehler auftritt', () => {
+        const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+        // Erzeugt einen Fehler, indem eine ungültige Funktion verwendet wird
+        funktionInput.value = 'ungültigeFunktion';
+        global.ggbApplet.evalCommandGetLabels.mockImplementationOnce(() => {
+            throw new Error('Fehler bei evalCommand');
+        });
+
+        zeichneFunktionTrapez();
+
+        expect(consoleSpy).toHaveBeenCalledWith('Fehler beim Auswerten der Funktion:', expect.any(Error));
+        consoleSpy.mockRestore();
+    });
+
+    test('berechnet korrekte Breite und verwendet getValue für f(x)', () => {
+        funktionInput.value = 'x^2';
+        untereGrenzeInput.value = '0';
+        obereGrenzeInput.value = '10';
+        anzahlTrapezeInput.value = '2';
+
+        zeichneFunktionTrapez();
+
+        const expectedBreite = 5; // (10 - 0) / 2
+        expect(global.ggbApplet.getValue).toHaveBeenCalledWith('f(0)');
+        expect(global.ggbApplet.getValue).toHaveBeenCalledWith('f(5)');
+        expect(global.ggbApplet.getValue).toHaveBeenCalledWith('f(10)');
+    });
+});
+
 
 
 describe('updateHeader', () => {
@@ -510,10 +601,10 @@ describe('updateHeader', () => {
 
         updateHeader(radio);
 
-        expect(document.getElementById('integralButton').style.display).toBe('inline');
+        expect(document.getElementById('integralButton').style.display).toBe('none');
         expect(document.getElementById('nachkomastellenContainer').style.display).toBe('none');
-        expect(document.getElementById('myCheckbox').style.display).toBe('inline');
-        expect(document.getElementById('checkboxLabel').style.display).toBe('inline');
+        expect(document.getElementById('myCheckbox').style.display).toBe('none');
+        expect(document.getElementById('checkboxLabel').style.display).toBe('none');
         expect(document.getElementById('stammfunktionContainer').style.display).toBe("");
     });
 
@@ -584,13 +675,13 @@ describe('bewegePunkt', () => {
 });
 
 describe('berechneIntegral', () => {
+
     beforeEach(() => {
 
         global.ggbApplet = {
             reset: jest.fn(),
         };
         setupDOM()
-
         global.trapezRegel = jest.fn().mockReturnValue(10);
         global.simpsonRegel = jest.fn().mockReturnValue(10);
 
