@@ -4,6 +4,9 @@
 <head>
     <title>Numerische Integration</title>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Anwendung zur numerischen Integration mithilfe der Trapezregel und der Simpsonregel">
 
     <!-- CSS Dateien -->
     <link rel="stylesheet" href="../LandingPage/style.css">
@@ -19,11 +22,10 @@
     <!-- JavaScript Dateien -->
     <script src="./geogebra.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.4.4/math.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"
         async></script>
@@ -38,28 +40,140 @@
                 <h1>Numerik</h1>
             </a>
         </div>
-        <button class="guide" data-toggle="modal" data-target="#guideModal">
+        <button class="guide" data-bs-toggle="modal" data-bs-target="#guideModal">
             <img src="../pictures/guide.png" style="width:30px" alt="Guide">
             <h4>Guide</h4>
         </button>
 
-        <!-- Bootstrap Modal -->
         <div class="modal fade" id="guideModal" tabindex="-1" role="dialog" aria-labelledby="guideModalLabel"
             aria-hidden="true">
             <div class="modal-dialog modal-xl" style="margin-top:50px; height:600px;">
                 <div class="modal-content" style="margin-top:50px; height:600px;">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="guideModalLabel">Guide</h5>
-                        <button type="button" class="btn btn-light" data-dismiss="modal" aria-label="Close">
+                        <h3 class="modal-title" id="guideModalLabel">Anleitung zur Verwendung der Anwendung</h3>
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <!-- Inhalt des Modals hier einfügen -->
-                        Anleitung zur Verwendung der App
+                        <p>
+                            Diese Anwendung besteht aus vier numerischen Verfahren, welche zur Lösung von mathematischen
+                            Problemen in
+                            verschiedenen Disziplinen eingesetzt werden. Sie umfasst Verfahren zur numerischen
+                            Integration, zur Lösung
+                            linearer Gleichungssysteme und zur Optimierung von linearen Maximierungsproblemen. Die
+                            Verfahren, die in
+                            dieser Anwendung zur Verfügung stehen, sind:
+                        </p>
+                        <ul>
+                            <li>Numerische Integration (Trapez- und Simpsonregel)</li>
+                            <li>Lösung linearer Gleichungssysteme (Jacobi-Verfahren)</li>
+                            <li>Lineare Optimierung (Branch & Bound Verfahren)</li>
+                        </ul>
+
+                        <h4>Relevanz und Bedeutung der Anwendung</h4>
+                        <p>
+                            Numerische Methoden sind unverzichtbar in vielen Bereichen der Wissenschaft und Technik.
+                            Viele reale
+                            Probleme lassen sich nicht analytisch lösen, sondern erfordern numerische Ansätze, um
+                            präzise Ergebnisse
+                            zu erhalten. Die folgenden Verfahren sind in der Anwendung besonders relevant:
+                        </p>
+                        <ul>
+                            <li>
+                                <strong>Numerische Integration</strong>: Viele Funktionen sind nicht exakt integrierbar,
+                                weshalb die
+                                numerische Integration, insbesondere die Trapez- und Simpsonregel, zur Berechnung von
+                                Integralen
+                                eingesetzt wird. Solche Methoden finden breite Anwendung in Bereichen wie Physik,
+                                Ingenieurwesen und
+                                Finanzmathematik.
+                            </li>
+                            <li>
+                                <strong>Lösung linearer Gleichungssysteme</strong>: Lineare Gleichungssysteme sind in
+                                vielen
+                                wissenschaftlichen Disziplinen von zentraler Bedeutung, z. B. in der Mechanik,
+                                Elektrotechnik und in der
+                                Ressourcenoptimierung. Das Jacobi-Verfahren ermöglicht eine iterative Lösung solcher
+                                Systeme,
+                                insbesondere wenn sie groß oder komplex sind.
+                            </li>
+                            <li>
+                                <strong>Lineare Optimierung</strong>: Optimierungsprobleme treten in verschiedensten
+                                Anwendungsgebieten
+                                auf, z. B. in der Produktionsplanung, Logistik und Finanzwirtschaft. Mit dem Branch &
+                                Bound Verfahren
+                                können lineare Maximierungsprobleme unter Berücksichtigung von Nebenbedingungen
+                                effizient gelöst werden.
+                            </li>
+                        </ul>
+
+                        <h4>Zweck der Anwendung</h4>
+                        <p>
+                            Der Hauptzweck dieser Anwendung besteht darin, mathematische Methoden zur Lösung numerischer
+                            Probleme
+                            effizient und visuell nachvollziehbar bereitzustellen. Die Anwendung ermöglicht eine
+                            einfache Handhabung
+                            komplexer Rechenmethoden und bietet zudem eine intuitive grafische Darstellung der
+                            Ergebnisse.
+                        </p>
+                        <ul>
+                            <li>
+                                <strong>Vermittlung mathematischer Konzepte</strong>: Durch die interaktive Nutzung der
+                                Methoden wird
+                                ein tieferes Verständnis für numerische Verfahren gefördert.
+                            </li>
+                            <li>
+                                <strong>Effiziente Lösung komplexer Probleme</strong>: Die Anwendung ermöglicht es,
+                                numerische
+                                Berechnungen schnell durchzuführen und optimierte Lösungen für praktische
+                                Fragestellungen zu finden.
+                            </li>
+                            <li>
+                                <strong>Visualisierung und Nachvollziehbarkeit</strong>: Die grafische Darstellung der
+                                Berechnungen und
+                                Ergebnisse erlaubt es, den Lösungsprozess Schritt für Schritt nachzuvollziehen.
+                            </li>
+                        </ul>
+
+                        <p>
+                            Diese Anwendung bietet sowohl für Studierende als auch für Fachleute einen praktischen
+                            Nutzen. Sie eignet
+                            sich zur Lösung einfacher Aufgaben sowie zur Analyse komplexerer numerischer Probleme.
+                        </p>
+
+                        <h4>Funktionsweise der Anwendung</h4>
+                        <p>
+                            Die Startseite bietet eine Auswahl der verfügbaren Funktionen:
+                        </p>
+                        <ul>
+                            <li>
+                                <strong>Numerische Integration</strong>: Die Trapez- oder Simpsonregel kann verwendet
+                                werden, um das
+                                Integral einer Funktion über ein definiertes Intervall numerisch zu berechnen.
+                            </li>
+                            <li>
+                                <strong>Lösung linearer Gleichungssysteme</strong>: Das Jacobi-Verfahren ermöglicht es,
+                                lineare
+                                Gleichungssysteme iterativ zu lösen und die Ergebnisse schrittweise zu verbessern.
+                            </li>
+                            <li>
+                                <strong>Lineare Optimierung</strong>: Mit dem Branch & Bound Verfahren können lineare
+                                Maximierungsprobleme unter Nebenbedingungen effizient gelöst werden.
+                            </li>
+                        </ul>
+
+                        <p>
+                            Jedes Modul bietet zusätzliche Funktionen, wie die Anpassung der Genauigkeit, den Vergleich
+                            der Ergebnisse
+                            und die Visualisierung der Berechnungen. Detaillierte Anweisungen und Tipps zur Nutzung der
+                            jeweiligen
+                            Module sind im Help-Button jedes Verfahrens zu finden.
+                        </p>
+
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Schließen</button>
                     </div>
                 </div>
             </div>
@@ -71,7 +185,7 @@
                 <div class="modal-content" style="margin-top:50px; height:600px;">
                     <div class="modal-header">
                         <h3 class="modal-title" id="exampleModalLabel">Numerische Integration: Trapezregel</h3>
-                        <button type="button" class="btn btn-light" data-dismiss="modal" aria-label="Close">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true"><b>&times;</b></span>
                         </button>
                     </div>
@@ -794,7 +908,7 @@
                 <h4 id="integration-method"><b>Numerische Integration: Trapezregel</b></h4>
                 <button class="fa fa-info-circle"
                     style="font-size:24px; margin-left: 10px; color:grey; border:0; background-color: transparent;"
-                    data-toggle="modal" data-target="#myModal"></button>
+                    data-bs-toggle="modal" data-bs-target="#myModal"></button>
             </div>
             <div class="radio-buttons">
                 <input class="form-check-input" type="radio" id="trapez" name="integration-method" value="Trapezregel"
@@ -849,13 +963,19 @@
                     <tr>
                         <td><label for="stammfunktion">Stammfunktion
                                 F(x)</label></td>
-                        <td> <input type="text" id="stammfunktion" id="inputField" data-toggle="popover"
-                                data-placement="bottom" data-content="Ungültige Stammfunktion!"></td>
+                        <td> <input type="text" id="stammfunktion" id="inputField" data-bs-toggle="popover"
+                                data-bs-placement="bottom" data-bs-content="Ungültige Stammfunktion!"></td>
                     </tr>
                 </table>
             </div>
             <div>
-                <div id="ggb-element" style="flex: 1; text-align: center; margin: auto;"></div>
+                <div id="ggb-container" style="flex: 1; text-align: center; margin: auto; position: relative;">
+                    <div id="ggb-element" style="height: 600px; width: 600px; border: 1px solid black;"></div>
+                    <div id="hidden-div"
+                        style="height: 600px; width: 600px; position: absolute; top: 0; left: 0; display: flex; justify-content: center;align-items: center; pointer-events: none;">
+                        <div id="loader"></div>
+                    </div>
+                </div>
                 <div class="slider-container"
                     style="width: 600px; display: flex; flex-direction: column; align-items: center;">
                     <br>

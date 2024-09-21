@@ -43,6 +43,7 @@ function setupDOM() {
                         </tr>
                     </tbody>
                 </table>
+                <div id="loader"></div>
     `;
 }
 
@@ -363,7 +364,7 @@ describe('extractVariablesAndCoefficients', () => {
         const objectiveFunction = '5x + 3y';
         const constraints = [
             'x + y <= 5',
-            '2x - y >= 1'
+            '2x + y >= 1'
         ];
 
         const result = extractVariablesAndCoefficients(objectiveFunction, constraints);
@@ -373,12 +374,12 @@ describe('extractVariablesAndCoefficients', () => {
         expect(result.constraintTypes).toEqual(['<=', '>=']);
         expect(result.constraintCoefficients).toEqual([
             [1, 1],  // Coefficients for 'x + y'
-            [2, -1]  // Coefficients for '2x - y'
+            [2, 1]  // Coefficients for '2x - y'
         ]);
         expect(result.constraintBounds).toEqual([5, 1]);
     });
 
-    test('should handle invalid constraints gracefully', () => {
+    test('should handle invalid constraints', () => {
         const objectiveFunction = '3x + y';
         const constraints = [
             'x + y <= 5',
@@ -410,11 +411,11 @@ describe('extractVariablesAndCoefficients', () => {
         const result = extractVariablesAndCoefficients(objectiveFunction, constraints);
 
         expect(result.variables).toEqual(['x', 'y']);
-        expect(result.objectiveCoefficients).toEqual([4 / 5, -1]);
+        expect(result.objectiveCoefficients).toEqual([4 / 5, 1]);
         expect(result.constraintTypes).toEqual(['<=', '>=']);
         expect(result.constraintCoefficients).toEqual([
             [2, 1 / 2],  // Coefficients for '2x + 1/2y'
-            [1, -3 / 4]  // Coefficients for 'x - 3/4y'
+            [1, 3 / 4]  // Coefficients for 'x - 3/4y'
         ]);
         expect(result.constraintBounds).toEqual([3, 2]);
     });

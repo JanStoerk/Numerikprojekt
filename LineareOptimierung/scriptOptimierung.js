@@ -19,7 +19,7 @@ class BranchAndBound {
         this.prunedTreeCount = 0; // Anzahl der beschnittenen Bäume
         this.stack = [{ bounds: this.initialBounds, path: 'start', parentId: 1 }]; // Stack für die Iteration im Baum
         this.iterations = 0; // Anzahl der Iterationen
-        this.maxIterations = 200; // Maximale Anzahl der Iterationen
+        this.maxIterations = 300; // Maximale Anzahl der Iterationen
         this.createTree(); // Baum für die Visualisierung erstellen
         this.network; // Netzwerk für die Visualisierung
         this.bestNodeId = null; // Beste Knoten-ID
@@ -72,11 +72,13 @@ class BranchAndBound {
             });
         });
 
-        // Anpassen der Schranken für nicht-endliche Werte
-        return bounds.map(bound => [
-            isFinite(bound[0]) ? bound[0] : Math.floor(-10 * this.objectiveCoefficients[bounds.length - 1]),
-            isFinite(bound[1]) ? bound[1] : Math.floor(10 * this.objectiveCoefficients[bounds.length - 1])
+        // Setze die obere Schranke auf 0, wenn sie negativ ist
+        bounds = bounds.map(bound => [
+            bound[0],  // untere Schranke bleibt unverändert
+            Math.max(bound[1], 0) // obere Schranke wird auf 0 gesetzt, wenn sie negativ ist
         ]);
+
+        return bounds;
     }
 
 
@@ -249,6 +251,7 @@ class BranchAndBound {
                     }
                 }
             });
+            this.possibleSolutions = this.stack.length;
             return true;
         }
 
@@ -271,7 +274,9 @@ class BranchAndBound {
             bestSolution: this.bestSolution,
             bestNodeId: this.bestNodeId,
             lowerBound: this.lowerBound,
-            globalUpperBound: this.globalUpperBound
+            globalUpperBound: this.globalUpperBound,
+            possibleSolutions: this.possibleSolutions,
+            prunedTreeCount: this.prunedTreeCount
 
         });
 
@@ -478,6 +483,7 @@ class BranchAndBound {
     }
 
 }
+
 // Funktion zur Extraktion von Variablen und Koeffizienten aus der Zielfunktion und den Nebenbedingungen
 function extractVariablesAndCoefficients(objectiveFunction, constraints) {
     console.log(constraints);
@@ -497,21 +503,20 @@ function extractVariablesAndCoefficients(objectiveFunction, constraints) {
 
     // Hilfsfunktion zur Extraktion der Variablen und Koeffizienten aus einem algebraischen Ausdruck
     function extractFromExpression(expression) {
-        // Erweitere den regulären Ausdruck, um auch negative Koeffizienten und Leerzeichen zu berücksichtigen
-        // Verarbeite sowohl positive als auch negative Koeffizienten
-        const regex = /([+-]?\s*\d*\.?\d*\/?\d*\.?\d*)\s*([a-zA-Z]+)/g;
+        const regex = /([+-]?\d*\.?\d+\/\d+|[+-]?\d*\.?\d+|[+-])?\*?([a-zA-Z]+)/g;
         let match;
         const variableMap = new Map();
 
         // Durchlaufen des Ausdrucks, um alle Variablen und deren Koeffizienten zu finden
         while ((match = regex.exec(expression)) !== null) {
-            const coefficient = parseCoefficient(match[1].replace(/\s+/g, '')); // Entferne Leerzeichen aus dem Koeffizienten
+            const coefficientStr = match[1] ? match[1].replace(/\s+/g, '') : ''; // Entferne Leerzeichen aus dem Koeffizienten
+            const coefficient = parseCoefficient(coefficientStr);
             const variable = match[2]; // Variable extrahieren
             variableMap.set(variable, coefficient); // Variable und Koeffizient in die Map speichern
         }
-
         return variableMap;
     }
+    
 
     // Sammle alle Variablennamen
     const allKeys = new Set();
@@ -563,6 +568,7 @@ function extractVariablesAndCoefficients(objectiveFunction, constraints) {
         constraintBounds: constraintBounds
     };
 }
+
 
 // Eventlistener für DOM-Inhalte - Setup der Schaltflächen und Eingabefelder nach dem Laden des Dokuments
 document.addEventListener('DOMContentLoaded', function () {
@@ -687,16 +693,24 @@ function getInputs() {
 
 // Funktion zum Erstellen des Baums und der Diagramme
 function createDiagram() {
+    // Lade-Animation einblenden (siehe Performance Testergebnisse)
+    document.getElementById('loader').style.display = 'block';
 
-    var extractedInputs = getInputs() // Eingaben holen
-    if (!checkForUnboundedSolution(extractedInputs.variables, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes)) {
-        bbSolver = new BranchAndBound(extractedInputs.variables, extractedInputs.objectiveCoefficients, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes, funktion) // Branch-and-Bound-Solver erstellen
-        setBBSolver(bbSolver); // Solver speichern
-        bbSolver.solve(); // Solver ausführen
-        updateResults(bbSolver); // Ergebnisse aktualisieren
-    } else {
-        reset(); // Zurücksetzen, falls unbeschränkte Lösung
-    }
+    // Asynchrone Berechnungen ausführen, um den UI-Thread nicht zu blockieren
+    setTimeout(() => {
+        var extractedInputs = getInputs(); // Eingaben holen
+        if (!checkForUnboundedSolution(extractedInputs.variables, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes)) {
+            bbSolver = new BranchAndBound(extractedInputs.variables, extractedInputs.objectiveCoefficients, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes, funktion);
+            setBBSolver(bbSolver); // Solver speichern
+            bbSolver.solve(); // Solver ausführen
+            updateResults(bbSolver); // Ergebnisse aktualisieren
+        } else {
+            reset(); // Zurücksetzen, falls unbeschränkte Lösung
+        }
+
+        // Lade-Animation ausblenden, nachdem die Berechnungen abgeschlossen sind
+        document.getElementById('loader').style.display = 'none';
+    }, 50); // setTimeout, um sicherzustellen, dass der Loader angezeigt wird, bevor die Berechnungen starten
 }
 
 // Funktion zum Vorwärts-Springen zur nächsten Iteration
@@ -745,6 +759,9 @@ async function playBranchAndBound() {
             bbSolver = new BranchAndBound(extractedInputs.variables, extractedInputs.objectiveCoefficients, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes, funktion)
             setBBSolver(bbSolver);
         } else {
+            playIcon.style.display = 'block';
+            pauseIcon.style.display = 'none';
+            stopFunction = true;
             reset();
             return;
         }
@@ -801,9 +818,11 @@ function skipBackward() {
     bbSolver.bestObjectiveValue = historyStack.bestObjectiveValue;
     bbSolver.lowerBound = historyStack.lowerBound;
     bbSolver.globalUpperBound = historyStack.globalUpperBound;
+    bbSolver.possibleSolutions = historyStack.possibleSolutions;
+    bbSolver.prunedTreeCount = historyStack.prunedTreeCount;
 
      // Beste Node aktualisieren
-    if (!bbSolver.bestNodeId == null) {
+    if (bbSolver.bestNodeId) {
         bbSolver.nodes.update({
             id: bbSolver.bestNodeId,
             color: {
