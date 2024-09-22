@@ -1,3 +1,4 @@
+// Wartet darauf, dass der gesamte Inhalt der Seite geladen ist
 document.addEventListener('DOMContentLoaded', function () {
     const saveButton = document.getElementById('saveButton');
     const clearButton = document.getElementById('clearButton');
@@ -9,24 +10,28 @@ document.addEventListener('DOMContentLoaded', function () {
     saveButton.addEventListener('click', calculateSolution)
     removeButton.addEventListener('click', removeRow)
     addButton.addEventListener('click', addRow)
+  //Erstellt vier Eingabefelder beim Laden der Seite
     for (let i = 0; i < 4; i++) {
         createInputFields();
     }
+  //Fügt relevante mathematische Zeichen hinzu
     addSigns();
 });
 
+// Funktion zum Entfernen einer Zeile aus der Tabelle
 function removeRow(){
+  // Holt die Tabelle und den Startvektor, in der das Gleichungssystem dargestellt wird
     const table = document.getElementById('Gleichungssystem');
     const vector = document.getElementById('Startvektor');
-    const rows = table.rows.length;
-    const cells = table.rows[0].cells.length - 1;
+    const rows = table.rows.length; // Bestimmt die Anzahl der Zeilen in der Tabelle
+    const cells = table.rows[0].cells.length - 1;  // Bestimmt die Anzahl der Zellen in der ersten Zeile minus eins
     console.log(cells)
-    if (rows > 1) {
+    if (rows > 1) {  // Entfernt die letzte Zeile, wenn es mehr als eine Zeile gibt
         table.deleteRow(rows - 1);
         vector.deleteRow(rows - 1);
-        addSigns();
+        addSigns(); // Aktualisiert die Zeichen
     }
-    if (table.rows[0].cells.length > 2) {
+    if (table.rows[0].cells.length > 2) { 
         for (var i = 0; i < table.rows.length; i++) {
             cellNumber = table.rows[i].cells.length;
             table.rows[i].deleteCell(cellNumber - 1);
@@ -35,19 +40,21 @@ function removeRow(){
     addSigns();
 }
 
+// Funktion zum Hinzufügen einer neuen Zeile zur Tabelle
 function addRow(){
     const table = document.getElementById('Gleichungssystem');
     const vector = document.getElementById('Startvektor');
     const rows = table.rows.length;
     const cells = table.rows[0].cells.length;
-    if (rows < 10) {
+    if (rows < 10) { // Füge nur dann eine Zeile hinzu, wenn es weniger als 10 Zeilen gibt
         var row = table.insertRow();
-        for (let i = 0; i < cells; i++) {
+        for (let i = 0; i < cells; i++) { // Füge Eingabefelder in die neue Zeile ein
             const cell = row.insertCell();
             const input = document.createElement('input');
             input.type = 'number';
             cell.appendChild(input);
         }
+       // Füge auch ein Eingabefeld für den Vektor hinzu
         const vectorRow = vector.insertRow()
         const vectorCell = vectorRow.insertCell(0);
         const vectorInput = document.createElement('input');
@@ -56,6 +63,7 @@ function addRow(){
         vectorCell.appendChild(vectorInput);
         addSigns();
     }
+  // Füge zusätzliche Zellen hinzu, wenn weniger als 10 Spalten vorhanden sind
     if (table.rows[0].cells.length < 10) {
         for (var i = 0; i < table.rows.length; i++) {
             const cell = table.rows[i].insertCell();
@@ -67,29 +75,33 @@ function addRow(){
     }
 };
 
-
+// Funktion zur Berechnung der Lösung
 async function calculateSolution(){
     const table = document.getElementById('Gleichungssystem');
     const inputs = document.querySelectorAll('#Gleichungssystem input');
     const vectorInputs = document.querySelectorAll('#Vektoreingabe input');
     const values = []; const vectorValues = [];
     let iterationen = 3;
+    // Bestimme die Anzahl der Iterationen
     if (document.getElementById("AnzahlIterationen").value) {
         iterationen = document.getElementById("AnzahlIterationen").value;
     }
 
+    // Hol die Ausgabebereiche für die Ergebnisse
     let calculation = document.getElementById('Iterationen');
     let jacobiDiv = document.getElementById('ergebnisJacobi');
     let gaussDiv = document.getElementById('ergebnisGauss');
+    // Bereite die Ergebnis-Div-Elemente vor
     jacobiDiv.innerHTML = '<h6>Ergebnis mit Jacobi Verfahren:</h6>'
     gaussDiv.innerHTML = ' <h6>Ergebnis mit Gaußschem Eliminationsverfahren:</h6>'
     calculation.innerHTML = ''
 
+     // Bestimme die Anzahl der Nachkommastellen
     var selectElement = document.getElementById('nachkomastellen');
-
     var selectedOption = selectElement.options[selectElement.selectedIndex];
     var decimalPlaces = parseInt(selectedOption.value);
 
+     // Sammle die Werte der Eingabefelder in ein Array
     inputs.forEach(function (input) {
         if (input.value.trim() === '') {
             values.push(0);
@@ -97,7 +109,8 @@ async function calculateSolution(){
             values.push(parseFloat(input.value));
         }
     });
-
+  
+    // Sammle die Werte des Startvektors in ein Array
     vectorInputs.forEach(function (vectorInput) {
         if (vectorInput.value.trim() === '') {
             vectorValues.push(0);
@@ -110,7 +123,7 @@ async function calculateSolution(){
 
     let cols = values.length / rows; // Anzahl der Spalten
 
-    // Erstelle ein 2D-Array (eine Matrix)
+    // Erstelle die Matrix A und den Vektor b
     let A = [];
     let b = [];
     for (let i = 0; i < rows; i++) {
@@ -120,13 +133,13 @@ async function calculateSolution(){
             if (j < cols - 1) {
                 row.push(values[index]);
             } else {
-                b.push(values[index]); // Füge den Wert zur letzten Spalte hinzu
+                b.push(values[index]); // Letzte Spalte gehört zum Vektor b
             }
         }
         A.push(row);
     }
 
-    //Erstelle Matrix A
+   // Mathematische Darstellung der Matrizen in LaTeX
     let matrixA = "\\begin{pmatrix} ";
     for (let i = 0; i < rows; i++) {
         for (let j = 0; j < array.length / rows - 1; j++) {
@@ -317,6 +330,8 @@ async function calculateSolution(){
                 break;
             }
         }
+      
+      // Erstellt einen LaTeX-String zur Darstellung eines Vektors
         function createLatexString(vector) {
             let latexString = '';
             for (let i = 0; i < vector.length; i++) {
@@ -329,14 +344,18 @@ async function calculateSolution(){
         let ergebnisGauss = createLatexString(gaussSolution);
         jacobiDiv.innerHTML += `\\[ \\begin{array}{l} ${ergebnisJacobi} \\end{array} \\]`;
         gaussDiv.innerHTML += `\\[ \\begin{array}{l} ${ergebnisGauss} \\end{array} \\]`;
+
+        // Berechnet die Euklidische Norm des Vektors
         function norm(vector) {
             return Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0));
         }
 
+        // Berechnet die Differenz zwischen zwei Vektoren
         function vectorDifference(vec1, vec2) {
             return vec1.map((val, index) => val - vec2[index]);
         }
 
+        // Berechnet den prozentualen Unterschied zwischen zwei Vektoren
         function percentageDifference(vec1, vec2) {
             const diff = vectorDifference(vec1, vec2);
             const normDiff = norm(diff);
@@ -345,15 +364,18 @@ async function calculateSolution(){
             return percentageDiff.toFixed(decimalPlaces);
         }
 
+        // Ergebnis der prozentualen Abweichung anzeigen
         const result = percentageDifference(startVector, gaussSolution);
         document.getElementById('abweichung').innerHTML = "<h4>" + result + "% <br>Abweichung</h4>"
     }
-    
+
+    // Neudarstellung der MathJax-Elemente
     MathJax.typeset();
     document.getElementById('Rechnung').style.display = 'block';
     document.getElementById('Ergebnis').style.display = 'block';
 };
 
+// Funktion, um die Eingabefelder für das Gleichungssystem und den Startvektor zu leeren
 function clearInput(){
     const table = document.getElementById('Gleichungssystem');
     const vector = document.getElementById('Startvektor');
@@ -361,12 +383,15 @@ function clearInput(){
         table.deleteRow(i);
         vector.deleteRow(i);
     }
+    // Erstellt 4 neue Eingabefelder für das Gleichungssystem
     for (let i = 0; i < 4; i++) {
         createInputFields();
     }
+    // Fügt Rechenzeichen (+, -, =) hinzu
     addSigns();
 };
 
+// Funktion, die Rechenzeichen (+, -, =) in die Tabelle für das Gleichungssystem einfügt
 function addSigns() {
     const table = document.getElementById('Gleichungssystem');
     for (var i = 0; i < table.rows.length; i++) {
@@ -389,6 +414,7 @@ function addSigns() {
     }
 }
 
+// Funktion, die ein Standardbeispiel für das Gleichungssystem erstellt
 function createStandardExample() {
     const table = document.getElementById('Gleichungssystem');
     const vector = document.getElementById('Startvektor');
@@ -400,13 +426,16 @@ function createStandardExample() {
         createInputFields();
     }
     addSigns();
+  
+    // Definiert die Werte für das Standardbeispiel
     const values = [
         10, -1, 2, 0, 6,
         -1, 11, -1, 3, 25,
         2, -1, 10, -1, -11,
         0, 3, -1, 8, 15
     ];
-
+  
+  // Füllt die Eingabefelder mit den Standardwerten
     const inputs = table.getElementsByTagName('input');
 
     for (let i = 0; i < values.length; i++) {
@@ -415,21 +444,25 @@ function createStandardExample() {
 
 }
 
+// Funktion, die Eingabefelder für eine Zeile des Gleichungssystems erstellt
 function createInputFields() {
     const table = document.getElementById('Gleichungssystem');
     const vector = document.getElementById('Startvektor');
-    const row = table.insertRow();
+  // Fügt eine neue Zeile zur Tabelle des Gleichungssystems hinzu  
+  const row = table.insertRow();
     for (let i = 0; i < 5; i++) {
         const cell = row.insertCell();
         const input = document.createElement('input');
-        input.type = 'number';
-        cell.appendChild(input);
+        input.type = 'number'; // Definiert das Eingabefeld als Zahleneingabe
+        cell.appendChild(input); // Fügt das Eingabefeld in die Zelle ein
     }
+
+    // Fügt eine neue Zeile für den Startvektor hinzu
     const vectorRow = vector.insertRow();
     const vectorCell = vectorRow.insertCell(0);
     const vectorInput = document.createElement('input');
     vectorInput.type = 'number';
-    vectorInput.placeholder = '0';
+    vectorInput.placeholder = '0'; // Standard-Platzhalterwert
     vectorCell.appendChild(vectorInput);
 }
 
@@ -438,14 +471,14 @@ function gaussElimination(variable1, variable2, decimalPlaces) {
     
     let n = variable1.length;
 
-    // Augmented matrix [variable1|variable2]
+    // Erstellen der erweiterten Matrix [variable1|variable2]
     for (let i = 0; i < n; i++) {
         variable1[i].push(variable2[i]);
     }
 
-    // Forward elimination
+     // Vorwärtssubstitution
     for (let i = 0; i < n; i++) {
-        // Pivoting
+         // Pivotierung: Finden der Zeile mit dem größten Element in der aktuellen Spalte
         let maxEl = Math.abs(variable1[i][i]);
         let maxRow = i;
         for (let k = i + 1; k < n; k++) {
@@ -455,36 +488,36 @@ function gaussElimination(variable1, variable2, decimalPlaces) {
             }
         }
 
-        // Swap maximum row with current row
+       // Vertauschen der Zeile mit dem maximalen Element mit der aktuellen Zeile
         for (let k = i; k < n + 1; k++) {
             let tmp = variable1[maxRow][k];
             variable1[maxRow][k] = variable1[i][k];
             variable1[i][k] = tmp;
         }
 
-        // Make all rows below this one 0 in current column
+        // Alle Zeilen unterhalb der aktuellen Zeile in der aktuellen Spalte auf 0 setzen
         for (let k = i + 1; k < n; k++) {
             let c = -variable1[k][i] / variable1[i][i];
-            c = roundToDecimalPlaces(c, decimalPlaces);
+            c = roundToDecimalPlaces(c, decimalPlaces); // Runden der Koeffizienten
             for (let j = i; j < n + 1; j++) {
                 if (i == j) {
-                    variable1[k][j] = 0;
+                    variable1[k][j] = 0; // Diagonale Elemente auf 0 setzen
                 } else {
                     variable1[k][j] += c * variable1[i][j];
-                    variable1[k][j] = roundToDecimalPlaces(variable1[k][j], decimalPlaces);
+                    variable1[k][j] = roundToDecimalPlaces(variable1[k][j], decimalPlaces); // Runden der Ergebnisse
                 }
             }
         }
     }
 
-    // Check for inconsistency
+    // Überprüfung auf Inkonsistenzen
     for (let i = 0; i < n; i++) {
         if (variable1[i][i] == 0 && variable1[i][n] != 0) {
             return null;
         }
     }
 
-    // Back substitution
+     // Rückwärtssubstitution zur Bestimmung der Lösung
     let x = new Array(n).fill(0);
     for (let i = n - 1; i >= 0; i--) {
         x[i] = variable1[i][n] / variable1[i][i];
@@ -498,10 +531,12 @@ function gaussElimination(variable1, variable2, decimalPlaces) {
     return x;
 }
 
-// Helper function to round numbers to the specified decimal places
+// Hilfsfunktion zum Runden von Zahlen auf die angegebene Anzahl von Dezimalstellen
 function roundToDecimalPlaces(value, places) {
     return parseFloat(value.toFixed(places));
 }
+
+// Export der Funktionen (für Node.js)
 if (typeof module !== 'undefined' && module.exports) {
 module.exports = {
     removeRow,
