@@ -111,7 +111,6 @@ class BranchAndBound {
             fehlerWerte.push(Math.abs(bestSolution - currentSolutions[i])) // Fehler berechnen
             iterations.push(i); // Iteration speichern
         }
-        console.log(fehlerWerte)
 
         // Diagramm zur Darstellung des Fehlerverlaufs
         const trace = {
@@ -182,7 +181,6 @@ class BranchAndBound {
 
     // Überprüfung, ob eine Lösung alle Nebenbedingungen erfüllt
     satisfiesConstraints(solution) {
-        console.log(solution);
         const allSatisfied = this.constraintsCoefficients.every((coeffs, index) => {
             // Berechne den linken Wert der Ungleichung (lhs)
             const lhs = coeffs.reduce((sum, coeff, varIndex) =>
@@ -215,11 +213,9 @@ class BranchAndBound {
                     satisfied = false;
             }
 
-            console.log(`Constraint ${index}: ${lhs} ${constraintType} ${rhs} -> ${satisfied}`);
             return satisfied;
         });
 
-        console.log("AllSatisfied: " + allSatisfied);
         return allSatisfied; // Gibt true zurück, wenn alle Bedingungen erfüllt sind
     }
 
@@ -259,9 +255,7 @@ class BranchAndBound {
         const bounds = node.bounds; // Schranken des aktuellen Knotens
 
         const currentNode = this.nodes.get(node.parentId);
-        console.log("Parent: " + node.parentId)
         if (currentNode && currentNode.color && currentNode.color.background === '#4d4848') {
-            console.log(`Abbrechen: Parent Node ${node.parentId} ist schwarz.`);
 
             this.iterate() // Funktion beenden, wenn die Parent-Node schwarz ist
             return;
@@ -291,7 +285,6 @@ class BranchAndBound {
         var upperBound = this.calculateUpperBound(bounds); // Obere Schranke berechnen
         // Wenn die Lösung gültig ist, als beste Lösung setzen
         if (this.explore(midpoint)) {
-            console.log(`Iteration ${this.iterations + 1}: Current best solution: ${JSON.stringify(this.bestSolution)}, Objective: ${this.bestObjectiveValue}`);
             // Wenn es eine vorherige beste Node gibt, färbe sie blau
             if (this.bestNodeId !== null && this.bestNodeId !== nodeId) {
                 this.nodes.update({
@@ -413,7 +406,7 @@ class BranchAndBound {
         this.globalUpperBound = Math.max(this.globalUpperBound, upperBound); // Obere Schranke aktualisieren
     }
 
-     // Methode zur Exploration einer Lösung (prüft, ob sie besser als die aktuelle ist)
+    // Methode zur Exploration einer Lösung (prüft, ob sie besser als die aktuelle ist)
     explore(solution) {
         if (this.satisfiesConstraints(solution)) {
             const objectiveValue = this.evaluateObjective(solution);
@@ -441,7 +434,6 @@ class BranchAndBound {
             physics: {
                 enabled: true,
                 hierarchicalRepulsion: {
-                    avoidOverlap: 1,
                     nodeDistance: 100
                 },
                 stabilization: {
@@ -454,7 +446,6 @@ class BranchAndBound {
                     springLength: 200,
                     avoidOverlap: 1
                 },
-                bounce: 0.1,
                 timestep: 0.5
             },
             interaction: {
@@ -486,7 +477,6 @@ class BranchAndBound {
 
 // Funktion zur Extraktion von Variablen und Koeffizienten aus der Zielfunktion und den Nebenbedingungen
 function extractVariablesAndCoefficients(objectiveFunction, constraints) {
-    console.log(constraints);
 
     // Hilfsfunktion zur Verarbeitung von Koeffizienten
     function parseCoefficient(coefficientStr) {
@@ -516,7 +506,7 @@ function extractVariablesAndCoefficients(objectiveFunction, constraints) {
         }
         return variableMap;
     }
-    
+
 
     // Sammle alle Variablennamen
     const allKeys = new Set();
@@ -528,7 +518,6 @@ function extractVariablesAndCoefficients(objectiveFunction, constraints) {
     // Arrays für Zielfunktion (Variablen und Koeffizienten)
     const sortedKeys = Array.from(allKeys).sort();
     const objectiveValues = sortedKeys.map(key => objectiveFunctionMap.get(key) || 0);  // Fehlende Werte = 0
-    console.log(objectiveValues);
 
     // Arrays für Constraints
     const constraintTypes = [];
@@ -557,7 +546,6 @@ function extractVariablesAndCoefficients(objectiveFunction, constraints) {
             console.error(`Constraint ${index + 1} could not be parsed: ${constraint}`);
         }
     });
-    console.log(constraintCoefficients);
 
     // Rückgabe der Arrays
     return {
@@ -658,11 +646,65 @@ function reset() {
 
 // Funktion zur Überprüfung der Eingaben
 function checkInputs() {
+    $('#funktion').popover('dispose');
     const btnStart = document.getElementById('branchButton');
-    if (document.getElementById('funktion').value.trim().replace(/\s+/g, '')) {
-        btnStart.disabled = false; // Aktivieren, wenn eine Zielfunktion eingegeben wurde
-    } else {
-        btnStart.disabled = true; // Deaktivieren, wenn keine Zielfunktion vorhanden ist
+    const skipForwardButton = document.getElementById('skip-forward');
+    const playButton = document.getElementById('btnStart');
+    const skipBackwardButton = document.getElementById('skip-back');
+    const funk = document.getElementById('funktion').value.trim().replace(/\s+/g, '');
+    if(isLinear(funk)){
+        if (funk) {
+            btnStart.disabled = false; // Aktivieren, wenn eine Zielfunktion eingegeben wurde
+            skipForwardButton.disabled = false;
+            playButton.disabled = false;
+            skipBackwardButton.disabled = false;
+        return true;
+        } else {
+            btnStart.disabled = true; // Deaktivieren, wenn keine Zielfunktion vorhanden ist
+            skipForwardButton.disabled = true;
+            playButton.disabled = true;
+            skipBackwardButton.disabled = true;
+        }
+        return false;
+    }else{
+         // Popover über dem Element mit der ID inputElementId anzeigen
+         $('#funktion').popover({
+            title: 'Ungültige Zielfunktion',
+            content: 'Die Zielfunktion entspricht nicht der allgemeinen linearen Form',
+            placement: 'top',
+            trigger: 'focus',
+            html: true
+        }).popover('show');
+        return false;
+        
+    }
+}
+
+function isLinear(expression) {
+    try {
+        const node = math.parse(expression);
+        
+        // Funktion, um zu prüfen, ob ein Knoten linear ist
+        function checkNode(node) {
+            if (node.isOperatorNode) {
+                if (node.op === '+' || node.op === '-') {
+                    return node.args.every(checkNode); // Überprüfe beide Operanden
+                }
+                if (node.op === '*') {
+                    const [left, right] = node.args;
+                    // Ein Term ist linear, wenn ein Teil konstant und der andere eine Variable ist
+                    return (left.isConstantNode && right.isSymbolNode) ||
+                           (right.isConstantNode && left.isSymbolNode);
+                }
+                return false;
+            }
+            // Erlaubte Typen sind Konstanten und Variablen
+            return node.isConstantNode || node.isSymbolNode;
+        }
+        
+        return checkNode(node);
+    } catch (error) {
+        return false;
     }
 }
 
@@ -724,7 +766,6 @@ function skipForward() {
         playIcon.style.display = 'block';
         pauseIcon.style.display = 'none';
     } else {
-        console.log(bbSolver)
         var extractedInputs = getInputs();
         if (!checkForUnboundedSolution(extractedInputs.variables, extractedInputs.constraintCoefficients, extractedInputs.constraintBounds, extractedInputs.constraintTypes)) {
 
@@ -788,11 +829,9 @@ async function playBranchAndBound() {
 function skipBackward() {
 
     let allNodes = bbSolver.nodes.get(); // Alle Knoten des Baums erhalten
-    console.log(allNodes)
     // Letzte Node und Edge erhalten
     let lastNode = allNodes[allNodes.length - 1];
     let lastNodeId = lastNode.id;
-    console.log(lastNodeId)
     if (lastNodeId == 1) {
         return; // Abbrechen, wenn kein Rücksprung möglich
     }
@@ -821,7 +860,7 @@ function skipBackward() {
     bbSolver.possibleSolutions = historyStack.possibleSolutions;
     bbSolver.prunedTreeCount = historyStack.prunedTreeCount;
 
-     // Beste Node aktualisieren
+    // Beste Node aktualisieren
     if (bbSolver.bestNodeId) {
         bbSolver.nodes.update({
             id: bbSolver.bestNodeId,
@@ -890,7 +929,8 @@ function checkForUnboundedSolution(variables, constraintCoefficients, constraint
     // Wenn es unbeschränkte Variablen gibt, zeige das Popover an
     if (unboundedVariables.length > 0) {
         const unboundedVarNames = unboundedVariables.join(', '); // Unbeschränkte Variablen in eine Liste umwandeln
-
+        //Prüfen ob die Eingaben überhaupt zulässig sind
+        if(checkInputs()){
         // Popover über dem Element mit der ID inputElementId anzeigen
         $('#funktion').popover({
             title: 'Unbeschränkte Lösung',
@@ -898,7 +938,7 @@ function checkForUnboundedSolution(variables, constraintCoefficients, constraint
             placement: 'top',
             trigger: 'focus'
         }).popover('show');
-
+    }
         return true;
     }
 
@@ -930,7 +970,7 @@ function updateResults(bbSolver) {
 function setBBSolver(solver) {
     bbSolver = solver;
 }
-// Export der Funktionen für die Verwendung in Modulen
+// Export der Funktionen für die Verwendung in den Unit Tests
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         BranchAndBound,

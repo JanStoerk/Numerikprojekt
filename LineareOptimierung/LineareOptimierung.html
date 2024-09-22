@@ -374,18 +374,18 @@
                                             <ol>
                                                 <li><b>Maximierungsproblem eingeben</b>: In das Feld
                                                     „Maximierungsproblem“ wird die Zielfunktion eingetragen, die
-                                                    maximiert werden soll. Diese Funktion hat die allgemeine Form <i>Z =
-                                                        c_1 x_1 + c_2 x_2 + ... + c_n x_n</i>, wobei <i>c_i</i> die
-                                                    Koeffizienten der Zielfunktion sind. Dabei spielt keine Rolle wlehce
-                                                    Bezeichnungen für die Vaiablen gewählt werden (z.B. x, y oder a, b),
+                                                    maximiert werden soll. Diese Funktion hat die allgemeine Form \(Z =
+                                                        c_1 x_1 + c_2 x_2 + ... + c_n x_n\), wobei \(c_i\) die
+                                                    Koeffizienten der Zielfunktion sind. Dabei spielt keine Rolle welche
+                                                    Bezeichnungen für die Variablen gewählt werden (z.B. \(x\), \(y\) oder \(a\), \(b\)),
                                                     jedoch dürfen die einzelnen Variablen nur einem Zeichen entsprechen
-                                                    (z.B. wäre x1 nicht zulässig).</li>
+                                                    (z.B. wäre \(x1\) nicht zulässig).</li>
                                                 <li><b>Nebenbedingungen festlegen</b>: Unter der Zielfunktion befinden
                                                     sich standardmäßig zwei Nebenebedingungen, mithilfe des Knopfes
                                                     "Nebenbedingung hinzufügen" können jedoch bis zu 10 Nebenbedingungen
                                                     für ein optimierungsproblem verwendet werden. Diese
                                                     haben die Form linearer Ungleichungen, die die Werte der Variablen
-                                                    einschränken (z. B. <i>x &le; 5</i> oder <i>a+b &le; 6</i>). Die
+                                                    einschränken (z. B. \(x &le; 5\) oder \(a+b &le; 6\)). Die
                                                     Nebenbedingungen unterstützen dabei auch andere Vergleichsoperatoren
                                                     wie \(\geq, \gt, \lt\), wobei Nebenbedingungen mit den Operatoren
                                                     \(\geq, \gt\) nur berücksichtigt werden wenn diese scih auf den
@@ -552,14 +552,14 @@
                 <button id="resetTree" class="btn btn-secondary" disabled>Baum zurücksetzen</button> <br><br>
                 <div class="controls">
                     <div style="margin:auto; display:flex">
-                        <button id="skip-back">
+                        <button id="skip-back" disabled>
                             <i class="fas fa-backward"></i>
                         </button>
-                        <button id="btnStart" style="margin-inline: 20px;">
+                        <button id="btnStart" style="margin-inline: 20px;" disabled>
                             <i class="fas fa-play" id="play-icon"></i>
                             <i class="fas fa-pause" id="pause-icon" style="display: none;"></i>
                         </button>
-                        <button id="skip-forward">
+                        <button id="skip-forward" disabled>
                             <i class="fas fa-forward"></i>
                         </button>
                     </div>

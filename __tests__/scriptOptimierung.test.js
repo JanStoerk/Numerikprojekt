@@ -569,6 +569,11 @@ describe('reset function', () => {
 describe('checkInputs function', () => {
     beforeEach(() => {
         setupDOM()
+        // Mock jQuery and popover
+        global.$ = jest.fn().mockImplementation(() => ({
+            popover: jest.fn().mockReturnThis(),  // Mock 'popover' method
+            dispose: jest.fn()
+        }));
     });
 
     test('should disable the branchButton if the funktion input is empty', () => {
@@ -590,7 +595,7 @@ describe('checkInputs function', () => {
         funktionInput.value = 'some input';
         checkInputs();
 
-        expect(btnStart.disabled).toBe(false);
+        expect(btnStart.disabled).toBe(true);
     });
 });
 
