@@ -1,7 +1,6 @@
 
 //Gutes Beispiel: x^2 + log(x) + sin(x^4)
 function ggbOnInit() {
-    console.log("GeoGebra Applet initialized");
     var ggbApplet = document.ggbApplet;
     if (ggbApplet) {
         try {
@@ -62,7 +61,6 @@ function playPauseHandler() {
         (async function () {
             while (value < 100) {
                 if (stopLoop) {
-                    console.log('Schleife abgebrochen');
                     break;
                 }
                 value += 1;
@@ -82,7 +80,6 @@ function playPauseHandler() {
                     Plotly.restyle(diagramm, { x: [punktX], y: [punktY] }, 1);
                 }
                 await new Promise(resolve => setTimeout(resolve, 1000));
-                console.log(slider.value)
             }
             playIcon.style.display = 'block';
             pauseIcon.style.display = 'none';
@@ -187,7 +184,6 @@ function simpsonRegel(fStr, a, b, n) {
         let fm = f.evaluate({ x: xm });
 
         S += (h / 6) * (f0 + 4 * fm + f1);
-        console.log("S ist am Ende: " + S)
     }
 
     return S;
@@ -229,7 +225,6 @@ function berechneIntegral() {
         var result = trapezRegel(funktion, untereGrenze, obereGrenze, anzahlTrapeze)
         regel = "Trapezregel"
     } else {
-        console.log("Anzahl: " + anzahlTrapeze)
         var result = simpsonRegel(funktion, untereGrenze, obereGrenze, anzahlTrapeze)
         regel = "Simpsonregel"
     }
@@ -357,8 +352,6 @@ function areFunctionsEquivalent(func1, func2) {
 
         const simplifiedFunc1 = math.simplify(parsedFunc1).toString();
         const simplifiedFunc2 = math.simplify(parsedFunc2).toString();
-        console.log(simplifiedFunc1)
-        console.log(simplifiedFunc2)
 
         return simplifiedFunc1 === simplifiedFunc2;
     } catch (e) {
@@ -390,15 +383,6 @@ function erstelleHistogramm(abweichungen) { //Beispiel: e^x von 0 bis 4 und 5 Tr
                 borderColor: 'rgba(0,117,255,255)',
                 borderWidth: 1
             }]
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
-            }
         }
     });
 }
@@ -414,18 +398,15 @@ function berechneAbweichungen(fStr, stammfunktion, a, b, n) {
         const F0 = stammfunktion.evaluate({ x: x0 });
         const F1 = stammfunktion.evaluate({ x: x1 });
         const exaktTeil = F1 - F0;
-        console.log("Exakt: " + exaktTeil)
         var naeherung = 0;
         if (document.getElementById("trapez").checked == true) {
             naeherung = trapezRegel(fStr, x0, x1, 1);
         } else {
             naeherung = simpsonRegel(fStr, x0, x1, 1);
         }
-        console.log("Näherung: " + naeherung)
         naeherungsWerte.push(naeherung);
         abweichungen.push(Math.abs(exaktTeil - naeherung));
     }
-    console.log("Abweichungen: " + abweichungen)
     return abweichungen;
 }
 
@@ -543,10 +524,8 @@ function zeichneFunktion() {
     // Asynchrone Berechnungen ausführen, um den UI-Thread nicht zu blockieren
     setTimeout(() => {
         if (trapez.checked) {
-            console.log("Trapez")
             zeichneFunktionTrapez();
         } else {
-            console.log("Simpson")
             zeichneFunktionSimpson();
         }
         document.getElementById('loader').style.display = 'none';
@@ -635,8 +614,6 @@ function zeichneFunktionSimpson() {
             var fm = ggbApplet.getValue("f(" + m + ")")
             var fb = ggbApplet.getValue("f(" + b + ")")
 
-
-
             // Berechnung der Koeffizienten A, B, C der Parabel y = Ax^2 + Bx + C
             var Matrix = [
                 [a * a, a, 1],
@@ -652,15 +629,23 @@ function zeichneFunktionSimpson() {
             var A = result[0];
             var B = result[1];
             var C = result[2];
-            if (Math.abs(B) < 1e-10) {
+
+            //Stellt sicher dass A, B Und C bei zu kleinen Werten auf 0 gesetzt werden, da sie vernachlässigbar werden und die Berechnung der Simpsonregel beeinträchtigen
+            if (Math.abs(A) <= 1e-9) {
+                A = 0;
+            }
+
+            if (Math.abs(B) <= 1e-9) {
                 B = 0;
             }
 
+            if (Math.abs(C) <= 1e-9) {
+                C = 0;
+            }
             // Definiere die Parabel und erstelle die Kurve
             const curveCommand = `Curve(t, ${A} * t^2 + ${B} * t + ${C}, t, ${a}, ${b})`;
             const parabel = ggbApplet.evalCommandGetLabels(curveCommand);
 
-            console.log(a + " " + fa)
             line1 = ggbApplet.evalCommandGetLabels(`Segment((${a}, ${fa}), (${a}, 0))`);
             line2 = ggbApplet.evalCommandGetLabels(`Segment((${b}, ${fb}), (${b}, 0))`);
             line3 = ggbApplet.evalCommandGetLabels(`Segment((${a}, 0),(${b}, 0))`);
@@ -688,25 +673,26 @@ function zeichneFunktionSimpson() {
 }
 
 if (typeof module !== 'undefined' && module.exports) {
-module.exports = {
-    ggbOnInit,
-    zeichneFunktion,
-    zeichneFunktionTrapez,
-    zeichneFunktionSimpson,
-    updateHeader,
-    bewegePunkt,
-    checkInputs,
-    berechneFehlerFürTrapeze,
-    erstelleHistogramm,
-    berechneAbweichungen,
-    berechneIntegral,
-    areFunctionsEquivalent,
-    trapezRegel,
-    simpsonRegel,
-    stepwiseChange,
-    playPauseHandler,
-    stammfunktionChangeHandler,
-    validateInputs,
-    downloadImageHandler,
-    resetAxesHandler
-}}
+    module.exports = {
+        ggbOnInit,
+        zeichneFunktion,
+        zeichneFunktionTrapez,
+        zeichneFunktionSimpson,
+        updateHeader,
+        bewegePunkt,
+        checkInputs,
+        berechneFehlerFürTrapeze,
+        erstelleHistogramm,
+        berechneAbweichungen,
+        berechneIntegral,
+        areFunctionsEquivalent,
+        trapezRegel,
+        simpsonRegel,
+        stepwiseChange,
+        playPauseHandler,
+        stammfunktionChangeHandler,
+        validateInputs,
+        downloadImageHandler,
+        resetAxesHandler
+    }
+}
