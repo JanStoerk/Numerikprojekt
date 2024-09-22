@@ -652,13 +652,13 @@ function checkInputs() {
     const playButton = document.getElementById('btnStart');
     const skipBackwardButton = document.getElementById('skip-back');
     const funk = document.getElementById('funktion').value.trim().replace(/\s+/g, '');
-    if(isLinear(funk)){
+    if (isLinear(funk)) {
         if (funk) {
             btnStart.disabled = false; // Aktivieren, wenn eine Zielfunktion eingegeben wurde
             skipForwardButton.disabled = false;
             playButton.disabled = false;
             skipBackwardButton.disabled = false;
-        return true;
+            return true;
         } else {
             btnStart.disabled = true; // Deaktivieren, wenn keine Zielfunktion vorhanden ist
             skipForwardButton.disabled = true;
@@ -666,9 +666,9 @@ function checkInputs() {
             skipBackwardButton.disabled = true;
         }
         return false;
-    }else{
-         // Popover über dem Element mit der ID inputElementId anzeigen
-         $('#funktion').popover({
+    } else {
+        // Popover über dem Element mit der ID inputElementId anzeigen
+        $('#funktion').popover({
             title: 'Ungültige Zielfunktion',
             content: 'Die Zielfunktion entspricht nicht der allgemeinen linearen Form',
             placement: 'top',
@@ -676,14 +676,14 @@ function checkInputs() {
             html: true
         }).popover('show');
         return false;
-        
+
     }
 }
 
 function isLinear(expression) {
     try {
         const node = math.parse(expression);
-        
+
         // Funktion, um zu prüfen, ob ein Knoten linear ist
         function checkNode(node) {
             if (node.isOperatorNode) {
@@ -694,14 +694,14 @@ function isLinear(expression) {
                     const [left, right] = node.args;
                     // Ein Term ist linear, wenn ein Teil konstant und der andere eine Variable ist
                     return (left.isConstantNode && right.isSymbolNode) ||
-                           (right.isConstantNode && left.isSymbolNode);
+                        (right.isConstantNode && left.isSymbolNode);
                 }
                 return false;
             }
             // Erlaubte Typen sind Konstanten und Variablen
             return node.isConstantNode || node.isSymbolNode;
         }
-        
+
         return checkNode(node);
     } catch (error) {
         return false;
@@ -930,15 +930,15 @@ function checkForUnboundedSolution(variables, constraintCoefficients, constraint
     if (unboundedVariables.length > 0) {
         const unboundedVarNames = unboundedVariables.join(', '); // Unbeschränkte Variablen in eine Liste umwandeln
         //Prüfen ob die Eingaben überhaupt zulässig sind
-        if(checkInputs()){
-        // Popover über dem Element mit der ID inputElementId anzeigen
-        $('#funktion').popover({
-            title: 'Unbeschränkte Lösung',
-            content: 'Die folgenden Variablen sind unbeschränkt: ' + unboundedVarNames,
-            placement: 'top',
-            trigger: 'focus'
-        }).popover('show');
-    }
+        if (checkInputs()) {
+            // Popover über dem Element mit der ID inputElementId anzeigen
+            $('#funktion').popover({
+                title: 'Unbeschränkte Lösung',
+                content: 'Die folgenden Variablen sind unbeschränkt: ' + unboundedVarNames,
+                placement: 'top',
+                trigger: 'focus'
+            }).popover('show');
+        }
         return true;
     }
 

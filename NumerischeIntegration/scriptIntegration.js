@@ -691,7 +691,7 @@ function zeichneFunktionSimpson() {
             var A = result[0];
             var B = result[1];
             var C = result[2];
-            
+
             //Stellt sicher dass A, B Und C bei zu kleinen Werten auf 0 gesetzt werden, da sie vernachlässigbar werden und die Berechnung der Simpsonregel beeinträchtigen
             if (Math.abs(A) <= 1e-9) {
                 A = 0;

@@ -206,6 +206,7 @@
 
                             <main>
                                 <section id="beschreibung" class="mb-4">
+
                                     <h4>1. Beschreibung</h4><br>
                                     <p>Die numerische Lösung von linearen Gleichungssystemen ist ein wichtiger
                                         Bestandteil der numerischen Mathematik, da viele Probleme in der
@@ -301,7 +302,8 @@
                                             Das Jacobi-Verfahren hat bestimmte Einschränkungen, insbesondere
                                             hinsichtlich der Konvergenz, da diese nicht in jedem Fall garantiert ist.
                                             Sie hängt insbesondere davon ab, ob die Matrix
-                                            \(A\) diagonaldominant ist. Das bedeutet, dass in jeder Zeile der Betrag des
+                                            \(A\) diagonal dominant ist. Das bedeutet, dass in jeder Zeile der Betrag
+                                            des
                                             Diagonalelements
                                             \(a_{ii}\) größer sein muss als die Summe der Beträge der restlichen
                                             Elemente dieser Zeile, also
@@ -315,7 +317,7 @@
                                             Eine weitere Einschränkung des Jacobi-Verfahrens ist die mögliche
                                             Langsamkeit der
                                             Konvergenz. Selbst wenn die Matrix
-                                            \(A\) diagonaldominant ist, kann das Verfahren je nach
+                                            \(A\) diagonal dominant ist, kann das Verfahren je nach
                                             Struktur der Matrix sehr lange benötigen, um eine ausreichende
                                             Genauigkeit zu erreichen. Dies liegt an der iterativen Natur des Verfahrens,
                                             bei der in jeder Iteration die Schätzwerte für die Lösung aktualisiert
@@ -363,20 +365,20 @@
                                                     Berechnungen
                                                     sowie in den Ergebnissen angezeigt
                                                     werden sollen. Die Anzahl der Iterationen ist dabei auf maximal 100
-                                                    Iterationen beschränkt, konvergiert dass Verfahren bis dahin nicht,
+                                                    Iterationen beschränkt, konvergiert, dass Verfahren bis dahin nicht,
                                                     wird das Ergebnis der 100sten Iteration ausgegeben.</li>
                                                 <li><b>Standardbeispiel verwenden</b>: Dieser Knopf ermöglicht ein
                                                     einfaches Standardbeispiel in das Gleichungssystem einzutragen,
-                                                    welches eine dominierende Diagnoalmatrix aufweist und
+                                                    welches eine dominierende Diagonalmatrix aufweist und
                                                     dementsprechend sicher konvergiert und zur Veranschaulichung eines
                                                     Beispiels genutzt werden kann.</li>
                                                 <li><b>Lösen des Gleichungssystems</b>: Mit einem Klick auf „Lösen“
                                                     beginnt die iterative Lösung des Gleichungssystems mittels des
-                                                    Jacobi-Verfahrens. Die App stellt zunächst die Uwandlung des
-                                                    eingegenen Gleichungssystems in die zugehörige Matrixform dar (1.
+                                                    Jacobi-Verfahrens. Die App stellt zunächst die Umwandlung des
+                                                    eingegebenen Gleichungssystems in die zugehörige Matrixform dar (1.
                                                     Schritt), und nimmt dann die Diagonalisierung der Matrixform vor (2.
                                                     Schritt).
-                                                    Daraufhin gibt die App die konkreten Rechneschritte in jeder
+                                                    Daraufhin gibt die App die konkreten Rechenschritte in jeder
                                                     Iteration
                                                     an und berechnet die jeweilige Lösung (3. Schritt). Das Verfahren
                                                     wird beendet, sobald Konvergenz erreicht wurde und sich die
@@ -396,7 +398,7 @@
                                                     Visualisierung der Konvergenz. Auf diese Weise lässt sich verfolgen,
                                                     wie die Lösung mit jeder Iteration verfeinert wird. Die
                                                     Visualisierung lässt sich jedoch auch einklappen, um
-                                                    Übersichtlichkeit zu gewährleisten und direkt die Ergebnsse im
+                                                    Übersichtlichkeit zu gewährleisten und direkt die Ergebnisse im
                                                     Vergleich mit dem Gaußschen Eliminationsverfahren zu betrachten.
                                                 </li>
                                             </ol>
@@ -417,7 +419,8 @@
                                                     sicherzustellen, dass das Jacobi-Verfahren konvergiert, sollte
                                                     überprüft werden, ob die Matrix <i>A</i> diagonal dominant ist.
                                                     Falls dies nicht der Fall ist, könnte das Verfahren sehr langsam
-                                                    konvergieren oder im extremfall sogar divergieren und keine sinvolle
+                                                    konvergieren oder im Extremfall sogar divergieren und keine
+                                                    sinnvolle
                                                     Lösung bieten.</li>
                                                 <li><b>Iterationen optimieren</b>: Die Anzahl der Iterationen sollte
                                                     sorgfältig überwacht und bei Bedarf angepasst werden. Falls die
@@ -425,17 +428,17 @@
                                                     Anzahl von Iterationen noch nicht hinreichend genau ist, kann die
                                                     maximale Iterationsanzahl erhöht werden (maximal 100 Iterationen).
                                                 </li>
-                                                <li><b>Nachkomastellen anpassen</b>: Die Anzahl der Nachkommastellen
+                                                <li><b>Nachkommastellen anpassen</b>: Die Anzahl der Nachkommastellen
                                                     sollte so gewählt werden, dass eine ausreichend hohe Genauigkeit
                                                     innerhalb der einzelnen Rechenschritte sichergestellt wird. Je höher
-                                                    die Anzahl der NAchkommastellen, desto geringer ist in der Regel die
+                                                    die Anzahl der Nachkommastellen, desto geringer ist in der Regel die
                                                     Abweichung zum Ergebnis des Gauß-Verfahrens.</li>
                                                 <li><b>Vergleich mit dem Gaußschen Eliminationsverfahren</b>: Um die
                                                     Genauigkeit des Jacobi-Verfahrens zu überprüfen bzw. zu vergleichen,
                                                     empfiehlt es sich,
                                                     das Ergebnis mit der Lösung des Gaußschen Eliminationsverfahrens zu
                                                     vergleichen und die prozentuale Abweichung zu betrachten. Ist diese
-                                                    zu hoch empfiehlt sich die Erhöhung der Anzahl der NAchkommastellen
+                                                    zu hoch, empfiehlt sich die Erhöhung der Anzahl der Nachkommastellen
                                                     oder der Anzahl der Iterationen (vorausgesetzt, dass das Verfahren
                                                     konvergiert).</li>
                                             </ul>
@@ -483,28 +486,28 @@
             </div>
         </div>
         <div style="display:flex; align-items: center; gap:10px">
-        <button id="saveButton" class="btn btn-secondary">Lösen</button>
-        <button id="clearButton" class="btn btn-secondary"><i class="fa fa-paint-brush"></i></button>
-        <button id="addButton" class="btn btn-secondary">Zeile hinzufügen</button>
-        <button id="removeButton" class="btn btn-secondary">Zeile entfernen</button>
-        <button id="standardExample" class="btn btn-secondary">Standardbeispiel verwenden</button>
+            <button id="saveButton" class="btn btn-secondary">Lösen</button>
+            <button id="clearButton" class="btn btn-secondary"><i class="fa fa-paint-brush"></i></button>
+            <button id="addButton" class="btn btn-secondary">Zeile hinzufügen</button>
+            <button id="removeButton" class="btn btn-secondary">Zeile entfernen</button>
+            <button id="standardExample" class="btn btn-secondary">Standardbeispiel verwenden</button>
 
-        <label for="funktion">Maximale Anzahl Iterationen</label>
-        <input id="AnzahlIterationen" type="number" placeholder="3" style="width:50px">
-        Anzahl Nachkommastellen
-        <select id="nachkomastellen" class="form-select" style="width: 100px">
-            <option>1</option>
-            <option selected>2</option>
-            <option>3</option>
-            <option>4</option>
-            <option>5</option>
-            <option>6</option>
-            <option>7</option>
-            <option>8</option>
-            <option>9</option>
-            <option>10</option>
-        </select>
-    </div>
+            <label for="funktion">Maximale Anzahl Iterationen</label>
+            <input id="AnzahlIterationen" type="number" placeholder="3" style="width:50px">
+            Anzahl Nachkommastellen
+            <select id="nachkomastellen" class="form-select" style="width: 100px">
+                <option>1</option>
+                <option selected>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+                <option>6</option>
+                <option>7</option>
+                <option>8</option>
+                <option>9</option>
+                <option>10</option>
+            </select>
+        </div>
 
         <!--<input type="checkbox" style="margin-left: 10px" id="myCheckbox"> Iteration bis zur Konvergenz -->
         <!--<input type="checkbox" style="margin-left: 10px" id="standardExample"> Standardbeispiel verwenden -->

@@ -247,7 +247,6 @@
                                 </li>
                                 </ul>
                             </nav>
-
                             <main id="dokumentation">
                                 <div id="TrapezDoku">
                                     <section id="beschreibung" class="mb-4"></section>
@@ -260,7 +259,7 @@
                                         approximieren, anstatt die exakte Fläche unter der Kurve zu berechnen.</p>
                                     <p>Mathematisch wird dies erreicht, indem der Integrationsbereich \([a, b]\) in
                                         \(n\) gleich große Intervalle unterteilt wird. Für jedes Intervall wird ein
-                                        Trapez konstruiert, dessen Basis die x-Achse und dessen parallele Seiten durch
+                                        Trapez konstruiert, dessen Basis, die x-Achse und dessen parallele Seiten durch
                                         die Funktion \(f(x)\) an den Endpunkten des Intervalls definiert werden. Die
                                         Summe der Flächen dieser Trapeze ergibt eine Näherung für das Integral:</p>
                                     <p>\[
@@ -277,10 +276,11 @@
                                         gerade Linie zwischen den Funktionswerten an den Endpunkten des Intervalls
                                         \([a,b]\) zu ersetzen. Diese Methode wird als <b>Sehnentrapezformel</b>
                                         bezeichnet und berechnet die Fläche der Trapeze, die durch die Sehne und die
-                                        x-Achse begrenzt werden. Diese Varainte wird auch innerhalb dieser App zur
+                                        x-Achse begrenzt werden. Diese Variante wird auch innerhalb dieser App zur
                                         Approximation verwendet.
                                         Eine bekannte Alternative dazu bildet die Mittelpunktsregel, die darauf basiert,
-                                        im Mittel des Intervalls eine Tangente an die Kurve zu legen Diese Methode nutzt
+                                        im Mittel des Intervalls eine Tangente an die Kurve zu legen. Diese Methode
+                                        nutzt
                                         die Tangente an der Stelle
                                         \(\frac{a+b}{2}\)
                                         und berechnet die Fläche der Trapeze, die durch diese Tangente und die x-Achse
@@ -372,7 +372,7 @@
                                                 Koordinatensystem dargestellt, sobald der "Zeichne Funktion" Knopf
                                                 gedrückt wird. Dabei muss es sich um eine gültige Funktion handeln,
                                                 welche die Variable \(x\) verwendet, andere Variablen sind nicht
-                                                zulässig. Wird eine fehlerhafte Funktion eingegeben wird ein Fehler
+                                                zulässig. Wird eine fehlerhafte Funktion eingegeben, wird ein Fehler
                                                 angezeigt.</li>
                                             <li><b>Grenzen festlegen</b>: Die untere und obere Grenzen der Integration
                                                 können in
@@ -389,11 +389,11 @@
                                                 werden. Je mehr Trapeze verwendet werden, desto genauer wird die
                                                 Approximation des Integrals. Die standardmäßige Anzahl liegt bei 5
                                                 Trapezen, wird der Schieberegler verändert während bereits eine Funktion
-                                                eingezeichnet ist so verändert sich die Anzahl der Trapeze welche die
+                                                eingezeichnet ist, so verändert sich die Anzahl der Trapeze, welche die
                                                 Funktion im ausgewählten Integral approximieren analog im
                                                 Koordinatensystem.</li>
                                             <li><b>Koordinatensystem</b>: Das Koordinatensystem kann verwendet
-                                                werden um
+                                                werden, um
                                                 die angegebene Funktion sowie die Annäherung durch die Trapeze
                                                 visuell
                                                 zu betrachten. Das Koordinatensystem unterstützt beliebig große und
@@ -407,7 +407,7 @@
                                                 kann
                                                 außerdem der Fokus des Koordinatensystems wieder auf den
                                                 anfänglichen
-                                                Zustand zurückgesezt werden.</li>
+                                                Zustand zurückgesetzt werden.</li>
                                             <li><b>Vergleich mit Stammfunktion</b>: Der Benutzer hat die Möglichkeit,
                                                 eine
                                                 Stammfunktion \(F(x)\) manuell einzugeben. Die App verwendet diese
@@ -420,12 +420,12 @@
                                                 und
                                                 zeigt die Ergebnisse sowie die Abweichung beim Drücken des "Berechne
                                                 Integral" Knopfes an.
-                                                Sollte eine flasche Stammfunktion eingegeben werden, zeigt die Anwendung
+                                                Sollte eine falsche Stammfunktion eingegeben werden, zeigt die Anwendung
                                                 mithilfe eines Popups an, dass die Stammfunktion ungültig ist. Dies wird
                                                 umgesetzt, indem die Stammfunktion von der Anwendung abgeleitet und in
                                                 normalisierter Form mit der eingegebenen Funktion verglichen wird.</li>
                                             <li><b>Berechnung starten</b>: Nachdem eine Funktion im Koordinatensystem
-                                                eingezeichnet wurde, erscheint der Knocpf "Berechne Integral". Durch
+                                                eingezeichnet wurde, erscheint der Knopf "Berechne Integral". Durch
                                                 Klicken auf diesen Knopf wird die numerische Integration gestartet und
                                                 das zugehörige
                                                 Integral basierend auf der eingestellten Trapezanzahl berechnet. Das
@@ -434,7 +434,7 @@
                                                 Stammfunktion sowie die absolute Abweichung in
                                                 Flächeneinheiten angegeben. Außerdem wird in diesem Fall ein Histogramm
                                                 der einzelnen
-                                                Trapezfehler erstellt, welches visualisiert wie sich die Abweichung
+                                                Trapezfehler erstellt, welches visualisiert, wie sich die Abweichung
                                                 zusammensetzt.
                                             </li>
                                             <li><b>Abweichungsdiagramm</b>: Die App zeigt bei Verwendung einer
@@ -452,13 +452,13 @@
                                                 über die einzelnen Punkte des Abweichungsdiagramms bewegt wird, können
                                                 die genauen Abweichungen an der jeweiligen Stelle betrachtet werden.
                                             </li>
-                                            <li><b>Animiertes hinzufügen von Trapezen</b>: Neben dem Schieberegler
+                                            <li><b>Animiertes Hinzufügen von Trapezen</b>: Neben dem Schieberegler
                                                 können auch der Play/Pause Knopf sowie die Knöpfe für das schrittweise
                                                 vor- und zurückspulen verwendet werden, um mithilfe einer Animation
-                                                einzelne Trapeze im Koordinatensytsem hinzuzufügen bzw. zu entfernen.
+                                                einzelne Trapeze im Koordinatensystem hinzuzufügen bzw. zu entfernen.
                                                 Während der Vorwärts- und Rückwärts-Knopf jeweils die Trapezanzahl um
                                                 eins erhöht oder verringert, ermöglicht der Play/Pause Button eine
-                                                Animation zu starten welche jede Sekunde die Trapezanzahl um eins
+                                                Animation zu starten, welche jede Sekunde die Trapezanzahl um eins
                                                 erhöht, bis die maximale Anzahl von 100 erreicht wurde oder der Pause
                                                 Knopf betätigt wird. Dies dient der Veranschaulichung der Approximation
                                                 der Kurve durch unterschiedliche Trapezanzahlen. </li>
@@ -470,7 +470,7 @@
                                                 Berechnung zu kontrollieren.</li>
                                             <li><b>Wechsel zur Simpsonregel</b>: Über den Regler in der rechten oberen
                                                 Ecke kann von der Trapezregel zur Simpsonregel gewechselt werden.
-                                                Dadurch wird die Kurve anstelle von Trapezen mit einzelnen parabeln
+                                                Dadurch wird die Kurve anstelle von Trapezen mit einzelnen Parabeln
                                                 approximiert. Außerdem wird die Dokumentation entsprechend angepasst.
                                             </li>
                                         </ol>
@@ -482,7 +482,7 @@
                                             <li><b>Anpassung der Trapezanzahl</b>: Um die Genauigkeit der Lösung zu
                                                 verbessern, sollte die Anzahl der Trapeze an die
                                                 Komplexität
-                                                der Funktion angepasst werden. Je mehr Trapeze verwendet werden desto
+                                                der Funktion angepasst werden. Je mehr Trapeze verwendet werden, desto
                                                 genauer wird der Integralbereich durch die Trapeze approximiert.
                                                 Die Anzahl der Trapeze ist dabei innerhalb der Anwendung auf 100
                                                 beschränkt, da die Anzahl der Trapeze zwar
@@ -492,13 +492,13 @@
                                                 Koordinatensystem (sowie bei der Animation) zu einer kurzen Verzögerung
                                                 kommen kann.</li>
                                             <li><b>Einschränkung des Integralbereichs</b>: Je größer der verwendete
-                                                Integralbereich desto ungenauer ist die Approximation der Kurve durch
+                                                Integralbereich, desto ungenauer ist die Approximation der Kurve durch
                                                 die einzelnen Trapeze. Da die maximale Anzahl an Trapezen auf 100
                                                 beschränkt ist, sollte sichergestellt werden, dass das
-                                                Integral nicht zu groß ist um eine hohe Genauigkeit der Annäherung zu
+                                                Integral nicht zu groß ist, um eine hohe Genauigkeit der Annäherung zu
                                                 gewährleisten. Eine Aufteilung eines sehr großen Integralbereichs in
                                                 mehrere kleine Bereiche kann ebenfalls sinnvoll sein, um diese einzeln
-                                                zu approximieren und dann die Ergebnisse zu summieren um eine höhere
+                                                zu approximieren und dann die Ergebnisse zu summieren, um eine höhere
                                                 Genuigkeit zu erhalten. </li>
                                             <li><b>Eingabe der Stammfunktion</b>: Um die Genauigkeit der numerischen
                                                 Integration zu überprüfen, sollte, wenn bekannt, die Stammfunktion
@@ -510,20 +510,20 @@
                                                 die Abweichung des Ergebnisses an. Dieser Vergleich ist besonders
                                                 hilfreich, um das
                                                 Verständnis der Genauigkeit und Effizienz der Trapezregel zu fördern und
-                                                festzustellen, ob die aktuelle Anzahl Trapeze geeignet ist um die Kurve
+                                                festzustellen, ob die aktuelle Anzahl Trapeze geeignet ist, um die Kurve
                                                 ausreichend zu approximieren.
                                             </li>
                                             <li><b>Analyse des Abweichungsdiagramms</b>: Das Abweichungsdiagramm,
-                                                welches bei Angabe einer Stammfunktion erstellt wird
+                                                welches bei Angabe einer Stammfunktion erstellt wird,
                                                 gibt wertvolle Hinweise darauf, wie sich die Genauigkeit der
                                                 Approximation über die
                                                 Anzahl der Trapeze hinweg entwickelt. Das Abweichungsdiagramm zeigt in
-                                                der Regel wie sich die Annäherung mit steigender Anzahl an Trapezen an
+                                                der Regel, wie sich die Annäherung mit steigender Anzahl an Trapezen an
                                                 die optimale Lösung annähert.
-                                                Hierdurch kann eine Einschätzung darüber getroffen werden, ab wievielen
+                                                Hierdurch kann eine Einschätzung darüber getroffen werden, ab wie vielen
                                                 Trapezen die
                                                 Genauigkeit des Verfahrens ausreichend hoch ist. Der grüne Punkt im
-                                                Abweihungsdiagramm symbolisiert dabei die Genauigkeit bei der aktuell
+                                                Abweichungsdiagramm symbolisiert dabei die Genauigkeit bei der aktuell
                                                 ausgewählten Anzahl an Trapezen und bewegt sich analog zum zugehörigen
                                                 Schieberegler. Das
                                                 Abweichungsdiagramm kann auch mithilfe des zugehörigen Knopfes als
@@ -533,11 +533,11 @@
                                                 Neben dem Abweichungsdiagramm bietet die Anwendung bei Vergleich mit der
                                                 Stammfunktion außerdem ein Histogramm, welches die Fehler der einzelnen
                                                 Trapeze angibt. Hierfür wird für jedes einzelne Trapez die approximierte
-                                                Fläche mit der tatsächlcihen Fläche in diesem Bereich verglichen um zu
+                                                Fläche mit der tatsächlichen Fläche in diesem Bereich verglichen, um zu
                                                 bestimmen, wie groß die Differenz der einzelnen Trapeze zum
-                                                Flächeninhalt unter der Kurve ist. Dies ermöglicht eine Einschätzung an
+                                                Flächeninhalt unter der Kurve ist. Dies ermöglicht eine Einschätzung, an
                                                 welchen Stellen die Funktion glatter verläuft (in der Regel höhere
-                                                Genauigkeit durch Trapeze) und in welchen bereichen die Funktion starke
+                                                Genauigkeit durch Trapeze) und in welchen Bereichen die Funktion starke
                                                 Krümmungen aufweist (in der Regel geringere Genauigkeit der Trapeze).
                                             </li>
                                             <li><b>Verwendung der Simpsonregel</b>:
@@ -557,6 +557,7 @@
                                                 die Simpsonregel die Kurve mithilfe einer Parabel annähert und dadurch
                                                 Krümmungen häufig besser abbilden kann.</li>
                                         </ul>
+
                                     </section>
                                 </div>
                                 <div id="SimpsonDoku" style="display: none;">
@@ -577,7 +578,7 @@
                                             diese einzelnen Parabeln, um die Fläche unter der Kurve zu berechnen.
                                             Dieses Vorgehen wird auch als zusammengesetzte Simpsonregel bezeichnet, da
                                             das eigentliche Integral in mehrere Teilintervalle unterteilt und jedes
-                                            teilintervall für sich approximiert wird.
+                                            Teilintervall für sich approximiert wird.
                                             Für eine Funktion \(f(x)\), die auf dem Intervall \([a, b]\) integriert
                                             wird,
                                             lautet die Simpsonregel:
@@ -640,7 +641,7 @@
                                                 Integration dar, da sie eine gute Balance zwischen Genauigkeit und
                                                 Rechenaufwand bietet. Darüber hinaus bildet die Simpsonregel die
                                                 Grundlage für noch genauere Integrationsmethoden, wie etwa adaptive
-                                                Simpsonverfahren. Bei diesen Verfahren wird die Anzahl der Stützpunkte
+                                                Simpson-Verfahren. Bei diesen Verfahren wird die Anzahl der Stützpunkte
                                                 dynamisch angepasst, abhängig von der Krümmung der Funktion, um die
                                                 Genauigkeit weiter zu verbessern und gleichzeitig den Rechenaufwand zu
                                                 optimieren.</p>
@@ -674,7 +675,7 @@
                                                     Koordinatensystem dargestellt, sobald der "Zeichne Funktion" Knopf
                                                     gedrückt wird. Dabei muss es sich um eine gültige Funktion handeln,
                                                     welche die Variable \(x\) verwendet, andere Variablen sind nicht
-                                                    zulässig. Wird eine fehlerhafte Funktion eingegeben wird ein Fehler
+                                                    zulässig. Wird eine fehlerhafte Funktion eingegeben, wird ein Fehler
                                                     angezeigt.</li>
                                                 <li><b>Grenzen festlegen</b>: Die untere und obere Grenzen der
                                                     Integration
@@ -697,12 +698,12 @@
                                                     Approximation des Integrals. Die standardmäßige Anzahl liegt bei 5
                                                     Parabeln, wird der Schieberegler verändert während bereits eine
                                                     Funktion
-                                                    eingezeichnet ist so verändert sich die Anzahl der Parabeln welche
+                                                    eingezeichnet ist, so verändert sich die Anzahl der Parabeln, welche
                                                     die
                                                     Funktion im ausgewählten Integral approximieren analog im
                                                     Koordinatensystem.</li>
                                                 <li><b>Koordinatensystem</b>: Das Koordinatensystem kann verwendet
-                                                    werden um
+                                                    werden, um
                                                     die angegebene Funktion sowie die Annäherung durch die Trapeze
                                                     visuell
                                                     zu betrachten. Das Koordinatensystem unterstützt beliebig große und
@@ -716,7 +717,7 @@
                                                     kann
                                                     außerdem der Fokus des Koordinatensystems wieder auf den
                                                     anfänglichen
-                                                    Zustand zurückgesezt werden.</li>
+                                                    Zustand zurückgesetzt werden.</li>
                                                 <li><b>Vergleich mit Stammfunktion</b>: Der Benutzer hat die
                                                     Möglichkeit,
                                                     eine
@@ -731,7 +732,7 @@
                                                     und
                                                     zeigt die Ergebnisse sowie die Abweichung beim Drücken des "Berechne
                                                     Integral" Knopfes an.
-                                                    Sollte eine flasche Stammfunktion eingegeben werden, zeigt die
+                                                    Sollte eine falsche Stammfunktion eingegeben werden, zeigt die
                                                     Anwendung
                                                     mithilfe eines Popups an, dass die Stammfunktion ungültig ist. Dies
                                                     wird
@@ -741,7 +742,7 @@
                                                 </li>
                                                 <li><b>Berechnung starten</b>: Nachdem eine Funktion im
                                                     Koordinatensystem
-                                                    eingezeichnet wurde, erscheint der Knocpf "Berechne Integral". Durch
+                                                    eingezeichnet wurde, erscheint der Knopf "Berechne Integral". Durch
                                                     Klicken auf diesen Knopf wird die numerische Integration gestartet
                                                     und
                                                     das zugehörige
@@ -753,7 +754,8 @@
                                                     Flächeneinheiten angegeben. Außerdem wird in diesem Fall ein
                                                     Histogramm
                                                     der einzelnen
-                                                    Parabelfehler erstellt, welches visualisiert wie sich die Abweichung
+                                                    Parabelfehler erstellt, welches visualisiert, wie sich die
+                                                    Abweichung
                                                     zusammensetzt.
                                                 </li>
                                                 <li><b>Abweichungsdiagramm</b>: Die App zeigt bei Verwendung einer
@@ -773,16 +775,16 @@
                                                     können
                                                     die genauen Abweichungen an der jeweiligen Stelle betrachtet werden.
                                                 </li>
-                                                <li><b>Animiertes hinzufügen von Parabeln</b>: Neben dem Schieberegler
+                                                <li><b>Animiertes Hinzufügen von Parabeln</b>: Neben dem Schieberegler
                                                     können auch der Play/Pause Knopf sowie die Knöpfe für das
                                                     schrittweise
                                                     vor- und zurückspulen verwendet werden, um mithilfe einer Animation
-                                                    einzelne Parabeln im Koordinatensytsem hinzuzufügen bzw. zu
+                                                    einzelne Parabeln im Koordinatensystem hinzuzufügen bzw. zu
                                                     entfernen.
                                                     Während der Vorwärts- und Rückwärts-Knopf jeweils die Parabelanzahl
                                                     um
                                                     eins erhöht oder verringert, ermöglicht der Play/Pause Button eine
-                                                    Animation zu starten welche jede Sekunde die Parabelanzahl um eins
+                                                    Animation zu starten, welche jede Sekunde die Parabelanzahl um eins
                                                     erhöht, bis die maximale Anzahl von 100 erreicht wurde oder der
                                                     Pause
                                                     Knopf betätigt wird. Dies dient der Veranschaulichung der
@@ -823,17 +825,18 @@
                                                     Verzögerung
                                                     kommen kann.</li>
                                                 <li><b>Einschränkung des Integralbereichs</b>: Je größer der verwendete
-                                                    Integralbereich desto ungenauer ist die Approximation der Kurve
+                                                    Integralbereich, desto ungenauer ist die Approximation der Kurve
                                                     durch
                                                     die einzelnen Parabeln. Da die maximale Anzahl an Parabeln auf 100
                                                     beschränkt ist, sollte sichergestellt werden, dass das
-                                                    Integral nicht zu groß ist um eine hohe Genauigkeit der Annäherung
+                                                    Integral nicht zu groß ist, um eine hohe Genauigkeit der Annäherung
                                                     zu
                                                     gewährleisten. Eine Aufteilung eines sehr großen Integralbereichs in
                                                     mehrere kleine Bereiche kann ebenfalls sinnvoll sein, um diese
                                                     einzeln
-                                                    zu approximieren und dann die Ergebnisse zu summieren um eine höhere
-                                                    Genuigkeit zu erhalten. </li>
+                                                    zu approximieren und dann die Ergebnisse zu summieren, um eine
+                                                    höhere
+                                                    Genauigkeit zu erhalten. </li>
                                                 <li><b>Eingabe der Stammfunktion</b>: Um die Genauigkeit der numerischen
                                                     Integration zu überprüfen, sollte, wenn bekannt, die Stammfunktion
                                                     \(F(x)\)
@@ -848,24 +851,24 @@
                                                     Verständnis der Genauigkeit und Effizienz der Simpsonregel zu
                                                     fördern
                                                     und
-                                                    festzustellen, ob die aktuelle Anzahl Parabeln geeignet ist um die
+                                                    festzustellen, ob die aktuelle Anzahl Parabeln geeignet ist, um die
                                                     Kurve
                                                     ausreichend zu approximieren.
                                                 </li>
                                                 <li><b>Analyse des Abweichungsdiagramms</b>: Das Abweichungsdiagramm,
-                                                    welches bei Angabe einer Stammfunktion erstellt wird
+                                                    welches bei Angabe einer Stammfunktion erstellt wird,
                                                     gibt wertvolle Hinweise darauf, wie sich die Genauigkeit der
                                                     Approximation über die
                                                     Anzahl der Parabeln hinweg entwickelt. Das Abweichungsdiagramm zeigt
                                                     in
-                                                    der Regel wie sich die Annäherung mit steigender Anzahl an Parabeln
+                                                    der Regel, wie sich die Annäherung mit steigender Anzahl an Parabeln
                                                     an
                                                     die optimale Lösung annähert.
                                                     Hierdurch kann eine Einschätzung darüber getroffen werden, ab
-                                                    wievielen
+                                                    wie vielen
                                                     Parabeln die
                                                     Genauigkeit des Verfahrens ausreichend hoch ist. Der grüne Punkt im
-                                                    Abweihungsdiagramm symbolisiert dabei die Genauigkeit bei der
+                                                    Abweichungsdiagramm symbolisiert dabei die Genauigkeit bei der
                                                     aktuell
                                                     ausgewählten Anzahl an Parabeln und bewegt sich analog zum
                                                     zugehörigen
@@ -880,13 +883,14 @@
                                                     einzelnen
                                                     Parabeln angibt. Hierfür wird für jede einzelne Parabel die
                                                     approximierte
-                                                    Fläche mit der tatsächlcihen Fläche in diesem Bereich verglichen um
+                                                    Fläche mit der tatsächlichen Fläche in diesem Bereich verglichen, um
                                                     zu
                                                     bestimmen, wie groß die Differenz der einzelnen Parabeln zum
-                                                    Flächeninhalt unter der Kurve ist. Dies ermöglicht eine Einschätzung
+                                                    Flächeninhalt unter der Kurve ist. Dies ermöglicht eine
+                                                    Einschätzung,
                                                     an
                                                     welchen Stellen die Funktion glatter verläuft (in der Regel höhere
-                                                    Genauigkeit durch Parabeln) und in welchen bereichen die Funktion
+                                                    Genauigkeit durch Parabeln) und in welchen Bereichen die Funktion
                                                     starke
                                                     Krümmungen aufweist (in der Regel geringere Genauigkeit der
                                                     Parabeln).

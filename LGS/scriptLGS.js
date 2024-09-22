@@ -10,17 +10,17 @@ document.addEventListener('DOMContentLoaded', function () {
     saveButton.addEventListener('click', calculateSolution)
     removeButton.addEventListener('click', removeRow)
     addButton.addEventListener('click', addRow)
-  //Erstellt vier Eingabefelder beim Laden der Seite
+    //Erstellt vier Eingabefelder beim Laden der Seite
     for (let i = 0; i < 4; i++) {
         createInputFields();
     }
-  //Fügt relevante mathematische Zeichen hinzu
+    //Fügt relevante mathematische Zeichen hinzu
     addSigns();
 });
 
 // Funktion zum Entfernen einer Zeile aus der Tabelle
-function removeRow(){
-  // Holt die Tabelle und den Startvektor, in der das Gleichungssystem dargestellt wird
+function removeRow() {
+    // Holt die Tabelle und den Startvektor, in der das Gleichungssystem dargestellt wird
     const table = document.getElementById('Gleichungssystem');
     const vector = document.getElementById('Startvektor');
     const rows = table.rows.length; // Bestimmt die Anzahl der Zeilen in der Tabelle
@@ -31,7 +31,7 @@ function removeRow(){
         vector.deleteRow(rows - 1);
         addSigns(); // Aktualisiert die Zeichen
     }
-    if (table.rows[0].cells.length > 2) { 
+    if (table.rows[0].cells.length > 2) {
         for (var i = 0; i < table.rows.length; i++) {
             cellNumber = table.rows[i].cells.length;
             table.rows[i].deleteCell(cellNumber - 1);
@@ -41,7 +41,7 @@ function removeRow(){
 }
 
 // Funktion zum Hinzufügen einer neuen Zeile zur Tabelle
-function addRow(){
+function addRow() {
     const table = document.getElementById('Gleichungssystem');
     const vector = document.getElementById('Startvektor');
     const rows = table.rows.length;
@@ -54,7 +54,7 @@ function addRow(){
             input.type = 'number';
             cell.appendChild(input);
         }
-       // Füge auch ein Eingabefeld für den Vektor hinzu
+        // Füge auch ein Eingabefeld für den Vektor hinzu
         const vectorRow = vector.insertRow()
         const vectorCell = vectorRow.insertCell(0);
         const vectorInput = document.createElement('input');
@@ -63,7 +63,7 @@ function addRow(){
         vectorCell.appendChild(vectorInput);
         addSigns();
     }
-  // Füge zusätzliche Zellen hinzu, wenn weniger als 10 Spalten vorhanden sind
+    // Füge zusätzliche Zellen hinzu, wenn weniger als 10 Spalten vorhanden sind
     if (table.rows[0].cells.length < 10) {
         for (var i = 0; i < table.rows.length; i++) {
             const cell = table.rows[i].insertCell();
@@ -76,7 +76,7 @@ function addRow(){
 };
 
 // Funktion zur Berechnung der Lösung
-async function calculateSolution(){
+async function calculateSolution() {
     const table = document.getElementById('Gleichungssystem');
     const inputs = document.querySelectorAll('#Gleichungssystem input');
     const vectorInputs = document.querySelectorAll('#Vektoreingabe input');
@@ -96,12 +96,12 @@ async function calculateSolution(){
     gaussDiv.innerHTML = ' <h6>Ergebnis mit Gaußschem Eliminationsverfahren:</h6>'
     calculation.innerHTML = ''
 
-     // Bestimme die Anzahl der Nachkommastellen
+    // Bestimme die Anzahl der Nachkommastellen
     var selectElement = document.getElementById('nachkomastellen');
     var selectedOption = selectElement.options[selectElement.selectedIndex];
     var decimalPlaces = parseInt(selectedOption.value);
 
-     // Sammle die Werte der Eingabefelder in ein Array
+    // Sammle die Werte der Eingabefelder in ein Array
     inputs.forEach(function (input) {
         if (input.value.trim() === '') {
             values.push(0);
@@ -109,7 +109,7 @@ async function calculateSolution(){
             values.push(parseFloat(input.value));
         }
     });
-  
+
     // Sammle die Werte des Startvektors in ein Array
     vectorInputs.forEach(function (vectorInput) {
         if (vectorInput.value.trim() === '') {
@@ -139,7 +139,7 @@ async function calculateSolution(){
         A.push(row);
     }
 
-   // Mathematische Darstellung der Matrizen in LaTeX
+    // Mathematische Darstellung der Matrizen in LaTeX
     let matrixA = "\\begin{pmatrix} ";
     for (let i = 0; i < rows; i++) {
         for (let j = 0; j < array.length / rows - 1; j++) {
@@ -207,7 +207,7 @@ async function calculateSolution(){
     function invertDiagonalMatrix(D) {
         let n = D.length;
         let D_inv = [];
-    
+
         for (let i = 0; i < n; i++) {
             D_inv.push([]);
             for (let j = 0; j < n; j++) {
@@ -225,12 +225,12 @@ async function calculateSolution(){
                 }
             }
         }
-    
+
         return D_inv;
     }
-    
+
     let D_inv = invertDiagonalMatrix(D);
-    
+
     // Erstelle LaTeX-Matrizen für D, L und U
     function createLatexMatrix(matrix) {
         let latex = "\\begin{pmatrix}";
@@ -248,25 +248,25 @@ async function calculateSolution(){
         latex += "\\end{pmatrix}";
         return latex;
     }
-    
+
     let matrixD = createLatexMatrix(D);
     let matrixL = createLatexMatrix(L);
     let matrixU = createLatexMatrix(U);
-    
+
     let container = document.getElementById('matrix-container');
     let container2 = document.getElementById('diagonalisierungs-container');
     container.innerHTML = "<p> \\( \\mathbf{A} = " + matrixA + " \\)</p><p> \\( \\mathbf{b} = " + matrixB + " \\)</p><p> \\( \\mathbf{x^{(0)}} = " + matrixX + " \\)</p>";
     container2.innerHTML = "<p> \\( \\mathbf{D} = " + matrixD + " \\)</p><p> \\( \\mathbf{L} = " + matrixL + " \\)</p><p> \\( \\mathbf{U} = " + matrixU + " \\)</p>";
-    
+
     var gaussSolution = gaussElimination(A, b, decimalPlaces);
     if (gaussSolution == null) {
         calculation.innerHTML = "<p>Das Gleichungssystem kann nicht mithilfe des Jacobi Verfahrens gelöst werden, da das Gleichungssystem unlösbar ist.</p>";
     }
-    
+
     if (D_inv != null && gaussSolution != null) {
         // Erstelle LaTeX-Matrix für inverse D
         let matrixDInv = createLatexMatrix(D_inv);
-    
+
         // Hilfsfunktion zur Matrix-Vektor-Multiplikation
         function matVecMul(matrix, vector) {
             const result = new Array(vector.length).fill(0);
@@ -278,17 +278,17 @@ async function calculateSolution(){
             }
             return result;
         }
-    
+
         // Hilfsfunktion zur Vektor-Subtraktion
         function vecSub(vec1, vec2) {
             return vec1.map((val, idx) => parseFloat((val - vec2[idx]).toFixed(decimalPlaces)));
         }
-    
+
         // Hilfsfunktion zur Matrix-Vektor-Multiplikation mit Inverse (Diagonalmatrix)
         function matDiagVecMul(matrix, vector) {
             return matrix.map((row, idx) => parseFloat((row[idx] * vector[idx]).toFixed(decimalPlaces)));
         }
-    
+
         let startVector = vectorValues;
         for (let i = 1; i <= iterationen; i++) {
             let matrixStart = "\\begin{pmatrix} ";
@@ -330,8 +330,8 @@ async function calculateSolution(){
                 break;
             }
         }
-      
-      // Erstellt einen LaTeX-String zur Darstellung eines Vektors
+
+        // Erstellt einen LaTeX-String zur Darstellung eines Vektors
         function createLatexString(vector) {
             let latexString = '';
             for (let i = 0; i < vector.length; i++) {
@@ -376,7 +376,7 @@ async function calculateSolution(){
 };
 
 // Funktion, um die Eingabefelder für das Gleichungssystem und den Startvektor zu leeren
-function clearInput(){
+function clearInput() {
     const table = document.getElementById('Gleichungssystem');
     const vector = document.getElementById('Startvektor');
     for (var i = table.rows.length - 1; i >= 0; i--) {
@@ -426,7 +426,7 @@ function createStandardExample() {
         createInputFields();
     }
     addSigns();
-  
+
     // Definiert die Werte für das Standardbeispiel
     const values = [
         10, -1, 2, 0, 6,
@@ -434,8 +434,8 @@ function createStandardExample() {
         2, -1, 10, -1, -11,
         0, 3, -1, 8, 15
     ];
-  
-  // Füllt die Eingabefelder mit den Standardwerten
+
+    // Füllt die Eingabefelder mit den Standardwerten
     const inputs = table.getElementsByTagName('input');
 
     for (let i = 0; i < values.length; i++) {
@@ -448,8 +448,8 @@ function createStandardExample() {
 function createInputFields() {
     const table = document.getElementById('Gleichungssystem');
     const vector = document.getElementById('Startvektor');
-  // Fügt eine neue Zeile zur Tabelle des Gleichungssystems hinzu  
-  const row = table.insertRow();
+    // Fügt eine neue Zeile zur Tabelle des Gleichungssystems hinzu  
+    const row = table.insertRow();
     for (let i = 0; i < 5; i++) {
         const cell = row.insertCell();
         const input = document.createElement('input');
@@ -468,7 +468,7 @@ function createInputFields() {
 
 
 function gaussElimination(variable1, variable2, decimalPlaces) {
-    
+
     let n = variable1.length;
 
     // Erstellen der erweiterten Matrix [variable1|variable2]
@@ -476,9 +476,9 @@ function gaussElimination(variable1, variable2, decimalPlaces) {
         variable1[i].push(variable2[i]);
     }
 
-     // Vorwärtssubstitution
+    // Vorwärtssubstitution
     for (let i = 0; i < n; i++) {
-         // Pivotierung: Finden der Zeile mit dem größten Element in der aktuellen Spalte
+        // Pivotierung: Finden der Zeile mit dem größten Element in der aktuellen Spalte
         let maxEl = Math.abs(variable1[i][i]);
         let maxRow = i;
         for (let k = i + 1; k < n; k++) {
@@ -488,7 +488,7 @@ function gaussElimination(variable1, variable2, decimalPlaces) {
             }
         }
 
-       // Vertauschen der Zeile mit dem maximalen Element mit der aktuellen Zeile
+        // Vertauschen der Zeile mit dem maximalen Element mit der aktuellen Zeile
         for (let k = i; k < n + 1; k++) {
             let tmp = variable1[maxRow][k];
             variable1[maxRow][k] = variable1[i][k];
@@ -517,7 +517,7 @@ function gaussElimination(variable1, variable2, decimalPlaces) {
         }
     }
 
-     // Rückwärtssubstitution zur Bestimmung der Lösung
+    // Rückwärtssubstitution zur Bestimmung der Lösung
     let x = new Array(n).fill(0);
     for (let i = n - 1; i >= 0; i--) {
         x[i] = variable1[i][n] / variable1[i][i];
@@ -538,14 +538,15 @@ function roundToDecimalPlaces(value, places) {
 
 // Export der Funktionen (für Node.js)
 if (typeof module !== 'undefined' && module.exports) {
-module.exports = {
-    removeRow,
-    addRow,
-    calculateSolution,
-    clearInput,
-    addSigns,
-    createStandardExample,
-    createInputFields,
-    gaussElimination,
-    roundToDecimalPlaces
-}}
+    module.exports = {
+        removeRow,
+        addRow,
+        calculateSolution,
+        clearInput,
+        addSigns,
+        createStandardExample,
+        createInputFields,
+        gaussElimination,
+        roundToDecimalPlaces
+    }
+}

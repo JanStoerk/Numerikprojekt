@@ -306,7 +306,7 @@
                                             von möglichen Kombinationen komplex und groß ist. Das Verfahren ist
                                             effektiv, wenn das Problem eine diskrete Struktur aufweist, bei der die
                                             Variablen nur bestimmte Werte annehmen können, wie zum Beispiel bei der
-                                            ganzzahligen Programmierung oder der kombiniatorischen Optimierung.
+                                            ganzzahligen Programmierung oder der kombinatorischen Optimierung.
 
 
                                         </p>
@@ -358,10 +358,9 @@
                                             abzielt, den Suchraum einzuschränken und die beste Lösung zu finden, hat
                                             Schwierigkeiten, in solchen Szenarien eine sinnvolle Lösung zu ermitteln, da
                                             es keine endliche optimale Lösung finden kann. Daher überprüft die Anwendung
-                                            bei der EIngabe der Zielfunktion und der Nebenbedingungen, ob zumindest eine
+                                            bei der Eingabe der Zielfunktion und der Nebenbedingungen, ob zumindest eine
                                             obere Schranke für jede Variable angegeben wurde, ansonsten kann das Branch
-                                            & Bound Verfahren nicht gestratet werden.
-
+                                            & Bound Verfahren nicht gestartet werden.
                                         </p>
 
                                         <section id="bedienungsanleitung" class="mb-4">
@@ -375,23 +374,24 @@
                                                 <li><b>Maximierungsproblem eingeben</b>: In das Feld
                                                     „Maximierungsproblem“ wird die Zielfunktion eingetragen, die
                                                     maximiert werden soll. Diese Funktion hat die allgemeine Form \(Z =
-                                                        c_1 x_1 + c_2 x_2 + ... + c_n x_n\), wobei \(c_i\) die
+                                                    c_1 x_1 + c_2 x_2 + ... + c_n x_n\), wobei \(c_i\) die
                                                     Koeffizienten der Zielfunktion sind. Dabei spielt keine Rolle welche
-                                                    Bezeichnungen für die Variablen gewählt werden (z.B. \(x\), \(y\) oder \(a\), \(b\)),
+                                                    Bezeichnungen für die Variablen gewählt werden (z.B. \(x\), \(y\)
+                                                    oder \(a\), \(b\)),
                                                     jedoch dürfen die einzelnen Variablen nur einem Zeichen entsprechen
                                                     (z.B. wäre \(x1\) nicht zulässig).</li>
                                                 <li><b>Nebenbedingungen festlegen</b>: Unter der Zielfunktion befinden
-                                                    sich standardmäßig zwei Nebenebedingungen, mithilfe des Knopfes
+                                                    sich standardmäßig zwei Nebenbedingungen, mithilfe des Knopfes
                                                     "Nebenbedingung hinzufügen" können jedoch bis zu 10 Nebenbedingungen
-                                                    für ein optimierungsproblem verwendet werden. Diese
+                                                    für ein Optimierungsproblem verwendet werden. Diese
                                                     haben die Form linearer Ungleichungen, die die Werte der Variablen
                                                     einschränken (z. B. \(x &le; 5\) oder \(a+b &le; 6\)). Die
                                                     Nebenbedingungen unterstützen dabei auch andere Vergleichsoperatoren
                                                     wie \(\geq, \gt, \lt\), wobei Nebenbedingungen mit den Operatoren
-                                                    \(\geq, \gt\) nur berücksichtigt werden wenn diese scih auf den
+                                                    \(\geq, \gt\) nur berücksichtigt, werden, wenn diese sich auf den
                                                     positiven Zahlenbereich beschränken, da die Anwendung nur \(x_i \in
                                                     \mathbb{N_0}\) unterstützt.</li>
-                                                <li><b>Baumstruktur erzeugen</b>: Zur erzeugung der Baumstruktur und zur
+                                                <li><b>Baumstruktur erzeugen</b>: Zur Erzeugung der Baumstruktur und zur
                                                     iterativen Lösung des Optimierungsproblems mithilfe des Branch &
                                                     Bound Verfahrens können der Start Knopf sowie der Knopf zum
                                                     schrittweisen Vorwärtsspulen verwendet werden. Während der
@@ -400,7 +400,7 @@
                                                     hinzufügt,
                                                     beginnt der Start Knopf das Branch & Bound Verfahren iterativ
                                                     durchzuführen, bis alle Teilbäume untersucht wurden, oder die
-                                                    maximale Anzahl an iterationen erreicht ist (300). Dabei wird pro
+                                                    maximale Anzahl an Iterationen erreicht ist (300). Dabei wird pro
                                                     Sekunde eine Iteration durchgeführt und der Baum entsprechend
                                                     erweitert, wobei der Fokus des Baumes während der Animation jeweils
                                                     auf den neu angelegten Knoten gelenkt wird.
@@ -425,7 +425,7 @@
                                                     Berechnung und werden mit jeder Iteration aktualisiert.</li>
                                                 <li><b>Abweichungsdiagramm erstellen</b>: Nach dem Abschluss der
                                                     Berechnung kann ein Abweichungsdiagramm erstellt werden, dass den
-                                                    Fehler in jeder Iteration grafisch in Bezug zur otimalen Lösung
+                                                    Fehler in jeder Iteration grafisch in Bezug zur optimalen Lösung
                                                     darstellt. Dies zeigt die
                                                     Entwicklung der Lösung im Laufe der Iterationen. Sollte dieser Knopf
                                                     verwendet werden, bevor das Branch & Bound Verfahren
@@ -443,18 +443,14 @@
                                                     detaillierte und umfassende Betrachtung der einzelnen
                                                     Iterationsschritte und verbessert das Verständnis der Vorgehensweise
                                                     des Branch & Bound Verfahrens. </li>
-                                                <li><b>Baum zurücksetzen</b>: Um zu verhindern dass während der
-                                                    Iteration des Branch & Bound Verfahrens die Zeilfunktion oder
+                                                <li><b>Baum zurücksetzen</b>: Um zu verhindern, dass während der
+                                                    Iteration des Branch & Bound Verfahrens die Zielfunktion oder
                                                     Nebenbedingungen angepasst werden, werden die Eingabefelder für den
-                                                    Nutzer deaktiviert. Um die Engaben zu verändern und ein anderes
-                                                    Optimierungsproblem zu untersuchen kann daher der Knopf "Baum
+                                                    Nutzer deaktiviert. Um die Eingaben zu verändern und ein anderes
+                                                    Optimierungsproblem zu untersuchen, kann daher der Knopf "Baum
                                                     zurücksetzen" verwendet werden.</li>
                                             </ol>
-
-
-
                                         </section>
-
                                         <section id="handlungsempfehlungen" class="mb-4">
                                             <h4>3. Handlungsempfehlungen</h4><br>
                                             Um die besten Ergebnisse mit der App zur Lösung von linearen
@@ -466,7 +462,7 @@
                                                     präzise formuliert werden, um sicherzustellen, dass das
                                                     Problem richtig gelöst wird. Dabei ist wichtig, dass alle jeweiligen
                                                     Koeffizienten korrekt vor den zugehörigen Variablen stehen (wobei es
-                                                    unerheblich ist ob diese mit * oder
+                                                    unerheblich ist, ob diese mit * oder
                                                     ohne mit den Variablen verbunden werden) und dass die Variablen aus
                                                     einzelnen Ziffern bestehen (z.B. a
                                                     oder x). Das Maximierungsproblem sollte dabei stets der Form \(
@@ -475,7 +471,7 @@
                                                 <li><b>Nebenbedingungen präzise formulieren</b>: Um eine genaue Lösung
                                                     zu erhalten, sollten die Nebenbedingungen sorgfältig formuliert
                                                     werden. Falsche oder unvollständige Nebenbedingungen werden von der
-                                                    Anwendung erkannt und führen dazu dass das Branch & Bound Verfahren
+                                                    Anwendung erkannt und führen dazu, dass das Branch & Bound Verfahren
                                                     nicht durchgeführt wird.</li>
                                                 <li><b>Vermeidung von unbeschränkten Variablen</b>: Die Nebenbedingungen
                                                     sollten für jede Variable zumindest eine obere Schranke angeben, um
@@ -486,22 +482,23 @@
                                                     noch unbeschränkt sind. </li>
                                                 <li><b>Überwachen der Baumgröße</b>: Bei großen Problemen, insbesondere
                                                     wenn viele Variablen verwendet werden und diese mit sehr weiten
-                                                    Schranken eingeschränkt werden kann der
+                                                    Schranken eingeschränkt werden, kann der
                                                     Suchbaum sehr schnell anwachsen und die maximale Anzahl an
-                                                    Iterationen erreichen (300). Dies führt dazu dass das Branch & Bound
-                                                    Verfahren unter Umständen nicht das optimale Ergebniss für das
+                                                    Iterationen erreichen (300). Dies führt dazu, dass das Branch &
+                                                    Bound
+                                                    Verfahren unter Umständen nicht das optimale Ergebnis für das
                                                     Maximierungsproblem ermitteln kann und die Erstellung des Baumes
                                                     lange dauern kann. Es kann hilfreich sein, die
                                                     Nebenbedingungen anzupassen, sodass die Variablen durch engere
                                                     Schranken beschränkt werden oder das Problem zu vereinfachen, um den
                                                     Lösungsprozess zu beschleunigen.</li>
                                                 <li><b>Regelmäßige Überprüfung der Schranken</b>: Die gesetzten
-                                                    Schranken sollten bei sehr großen optimierungsproblemen regelmäßig
-                                                    überprüft und gegebenenfalls angepasst werden um bessere Ergebnisse
+                                                    Schranken sollten bei sehr großen Optimierungsproblemen regelmäßig
+                                                    überprüft und gegebenenfalls angepasst werden, um bessere Ergebnisse
                                                     zu erlangen. So könnte beispielsweise das Verfahren mit sehr weiten
                                                     Schranken gestartet werden und nach einer bestimmten Anzahl an
                                                     Iterationen (maximal 300) neue Schranken basierend auf dem
-                                                    erstellten baum identifiziert werden. Durch den Knopf Baum
+                                                    erstellten Baum identifiziert werden. Durch den Knopf Baum
                                                     zurücksetzen können die Schranken dann angepasst und ein neuer
                                                     Suchbaum erstellt werden.</li>
                                                 <li><b>Analyse des Abweichungsdiagramms</b>: Das Abweichungsdiagramm
