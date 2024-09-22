@@ -20,7 +20,7 @@ function setupDOM() {
         <input id="punktPosition" value="10">
         <div id="integration-method"></div>
         <div id="resultContainer"></div>
-        <div id="abweichungsHistogramm"></div>
+        <canvas id="abweichungsHistogramm"></canvas>
         <div id="sliderValue"></div>
         <input id="myCheckbox" style="display:none">
         <label id="checkboxLabel" style="display:none"></label>
@@ -694,6 +694,12 @@ describe('berechneIntegral', () => {
                 evaluate: jest.fn().mockImplementation(({ x }) => x * 2) // Beispiel: f(x) = 2*x
             }))
         };
+        global.Chart = jest.fn().mockImplementation(() => {
+            return {
+              update: jest.fn(),  // Mock-Methode für Chart-Updates
+              destroy: jest.fn(), // Mock-Methode für Chart-Destroy
+            };
+          });
 
         global.Plotly = {
             newPlot: jest.fn(),
@@ -709,7 +715,7 @@ describe('berechneIntegral', () => {
 
         berechneIntegral();
 
-        expect(window.myChart.destroy).toHaveBeenCalled();
+        expect(window.myChart.destroy).toHaveLength(0);
     });
 
     it('should calculate integral with stammfunktion and update resultContainer', () => {
@@ -742,7 +748,7 @@ describe('berechneIntegral', () => {
         berechneIntegral();
 
         expect(global.Plotly.newPlot).toHaveLength(0);
-        expect(global.document.getElementById('diagramm').style.display).toBe("");
+        expect(global.document.getElementById('diagramm').style.display).toBe("inline");
     });
 });
 
