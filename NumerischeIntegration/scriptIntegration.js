@@ -113,8 +113,13 @@ function validateInputs() {
     let integralBtn = document.getElementById('integralButton');
     var stammfunktionStr = $('#stammfunktion').val().replace(',', '.');
     var funktion = $('#funktion').val().trim().replace(/\s+/g, '').replace(',', '.');
-
-    const ableitung = math.derivative(stammfunktionStr, 'x').toString().replace(/\s+/g, '');
+    let ableitung;
+    //Try-Catch Block um nicht ableitbare FUnktionen abzufangen und Konsolenfehler zu vermeiden
+    try {
+        ableitung = math.derivative(stammfunktionStr, 'x').toString().replace(/\s+/g, '');
+    } catch (error) {
+        ableitung = 'Nicht ableitbar';
+    }
     // Prüft, ob die abgeleitete Stammfunktion der eingegebenen Funktion entspricht
     if (areFunctionsEquivalent(funktion, ableitung)) {
         $('#stammfunktion').popover('hide');
@@ -363,8 +368,6 @@ function resetAxesHandler(gd) {
 
 
 function areFunctionsEquivalent(func1, func2) {
-    console.log(func1)
-    console.log(func2)
     try { // Parsen und Vereinfachen der beiden Funktionen
         const parsedFunc1 = math.parse(func1);
         const parsedFunc2 = math.parse(func2);
